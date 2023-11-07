@@ -26,17 +26,19 @@ namespace OVModel
 
             CreateColumns();
 
-            //StartCalculation();
-            //double b_2 = 0.125;
-            //double b = b_2 / 2;
-            //double n_ob = 1.4627;
-            //double n = 1.4738;
-            //double x = -0.004;
-            //double R = 2;
-            //Console.WriteLine(OVModel_DopTheory.DopTheory.n_x(x, n, R, b));
-            //Console.WriteLine(OVModel_DopTheory.DopTheory.n_y(x, n, R, b));
-            //Console.WriteLine(OVModel_DopTheory.DopTheory.n_z(x, n, R, b));
         }
+
+        //private void DrawSchedule(PointCollection points_n_x, PointCollection points_n_y, PointCollection points_n_z, PointCollection point_n )
+        //{
+        //    //List<Point> values = new List<Point>();
+        //    PointCollection v = new PointCollection();
+        //    v.Add(new Point() { X = 1, Y = 2});
+        //    v.Add(new Point() { X = 3, Y = 4 });
+        //    v.Add(new Point() { X = 5, Y = 6 });
+        //    v.Add(new Point() { X = 7, Y = 8 });
+        //    v.Add(new Point() { X = 9, Y = 10 });
+        //    Schedule.Points = v;
+        //}
 
         private void CreateColumns()
         {
@@ -44,26 +46,26 @@ namespace OVModel
             column1.Header = "x";
             column1.Binding = new Binding($"[0]");
             column1.MaxWidth = 50;
-            Tablica.Columns.Add(column1);
+            Table.Columns.Add(column1);
 
 
             DataGridTextColumn column2 = new DataGridTextColumn();
             column2.Header = "n_x";
             column2.Binding = new Binding($"[1]");
             column2.MaxWidth = 75;
-            Tablica.Columns.Add(column2);
+            Table.Columns.Add(column2);
 
             DataGridTextColumn column3 = new DataGridTextColumn();
             column3.Header = "n_y";
             column3.Binding = new Binding($"[2]");
             column3.MaxWidth = 75;
-            Tablica.Columns.Add(column3);
+            Table.Columns.Add(column3);
 
             DataGridTextColumn column4 = new DataGridTextColumn();
             column4.Header = "n_z";
             column4.Binding = new Binding($"[3]");
             column4.MaxWidth = 75;
-            Tablica.Columns.Add(column4);
+            Table.Columns.Add(column4);
             
         }
 
@@ -87,25 +89,62 @@ namespace OVModel
                 List<List<double>> result = new List<List<double>>();
 
                 int count = 30;
+                PointCollection points_n_x = new PointCollection();
+                PointCollection points_n_y = new PointCollection();
+                PointCollection points_n_z = new PointCollection();
+                PointCollection points_n = new PointCollection();
+
+                double scheduleMarginLeft = ScheduleGrid.Margin.Left;
+                double scheduleMarginRight = ScheduleGrid.Margin.Right;
+                double scheduleMarginTop = ScheduleGrid.Margin.Top;
+                double scheduleMarginBottom = ScheduleGrid.Margin.Bottom;
+
+                double scheduleWidth = scheduleMarginLeft - scheduleMarginRight;
+                double scheduleHeight = scheduleMarginTop - scheduleMarginBottom;
+
+                double coefficientMultiplication = scheduleWidth / count;
+
+                Console.WriteLine(scheduleMarginLeft);
+                Console.WriteLine(scheduleMarginRight);
+                Console.WriteLine(scheduleWidth);
+                Console.WriteLine(scheduleHeight);
+
+                points_n.Add(new Point() { X = n * 100, Y = x * 100});
+                points_n.Add(new Point() { X = n * 100, Y = (x + h * count) * 100});
 
                 for (int i = 0; i < count; i++)
                 {
-                    result.Add(new List<double> { x + h * i, OVModel_DopTheory.DopTheory.n_x(x + h * i, n, R, b), OVModel_DopTheory.DopTheory.n_y(x + h * i, n, R, b), OVModel_DopTheory.DopTheory.n_z(x + h * i, n, R, b) });
+                    double x_now = x + h * i;
+                    double n_x = OVModel_DopTheory.DopTheory.n_x(x_now, n, R, b);
+                    double n_y = OVModel_DopTheory.DopTheory.n_y(x_now, n, R, b);
+                    double n_z = OVModel_DopTheory.DopTheory.n_z(x_now, n, R, b);
+                    result.Add(new List<double> { x_now, n_x, n_y, n_y});
+                    points_n_x.Add(new Point() { X = n_x * 100, Y = x_now * 100 });
+                    points_n_y.Add(new Point() { X = n_y * 100, Y = x_now * 100});
+                    points_n_z.Add(new Point() { X = n_z * 100, Y = x_now * 100});
+
                 }
-                Tablica.ItemsSource = result;
+
+                Table.ItemsSource = result;
+                Schedule_n_x.Points = points_n_x;
+                Schedule_n_y.Points = points_n_y;
+                PointCollection s = new PointCollection();
+                s.Add(new Point() { X = 0, Y = 0 });
+                s.Add(new Point() { X = 100, Y = 200 });
+                //Schedule_n_z.Points = points_n_z;
+                Schedule_n_z.Points = s;
+
+                Schedule_n.Points = points_n;
+
+                //DrawSchedule(points_n_x, points_n_y, points_n_z, points_n);
+
                 Console.WriteLine("End Calculating.");
-                //FullTable(result);
             }
             else
             {
                 Console.WriteLine("ELSE!");
             }
             
-
-        }
-
-        private void FullTable(List<List<double>> list)
-        {
 
         }
 
@@ -120,62 +159,13 @@ namespace OVModel
             {
                 return false;
             }
-            //return true;
-        }
-
-        private void Input_n_ob_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Input_n_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Input_2b_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Input_R_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Input_h_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Input_x_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
         }
 
         private void Input_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Console.WriteLine("TextChanged");
             StartCalculation();
+            //drawSchedule();
         }
-
-        //private void SetRows()
-        //{
-        //    //int countYear = System.Convert.ToInt32(CountYear.Text);
-        //    int count = 30;
-        //    List<element> list = new List<element>();
-        //    for (int i = 0; i <= count; i++)
-        //    {
-        //        element row = new element { list = new List<int> { x, 0, 0, 0 } };
-        //        list.Add(row);
-        //    }
-        //    Tablica.ItemsSource = list;
-        //}
-        //private struct element
-        //{ 
-        //    public list<double> list { get; set; }
-        //}
-
 
 
     }

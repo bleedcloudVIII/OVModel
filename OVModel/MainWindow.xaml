@@ -6,7 +6,8 @@
             xmlns:local="clr-namespace:OVModel"
             Title="MainWindow"
             Height="500"
-            Width="1300">
+            Width="1300"
+        >
     <Grid>
         <ToolBarPanel Height="25" VerticalAlignment="Top">
             <ComboBox SelectedIndex="0" HorizontalAlignment="Left" Width="230">
@@ -23,24 +24,29 @@
         <Label Content="Введите h: " HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top" Width="68" Height="27"/>
         <Label Content="Введите x: " HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Width="68" Height="27"/>
 
-        <TextBox x:Name="Input_n_ob" HorizontalAlignment="Left" Margin="94,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" TextChanged="Input_n_ob_TextChanged"/>
+        <TextBox x:Name="Input_n_ob" HorizontalAlignment="Left" Margin="94,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" TextChanged="Input_TextChanged"/>
         <TextBox x:Name="Input_n" HorizontalAlignment="Left" Margin="78,62,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" TextChanged="Input_TextChanged"/>
         <TextBox x:Name="Input_2b" HorizontalAlignment="Left" Margin="84,89,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" TextChanged="Input_TextChanged"/>
         <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" Margin="78,116,0,0" TextChanged="Input_TextChanged"/>
         <TextBox x:Name="Input_h" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" Margin="78,143,0,0" TextChanged="Input_TextChanged"/>
         <TextBox x:Name="Input_x" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" Margin="78,170,0,0" TextChanged="Input_TextChanged"/>
-        <!--<DataGrid x:Name="Tablica" HorizontalAlignment="Left" Height="215" Margin="10,72,0,0" VerticalAlignment="Top" Width="345" 
-                  AutoGenerateColumns="False" 
-                  CanUserAddRows="False" 
-                  CanUserDeleteRows="False" 
-                  CanUserReorderColumns="True" 
-                  CanUserResizeRows="True" 
-                  CanUserResizeColumns="False" 
-                  CanUserSortColumns="False"/>-->
-        <DataGrid x:Name="Tablica"
-                  Margin="162,35,830,49"
+
+        <DataGrid x:Name="Table"
+                  Margin="162,35,820,49"
                   AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserResizeRows="False"
+                  CanUserReorderColumns="True"
         />
+        <Grid Background="Black" Margin="525,35,256,44" x:Name="ScheduleGrid">
+            <Canvas>
+                <Polyline x:Name="Schedule_n_x" Points="" Stroke="Red" HorizontalAlignment="Center" VerticalAlignment="Top" Width="519" Height="406"/>
+                <Polyline x:Name="Schedule_n_y" Points="" Stroke="Blue" HorizontalAlignment="Center" VerticalAlignment="Top" Width="519" Height="406"/>
+                <Polyline x:Name="Schedule_n_z" Points="" Stroke="White" HorizontalAlignment="Center" VerticalAlignment="Top" Width="519" Height="406"/>
+                <Polyline x:Name="Schedule_n" Points="" Stroke="Yellow" HorizontalAlignment="Center" VerticalAlignment="Top" Width="519" Height="406"/>
+            </Canvas>
+        </Grid>
 
 
     </Grid>
