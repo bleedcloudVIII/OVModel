@@ -110,8 +110,6 @@ namespace OVModel
                 double scheduleWidth = BorderForSchedule.ActualWidth;
                 double scheduleHeigth = BorderForSchedule.ActualHeight;
 
-                double shag = scheduleHeigth / count;
-                double shag2 = scheduleWidth / count;
 
                 // Точки для прямой n
                 points_n.Add(new Point() { X = 0, Y = scheduleHeigth - n * 250});
@@ -130,61 +128,40 @@ namespace OVModel
                     n_max = Math.Max(Math.Max(Math.Max(n_max, n_x), n_y), n_z);
 
                     result.Add(new List<double> { x_now, n_x, n_y, n_y });
-
-                    points_n_x.Add(new Point() { X = i * shag2, Y = scheduleHeigth - (n_x + i * shag) });
-                    points_n_y.Add(new Point() { X = i * shag2, Y = scheduleHeigth - (n_y + i * shag) });
-                    //points_n_z.Add(new Point() { X = i * shag2, Y =  scheduleHeigth - n_y * (scheduleHeigth / ) });
-
                 }
-                
+
+                double stepForX = scheduleWidth / count;
+                double stepScale1 = BorderForSchedule.ActualHeight / count;
+                double length = n_max - n_min;
+                double stepScale2 = length / count;
+
                 for (int i = 0; i <= count; i++)
                 {
-                    double x_now = x_start + h * i;
-                    double n_z = Math.Round(OVModel_DopTheory.DopTheory.n_z(x_now, n, R, b), 5);
-                    Console.WriteLine(n_z * 250 + " <- n_z");
-                    Console.WriteLine((n_z - n_min) * 250 + " <- n_z - n_min");
-                    Console.WriteLine(scheduleHeigth - (n_z - n_min) * 250 + " <- scheduleHeigth - n_z - n_min");
-                    points_n_z.Add(new Point() { X = i * shag2, Y =  scheduleHeigth - (n_z - n_min) * shag  });
+                    double x = result[i][0];
+                    double n_x = result[i][1];
+                    double n_y = result[i][2];
+                    double n_z = result[i][3];
+
+                    double deltaX = n_x - n_min;
+                    double deltaY = n_y - n_min;
+                    double deltaZ = n_z - n_min;
+
+                    double stepsX = deltaX / stepScale2;
+                    double stepsY = deltaY / stepScale2;
+                    double stepsZ = deltaZ / stepScale2;
+
+                    points_n_x.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsX });
+                    points_n_y.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsY });
+                    points_n_z.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsZ });
+
 
                 }
-                // От значений n отнять height?
-
-                double mins = BorderForSchedule.ActualHeight;
-                double maxs = BorderForSchedule.ActualWidth;
-
-                //points_n = SubtractMinN(points_n, n_min);
-                //points_n_x = SubtractMinN(points_n_x, n_min);
-                //points_n_y = SubtractMinN(points_n_y, n_min);
-                //points_n_z = SubtractMinN(points_n_z, n_min);
-
-                // Нахожу коэффициент умножения, чтобы увелечить значение n для точке
-                // Т.к.сейчас их значения слишком малы, чтобы с ними можно было нормально работать на графике
-                //int coef = 250;
-
-                //for (int i = 0; i < points_n_x.Count; i++)
-                //{
-                //    Point point = points_n_x[i];
-                //    point.Y *= coef;
-                //    point.Y = mins - point.X;
-                //    point.X *= coef;
-                //    point.X = maxs - point.Y;
-                //    points_n_x[i] = point;
-                //}
-
-                Console.WriteLine(BorderForSchedule.ActualHeight);
-                Console.WriteLine(BorderForSchedule.ActualWidth);
-
-                Console.WriteLine(n_min);
-                Console.WriteLine(n_max);
-
 
                 Table.ItemsSource = result;
-                //Schedule_n_x.Points = points_n_x;
-                //Schedule_n_y.Points = points_n_y;
+                Schedule_n_x.Points = points_n_x;
+                Schedule_n_y.Points = points_n_y;
                 Schedule_n_z.Points = points_n_z;
                 Schedule_n.Points = points_n;
-
-                //DrawSchedule(points_n_x, points_n_y, points_n_z, points_n);
 
                 Console.WriteLine("End Calculating.");
             }
@@ -196,18 +173,18 @@ namespace OVModel
 
         }
 
-        private PointCollection SubtractMinN(PointCollection c, double n_min)
-        {
-            // Т.к. график начинается с 0, мы от чисел отнимает минимальную n(представляя что её значение будет 0, т.е начальным)
-            // И тем самым получаем правильные координаты для построения графиков
-            for (int i = 0; i < c.Count; i++)
-            {
-                Point point = c[i];
-                point.X -= n_min;
-                c[i] = point;
-            }
-            return c;
-        }
+        //private PointCollection SubtractMinN(PointCollection c, double n_min)
+        //{
+        //    // Т.к. график начинается с 0, мы от чисел отнимает минимальную n(представляя что её значение будет 0, т.е начальным)
+        //    // И тем самым получаем правильные координаты для построения графиков
+        //    for (int i = 0; i < c.Count; i++)
+        //    {
+        //        Point point = c[i];
+        //        point.X -= n_min;
+        //        c[i] = point;
+        //    }
+        //    return c;
+        //}
 
         private bool isCanConvertToDouble(string str)
         {
