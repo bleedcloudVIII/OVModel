@@ -110,11 +110,6 @@ namespace OVModel
                 double scheduleWidth = BorderForSchedule.ActualWidth;
                 double scheduleHeigth = BorderForSchedule.ActualHeight;
 
-
-                // Точки для прямой n
-                points_n.Add(new Point() { X = 0, Y = scheduleHeigth - n * 250});
-                points_n.Add(new Point() { X = scheduleWidth, Y = scheduleHeigth - n * 250});
-
                 for (int i = 0; i <= count; i++)
                 {
                     // Вычисление значений текущего x и значений n
@@ -127,34 +122,44 @@ namespace OVModel
                     n_min = Math.Min(Math.Min(Math.Min(n_min, n_x), n_y), n_z);
                     n_max = Math.Max(Math.Max(Math.Max(n_max, n_x), n_y), n_z);
 
-                    result.Add(new List<double> { x_now, n_x, n_y, n_y });
+                    result.Add(new List<double> { x_now, n_x, n_y, n_z });
                 }
 
+                // Шаг для x
                 double stepForX = scheduleWidth / count;
+
+                // Шаг для большой(первой) шкалы, т.е. шкалы от 0 до конца  графика
                 double stepScale1 = BorderForSchedule.ActualHeight / count;
+                // Длина новой(второй) шкалы, для значений n
                 double length = n_max - n_min;
+                // Шаг для второй шкалы
                 double stepScale2 = length / count;
+
+                // Точки для прямой n
+                points_n.Add(new Point() { X = 0, Y = scheduleHeigth - stepScale1 * (n - n_min) / stepScale2 });
+                points_n.Add(new Point() { X = scheduleWidth, Y = scheduleHeigth - stepScale1 * (n - n_min) / stepScale2 });
 
                 for (int i = 0; i <= count; i++)
                 {
-                    double x = result[i][0];
                     double n_x = result[i][1];
                     double n_y = result[i][2];
                     double n_z = result[i][3];
-
+                    
+                    // Разница между n и n_мин
                     double deltaX = n_x - n_min;
                     double deltaY = n_y - n_min;
                     double deltaZ = n_z - n_min;
 
+                    // Количество шагов для Y
                     double stepsX = deltaX / stepScale2;
                     double stepsY = deltaY / stepScale2;
                     double stepsZ = deltaZ / stepScale2;
 
+                    // X = шаг шкалы * индекс точки; Y = длина всей шкалы - шаг * количесвто шагов
+                    // Отнимаем от длины всей шкалы, чтобы инвертировать шкалу, т.к. точка (0;0) в левом верхнем углу графика
                     points_n_x.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsX });
                     points_n_y.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsY });
                     points_n_z.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsZ });
-
-
                 }
 
                 Table.ItemsSource = result;
