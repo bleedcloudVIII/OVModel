@@ -24,13 +24,13 @@
         <Label Content="Введите h: " HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top" Width="68" Height="27"/>
         <Label Content="Введите пределы x: " HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Width="116" Height="27"/>
 
-        <TextBox x:Name="Input_n_ob" HorizontalAlignment="Left" Margin="94,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_n" HorizontalAlignment="Left" Margin="94,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_2b" HorizontalAlignment="Left" Margin="94,89,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" Margin="94,116,0,0" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_h" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="63" Margin="94,143,0,0" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_x_start" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" Margin="15,192,0,0" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_x_end" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30" Margin="50,192,0,0" TextChanged="Input_TextChanged"/>
+        <TextBox x:Name="Input_n_ob" HorizontalAlignment="Left" Margin="94,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" TextChanged="Input_TextChanged"/>
+        <TextBox x:Name="Input_n" HorizontalAlignment="Left" Margin="94,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" TextChanged="Input_TextChanged"/>
+        <TextBox x:Name="Input_2b" HorizontalAlignment="Left" Margin="94,89,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" TextChanged="Input_TextChanged"/>
+        <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" Margin="94,116,0,0" TextChanged="Input_TextChanged"/>
+        <TextBox x:Name="Input_h" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" Margin="94,143,0,0" TextChanged="Input_TextChanged"/>
+        <TextBox x:Name="Input_x_start" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50" Margin="15,192,0,0" TextChanged="Input_TextChanged"/>
+        <TextBox x:Name="Input_x_end" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50" Margin="70,192,0,0" TextChanged="Input_TextChanged"/>
 
 
         <DataGrid x:Name="Table"
@@ -46,7 +46,7 @@
                 <Canvas>
                     <Polyline x:Name="Schedule_n_x" Points="" Stroke="Red" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
                     <Polyline x:Name="Schedule_n_y" Points="" Stroke="Blue" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
-                    <Polyline x:Name="Schedule_n_z" Points="" Stroke="Green" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
+                    <Polyline x:Name="Schedule_n_z" Points="" Stroke="LimeGreen" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
                     <Polyline x:Name="Schedule_n" Points="" Stroke="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
                 </Canvas>
             </Grid>
