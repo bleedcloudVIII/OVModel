@@ -60,12 +60,12 @@
             </StackPanel>
             <StackPanel Margin="10,0,0,0" VerticalAlignment="Top"  Width="518" Height="410" HorizontalAlignment="Center">
                 <Border x:Name="BorderForSchedule" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top">
-                    <Grid Background="WhiteSmoke" x:Name="ScheduleGrid" Width="518" Height="406">
+                    <Grid Background="WhiteSmoke" x:Name="ScheduleGrid" Width="518" Height="408">
                         <Canvas>
-                            <Polyline x:Name="Schedule_n_x" Points="" StrokeThickness="3" Stroke="Red" Width="518" Height="406"/>
-                            <Polyline x:Name="Schedule_n_y" Points="" StrokeThickness="3" Stroke="Blue" Width="518" Height="406"/>
-                            <Polyline x:Name="Schedule_n_z" Points="" StrokeThickness="3" Stroke="LimeGreen" Width="518" Height="406"/>
-                            <Polyline x:Name="Schedule_n" Points="" StrokeThickness="3" Stroke="Black" Width="518" Height="406"/>
+                            <Polyline x:Name="Schedule_n_x" Points="" StrokeThickness="3" Stroke="Red" Width="518" Height="410"/>
+                            <Polyline x:Name="Schedule_n_y" Points="" StrokeThickness="3" Stroke="Blue" Width="518" Height="410"/>
+                            <Polyline x:Name="Schedule_n_z" Points="" StrokeThickness="3" Stroke="LimeGreen" Width="518" Height="410"/>
+                            <Polyline x:Name="Schedule_n" Points="" StrokeThickness="3" Stroke="Black" Width="518" Height="410"/>
                         </Canvas>
                     </Grid>
                 </Border>
