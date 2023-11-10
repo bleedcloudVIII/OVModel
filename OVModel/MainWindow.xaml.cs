@@ -69,14 +69,14 @@ namespace OVModel
             public string first { get; set; }
             public string second { get; set; }
 
-            //public static bool operator ==(equals f, equals s)
-            //{
-            //    return (f.x == s.x && f.n_value == s.n_value &&  f.first == s.first && f.second == s.second);
-            //}
+            public static bool operator ==(equals f, equals s)
+            {
+                return (f.x == s.x && f.n_value == s.n_value && f.first == s.first && f.second == s.second);
+            }
 
             public static bool operator !=(equals f, equals s)
             {
-                return (f.x != s.x || f.n_value != s.n_value || f.first != s.first || f.second != s.second);
+                return !(f == s);
             }
 
         }
@@ -123,13 +123,10 @@ namespace OVModel
         private List<equals> getSetList(List<equals> list)
         {
             List<equals> result = new List<equals>();
-
+            
             for (int i = 0; i < list.Count; i++)
             {
-                for (int j = 0; j < result.Count; j++)
-                {
-                    if (list[i] != result[j]) result.Add(list[i]);
-                }
+                if (!result.Contains(list[i])) result.Add(list[i]);
             }
             return result;
         }
@@ -186,9 +183,24 @@ namespace OVModel
                     double n_y = OVModel_DopTheory.DopTheory.n_y(x_now, n, R, b);
                     double n_z = OVModel_DopTheory.DopTheory.n_z(x_now, n, R, b);
 
+                    // Если значения n равны, то помещаем в список элементов точки, пересечения
                     if (n_x == n_y) equalsElements.Add(new equals() { x = x_now, first = "n_x", second = "n_y", n_value = n_x });
                     else if (n_x == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_x", second = "n_z", n_value = n_x });
-                    else if (n_y == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_y", second = "n_z", n_value = n_x });
+                    else if (n_y == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_y", second = "n_z", n_value = n_y });
+                    // Т.к. иногда может быть пересечения графиков, не в точках x, а между ними
+                    // Поэтому мы берём 4 точки (2 предыдущих для n и две текущих) и находим их точки пересечения
+                    // x пред     x текущее
+                    // (x3,y3)
+                    //      \    (x2,y2)
+                    //       \   /
+                    //        \ / 
+                    //         X
+                    //        / \
+                    //  (x1,y1)  \
+                    //          (x4,y4)
+                    // В кратце, если точка 3 находится выше(или =) точки 1, а точка 4 ниже 2
+                    // Значит у двух векторов есть точка пересечения, которую мы и расчитываем
+                    // Функция для нахождения точки пересечения взята из интернета https://habr.com/ru/articles/523440/
                     else if ((n_y_prev >= n_x) && (n_x >= n_y))
                     {
                         dot dot = CrossTwoLines(x_prev, n_x_prev, x_now, n_x, x_prev, n_y_prev, x_now, n_y);
@@ -218,6 +230,10 @@ namespace OVModel
                     x_prev = x_now;
                 }
 
+                // Нахождение уникальных точек пересечения, т.к. точки могут пересекаться
+                // Например, значения n равны в точки x
+                // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
+                // То есть по сути являясь одной точкой
                 equalsElements = getSetList(equalsElements);
 
                 // Шаг для x
@@ -263,28 +279,12 @@ namespace OVModel
                 Schedule_n_z.Points = points_n_z;
                 Schedule_n.Points = points_n;
 
-                Console.WriteLine("##############################################");
-
-                Console.WriteLine();
-
-                Console.WriteLine("----------------------------------------------");
-
-
                 PointsLabel.Content = $"Пересечения:\n";
 
                 for (int i = 0; i < equalsElements.Count; i++)
                 {
-                    PointsLabel.Content += $"{equalsElements[i].first} и {equalsElements[i].second}:\n x = {equalsElements[i].x}\n n = {equalsElements[i].n_value}";
-                    Console.WriteLine("=====================================================");
-                    Console.WriteLine(equalsElements[i].x);
-                    Console.WriteLine(equalsElements[i].first);
-                    Console.WriteLine(equalsElements[i].second);
-                    Console.WriteLine(equalsElements[i].n_value);
-                    Console.WriteLine("=====================================================");
+                    PointsLabel.Content += $"{equalsElements[i].first} и {equalsElements[i].second}:\n x = {equalsElements[i].x}\n n = {equalsElements[i].n_value}\n";
                 }
-                Console.WriteLine("----------------------------------------------");
-
-                Console.WriteLine("End Calculating.");
             }
             else
             {
