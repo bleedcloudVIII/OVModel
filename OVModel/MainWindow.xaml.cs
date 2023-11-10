@@ -24,9 +24,7 @@ namespace OVModel
         {
             InitializeComponent();
 
-
             CreateColumns();
-
         }
 
         private void CreateColumns()
