@@ -17,44 +17,62 @@
                 <ComboBoxItem>Дополнительная модель - сжатие</ComboBoxItem>
             </ComboBox>
         </ToolBarPanel>
-        <Label Content="Введите n: " HorizontalAlignment="Left" VerticalAlignment="Top" Width="68" Height="27" Margin="10,55,0,0"/>
-        <Label Content="Введите n об: " HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="84" Height="27"/>
-        <Label Content="Введите 2b: " HorizontalAlignment="Left" Margin="10,84,0,0" VerticalAlignment="Top" Width="74" Height="27"/>
-        <Label Content="Введите R: " HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top" Width="68" Height="27"/>
-        <Label Content="Введите h: " HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top" Width="68" Height="27"/>
-        <Label Content="Введите пределы x: " HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Width="116" Height="27"/>
-
-        <TextBox x:Name="Input_n_ob" HorizontalAlignment="Left" Margin="94,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_n" HorizontalAlignment="Left" Margin="94,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_2b" HorizontalAlignment="Left" Margin="94,89,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" Margin="94,116,0,0" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_h" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="60" Margin="94,143,0,0" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_x_start" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50" Margin="15,192,0,0" TextChanged="Input_TextChanged"/>
-        <TextBox x:Name="Input_x_end" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="50" Margin="70,192,0,0" TextChanged="Input_TextChanged"/>
-
-
-        <DataGrid x:Name="Table"
-                  Margin="180,35,802,43"
+        <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
+            <StackPanel Orientation="Vertical" Width="160" Margin="10,0,0,0"  Height="180" VerticalAlignment="Top">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Введите n: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBox x:Name="Input_n_ob" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60" TextChanged="Input_TextChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Введите n об: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBox x:Name="Input_n" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60" TextChanged="Input_TextChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Введите 2b: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                    <TextBox x:Name="Input_2b" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60" TextChanged="Input_TextChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Введите R: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                    <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60"  TextChanged="Input_TextChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Введите h: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                    <TextBox x:Name="Input_h" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60"  TextChanged="Input_TextChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Введите пределы x: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="Input_x_start" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="50" TextChanged="Input_TextChanged"/>
+                        <Separator Width="10" Background="Transparent"/>
+                        <TextBox x:Name="Input_x_end" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="50" TextChanged="Input_TextChanged"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Top" Margin="10,0,0,0">
+                <DataGrid x:Name="Table"
+                  Width="330"
+                  Height="410"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   CanUserResizeRows="False"
-                  CanUserReorderColumns="True"
-                  
-        />
-        <Border x:Name="BorderForSchedule" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="525,35,0,0" Width="518" Height="406">
-            <Grid Background="WhiteSmoke" x:Name="ScheduleGrid">
-                <Canvas>
-                    <Polyline x:Name="Schedule_n_x" Points="" StrokeThickness="3" Stroke="Red" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
-                    <Polyline x:Name="Schedule_n_y" Points="" StrokeThickness="3" Stroke="Blue" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
-                    <Polyline x:Name="Schedule_n_z" Points="" StrokeThickness="3" Stroke="LimeGreen" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
-                    <Polyline x:Name="Schedule_n" Points="" StrokeThickness="3" Stroke="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Width="518" Height="406"/>
-                </Canvas>
-            </Grid>
-        </Border>
-        <Label x:Name="PointsLabel" Content="" HorizontalAlignment="Left" Margin="1074,35,0,0" VerticalAlignment="Top" Height="406" Width="216"/>
-
-
-
+                  CanUserReorderColumns="True"/>
+            </StackPanel>
+            <StackPanel Margin="10,0,0,0" VerticalAlignment="Top"  Width="518" Height="410" HorizontalAlignment="Center">
+                <Border x:Name="BorderForSchedule" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid Background="WhiteSmoke" x:Name="ScheduleGrid" Width="518" Height="406">
+                        <Canvas>
+                            <Polyline x:Name="Schedule_n_x" Points="" StrokeThickness="3" Stroke="Red" Width="518" Height="406"/>
+                            <Polyline x:Name="Schedule_n_y" Points="" StrokeThickness="3" Stroke="Blue" Width="518" Height="406"/>
+                            <Polyline x:Name="Schedule_n_z" Points="" StrokeThickness="3" Stroke="LimeGreen" Width="518" Height="406"/>
+                            <Polyline x:Name="Schedule_n" Points="" StrokeThickness="3" Stroke="Black" Width="518" Height="406"/>
+                        </Canvas>
+                    </Grid>
+                </Border>
+            </StackPanel>
+            <StackPanel Margin="10,0,0,0" Height="406" Width="216" VerticalAlignment="Top">
+                <Label x:Name="PointsLabel" Content=""/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>
