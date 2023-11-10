@@ -29,24 +29,13 @@ namespace OVModel
 
         }
 
-        //private void DrawSchedule(PointCollection points_n_x, PointCollection points_n_y, PointCollection points_n_z, PointCollection point_n )
-        //{
-        //    //List<Point> values = new List<Point>();
-        //    PointCollection v = new PointCollection();
-        //    v.Add(new Point() { X = 1, Y = 2});
-        //    v.Add(new Point() { X = 3, Y = 4 });
-        //    v.Add(new Point() { X = 5, Y = 6 });
-        //    v.Add(new Point() { X = 7, Y = 8 });
-        //    v.Add(new Point() { X = 9, Y = 10 });
-        //    Schedule.Points = v;
-        //}
-
         private void CreateColumns()
         {
             DataGridTextColumn column1 = new DataGridTextColumn();
             column1.Header = "x";
             column1.Binding = new Binding($"[0]");
             column1.MaxWidth = 50;
+            column1.IsReadOnly = true;
             Table.Columns.Add(column1);
 
 
@@ -54,20 +43,95 @@ namespace OVModel
             column2.Header = "n_x";
             column2.Binding = new Binding($"[1]");
             column2.MaxWidth = 75;
+            column2.IsReadOnly = true;
             Table.Columns.Add(column2);
 
             DataGridTextColumn column3 = new DataGridTextColumn();
             column3.Header = "n_y";
             column3.Binding = new Binding($"[2]");
             column3.MaxWidth = 75;
+            column3.IsReadOnly = true;
             Table.Columns.Add(column3);
 
             DataGridTextColumn column4 = new DataGridTextColumn();
             column4.Header = "n_z";
             column4.Binding = new Binding($"[3]");
             column4.MaxWidth = 75;
+            column4.IsReadOnly = true;
             Table.Columns.Add(column4);
-            
+
+        }
+
+        private struct equals
+        {
+            public double x { get; set; }
+            public double n_value { get; set; }
+            public string first { get; set; }
+            public string second { get; set; }
+
+            //public static bool operator ==(equals f, equals s)
+            //{
+            //    return (f.x == s.x && f.n_value == s.n_value &&  f.first == s.first && f.second == s.second);
+            //}
+
+            public static bool operator !=(equals f, equals s)
+            {
+                return (f.x != s.x || f.n_value != s.n_value || f.first != s.first || f.second != s.second);
+            }
+
+        }
+
+        private struct dot
+        {
+            public double x { get; set; }
+            public double y { get; set; }
+        }
+
+        dot CrossTwoLines(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+        {
+            // https://habr.com/ru/articles/523440/
+            double n;
+            dot resultDot = new dot();
+            if (y2 - y1 != 0)
+            {  // a(y)
+                double q = (x2 - x1) / (y1 - y2);
+                double sn = (x3 - x4) + (y3 - y4) * q; 
+                if (sn == 0)
+                {
+                    resultDot.x = -1;
+                    resultDot.y = -1;
+                    return resultDot;
+                }// c(x) + c(y)*q
+                double fn = (x3 - x1) + (y3 - y1) * q;   // b(x) + b(y)*q
+                n = fn / sn;
+            }
+            else
+            {
+                if (y3 - y4 == 0)
+                {
+                    resultDot.x = -1;  // b(y)
+                    resultDot.y = -1;
+                    return resultDot;
+                }
+                n = (y3 - y1) / (y3 - y4);   // c(y)/b(y)
+            }
+            resultDot.x = x3 + (x4 - x3) * n;  // x3 + (-b(x))*n
+            resultDot.y = y3 + (y4 - y3) * n;  // y3 +(-b(y))*n
+            return resultDot;
+        }
+
+        private List<equals> getSetList(List<equals> list)
+        {
+            List<equals> result = new List<equals>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                for (int j = 0; j < result.Count; j++)
+                {
+                    if (list[i] != result[j]) result.Add(list[i]);
+                }
+            }
+            return result;
         }
 
         private void StartCalculation()
@@ -110,6 +174,10 @@ namespace OVModel
                 double scheduleWidth = BorderForSchedule.ActualWidth;
                 double scheduleHeigth = BorderForSchedule.ActualHeight;
 
+                List<equals> equalsElements = new List<equals>();
+
+                double n_x_prev = 0, n_y_prev = 0, n_z_prev = 0, x_prev = 0;
+
                 for (int i = 0; i <= count; i++)
                 {
                     // Вычисление значений текущего x и значений n
@@ -118,12 +186,39 @@ namespace OVModel
                     double n_y = OVModel_DopTheory.DopTheory.n_y(x_now, n, R, b);
                     double n_z = OVModel_DopTheory.DopTheory.n_z(x_now, n, R, b);
 
+                    if (n_x == n_y) equalsElements.Add(new equals() { x = x_now, first = "n_x", second = "n_y", n_value = n_x });
+                    else if (n_x == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_x", second = "n_z", n_value = n_x });
+                    else if (n_y == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_y", second = "n_z", n_value = n_x });
+                    else if ((n_y_prev >= n_x) && (n_x >= n_y))
+                    {
+                        dot dot = CrossTwoLines(x_prev, n_x_prev, x_now, n_x, x_prev, n_y_prev, x_now, n_y);
+                        equalsElements.Add(new equals() { x = dot.x, first = "n_y", second = "n_x", n_value = dot.y });
+                    }
+                    else if ((n_y_prev >= n_z) && (n_z >= n_y))
+                    {
+                        dot dot = CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_y_prev, x_now, n_y);
+                        equalsElements.Add(new equals() { x = dot.x, first = "n_y", second = "n_z", n_value = dot.y });
+                    }
+                    else if ((n_x_prev >= n_z) && (n_z >= n_x))
+                    {
+                        dot dot = CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_x_prev, x_now, n_x);
+                        equalsElements.Add(new equals() { x = dot.x, first = "n_x", second = "n_z", n_value = dot.y });
+                    }
+
+
                     // Нахождение минимального и максимального n среди текущих значений
                     n_min = Math.Min(Math.Min(Math.Min(n_min, n_x), n_y), n_z);
                     n_max = Math.Max(Math.Max(Math.Max(n_max, n_x), n_y), n_z);
 
                     result.Add(new List<double> { x_now, n_x, n_y, n_z });
+
+                    n_x_prev = n_x;
+                    n_y_prev = n_y;
+                    n_z_prev = n_z;
+                    x_prev = x_now;
                 }
+
+                equalsElements = getSetList(equalsElements);
 
                 // Шаг для x
                 double stepForX = scheduleWidth / count;
@@ -168,6 +263,27 @@ namespace OVModel
                 Schedule_n_z.Points = points_n_z;
                 Schedule_n.Points = points_n;
 
+                Console.WriteLine("##############################################");
+
+                Console.WriteLine();
+
+                Console.WriteLine("----------------------------------------------");
+
+
+                PointsLabel.Content = $"Пересечения:\n";
+
+                for (int i = 0; i < equalsElements.Count; i++)
+                {
+                    PointsLabel.Content += $"{equalsElements[i].first} и {equalsElements[i].second}:\n x = {equalsElements[i].x}\n n = {equalsElements[i].n_value}";
+                    Console.WriteLine("=====================================================");
+                    Console.WriteLine(equalsElements[i].x);
+                    Console.WriteLine(equalsElements[i].first);
+                    Console.WriteLine(equalsElements[i].second);
+                    Console.WriteLine(equalsElements[i].n_value);
+                    Console.WriteLine("=====================================================");
+                }
+                Console.WriteLine("----------------------------------------------");
+
                 Console.WriteLine("End Calculating.");
             }
             else
@@ -177,19 +293,6 @@ namespace OVModel
             
 
         }
-
-        //private PointCollection SubtractMinN(PointCollection c, double n_min)
-        //{
-        //    // Т.к. график начинается с 0, мы от чисел отнимает минимальную n(представляя что её значение будет 0, т.е начальным)
-        //    // И тем самым получаем правильные координаты для построения графиков
-        //    for (int i = 0; i < c.Count; i++)
-        //    {
-        //        Point point = c[i];
-        //        point.X -= n_min;
-        //        c[i] = point;
-        //    }
-        //    return c;
-        //}
 
         private bool isCanConvertToDouble(string str)
         {
@@ -207,7 +310,6 @@ namespace OVModel
         private void Input_TextChanged(object sender, TextChangedEventArgs e)
         {
             StartCalculation();
-            //drawSchedule();
         }
 
 

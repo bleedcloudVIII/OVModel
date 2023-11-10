@@ -40,6 +40,7 @@
                   CanUserDeleteRows="False"
                   CanUserResizeRows="False"
                   CanUserReorderColumns="True"
+                  
         />
         <Border x:Name="BorderForSchedule" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="525,35,0,0" Width="518" Height="406">
             <Grid Background="WhiteSmoke" x:Name="ScheduleGrid">
@@ -51,6 +52,7 @@
                 </Canvas>
             </Grid>
         </Border>
+        <Label x:Name="PointsLabel" Content="" HorizontalAlignment="Left" Margin="1074,35,0,0" VerticalAlignment="Top" Height="406" Width="216"/>
 
 
 
