@@ -9,7 +9,7 @@
             Width="1300"
         >
     <Grid>
-        <ToolBarPanel Height="25" VerticalAlignment="Top">
+        <ToolBarPanel Height="25" VerticalAlignment="Top" Margin="5,5,0,10">
             <ComboBox SelectedIndex="0" HorizontalAlignment="Left" Width="230">
                 <ComboBoxItem>Классическая модель - растяжение</ComboBoxItem>
                 <ComboBoxItem>Классическая модель - сжатие</ComboBoxItem>
