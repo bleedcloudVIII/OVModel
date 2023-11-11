@@ -9,12 +9,15 @@
             Height="500"
             Width="1300">
     <Window.DataContext>
-        <local:MainViewModel/>
+        <local:Schedule/>
     </Window.DataContext>
     <Grid>
-        <oxy:PlotView Model="{Binding MyModel}"/>
-        <!--<oxy:PlotView Model="{Binding MyModel}"/>-->
-        <!--<ToolBarPanel Height="25" VerticalAlignment="Top" Margin="5,5,0,10">
+        <!--<oxy:PlotView Model="{Binding shedule}"/>-->
+        <!--<oxy:PlotView Model="{Binding shedule_n_x}" />-->
+        <!--<oxy:PlotView Model="{Binding shedule_n_y}"/>-->
+            <!--<oxy:PlotView Model="{Binding shedule_n_z}"/>-->
+            <!--<oxy:PlotView Model="{Binding MyModel}"/>-->
+        <ToolBarPanel Height="25" VerticalAlignment="Top" Margin="5,5,0,10">
             <ComboBox SelectedIndex="0" HorizontalAlignment="Left" Width="230">
                 <ComboBoxItem>Классическая модель - растяжение</ComboBoxItem>
                 <ComboBoxItem>Классическая модель - сжатие</ComboBoxItem>
@@ -63,8 +66,8 @@
                   CanUserResizeRows="False"
                   CanUserReorderColumns="True"/>
             </StackPanel>
-            <StackPanel Margin="10,0,0,0" VerticalAlignment="Top"  Width="518" Height="410" HorizontalAlignment="Center">
-                <Border x:Name="BorderForSchedule" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <!--<StackPanel >-->
+                <!--<Border x:Name="BorderForSchedule" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <Grid Background="WhiteSmoke" x:Name="ScheduleGrid" Width="518" Height="408">
                         <Canvas>
                             <Polyline x:Name="Schedule_n_x" Points="" StrokeThickness="3" Stroke="Red" Width="518" Height="410"/>
@@ -73,11 +76,13 @@
                             <Polyline x:Name="Schedule_n" Points="" StrokeThickness="3" Stroke="Black" Width="518" Height="410"/>
                         </Canvas>
                     </Grid>
-                </Border>
+                </Border>-->
+            <StackPanel>
+                <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Height="408" Width="518" HorizontalAlignment="Center" VerticalAlignment="Top"/>
             </StackPanel>
             <StackPanel Margin="10,0,0,0" Height="406" Width="216" VerticalAlignment="Top">
                 <Label x:Name="PointsLabel" Content=""/>
             </StackPanel>
-        </StackPanel>-->
+        </StackPanel>
     </Grid>
 </Window>
