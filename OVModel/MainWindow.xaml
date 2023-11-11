@@ -5,27 +5,51 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
             xmlns:oxy="http://oxyplot.org/wpf"
             xmlns:local="clr-namespace:OVModel"
-            Title="MainWindow"
+            Title="OVModel"
             Height="500"
-            Width="1300">
+            Width="1300"
+            
+        >
     <Window.DataContext>
         <local:Schedule/>
     </Window.DataContext>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="253*"/>
+        </Grid.ColumnDefinitions>
+        <Menu VerticalAlignment="Top" Grid.ColumnSpan="2">
+            <MenuItem Header="Сохранение/Печать" >
+                <MenuItem Header="Сохранить график"></MenuItem>
+                <MenuItem Header="Сохранить таблицу"></MenuItem>
+                <MenuItem Header="Печатать график"></MenuItem>
+                <MenuItem Header="Печатать таблицу"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Модель">
+                <MenuItem Header="Классическая - растяжение"></MenuItem>
+                <MenuItem Header="Классическая - сжатие"></MenuItem>
+                <MenuItem Header="Дополнительная - растяжение"></MenuItem>
+                <MenuItem Header="Дополнительная - сжатие"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Справка">
+                <MenuItem Header="Просмотр справки"></MenuItem>
+                <MenuItem Header="О программе OVModel"></MenuItem>
+            </MenuItem>
+        </Menu>
         <!--<oxy:PlotView Model="{Binding shedule}"/>-->
         <!--<oxy:PlotView Model="{Binding shedule_n_x}" />-->
         <!--<oxy:PlotView Model="{Binding shedule_n_y}"/>-->
-            <!--<oxy:PlotView Model="{Binding shedule_n_z}"/>-->
-            <!--<oxy:PlotView Model="{Binding MyModel}"/>-->
-        <ToolBarPanel Height="25" VerticalAlignment="Top" Margin="5,5,0,10">
+        <!--<oxy:PlotView Model="{Binding shedule_n_z}"/>-->
+        <!--<oxy:PlotView Model="{Binding MyModel}"/>-->
+        <!--<ToolBarPanel Height="25" VerticalAlignment="Top" Margin="5,5,0,10">
             <ComboBox SelectedIndex="0" HorizontalAlignment="Left" Width="230">
                 <ComboBoxItem>Классическая модель - растяжение</ComboBoxItem>
                 <ComboBoxItem>Классическая модель - сжатие</ComboBoxItem>
                 <ComboBoxItem>Дополнительная модель - растяжение</ComboBoxItem>
                 <ComboBoxItem>Дополнительная модель - сжатие</ComboBoxItem>
             </ComboBox>
-        </ToolBarPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
+        </ToolBarPanel>-->
+        <StackPanel Orientation="Horizontal" Margin="0,30,0,0" Grid.ColumnSpan="2">
             <StackPanel Orientation="Vertical" Width="160" Margin="10,0,0,0"  Height="180" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Введите n: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -67,7 +91,7 @@
                   CanUserReorderColumns="True"/>
             </StackPanel>
             <!--<StackPanel >-->
-                <!--<Border x:Name="BorderForSchedule" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <!--<Border x:Name="BorderForSchedule" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top">
                     <Grid Background="WhiteSmoke" x:Name="ScheduleGrid" Width="518" Height="408">
                         <Canvas>
                             <Polyline x:Name="Schedule_n_x" Points="" StrokeThickness="3" Stroke="Red" Width="518" Height="410"/>
@@ -78,7 +102,7 @@
                     </Grid>
                 </Border>-->
             <StackPanel>
-                <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Height="408" Width="518" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Height="408" Width="518" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0"/>
             </StackPanel>
             <StackPanel Margin="10,0,0,0" Height="406" Width="216" VerticalAlignment="Top">
                 <Label x:Name="PointsLabel" Content=""/>

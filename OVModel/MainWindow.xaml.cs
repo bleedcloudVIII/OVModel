@@ -150,6 +150,12 @@ namespace OVModel
             return result;
         }
 
+        /*
+            Сделать:
+            - для лэйбла перемотку, если очень много значений
+            -
+        */
+
         private void StartCalculation()
         {
             //Проверяю все ли значения можно перевести в double
