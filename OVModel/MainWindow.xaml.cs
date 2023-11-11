@@ -25,22 +25,10 @@ namespace OVModel
         {
             this.shedule = new PlotModel { Title = "Example 1"};
             this.shedule.Legends.Add(new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom });
-
-            //this.shedule.Series.Add(new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)"));
-            //this.shedule.Series.Add(new OxyPlot.Series.LineSeries() { Points = { new OxyPlot.DataPoint(1, 1), new OxyPlot.DataPoint(2, 2)} });
-
-            // Нужно сделать 3 OxyPlot.Series.LineSeries()
-            // И в них добавлять точки
-
-            //this.shedule_n_x = new PlotModel { Title = "Example 2" };
-            //this.shedule_n_x.Series.Add(new Series() { });
+            this.shedule.IsLegendVisible = true;
         }
 
         public PlotModel shedule { get; private set; }
-        //public PlotModel shedule_n_x { get; private set; }
-        //public PlotModel shedule_n_y { get; private set; }
-        //public PlotModel shedule_n_z { get; private set; }
-
     }
 
     public partial class MainWindow : Window
@@ -57,22 +45,6 @@ namespace OVModel
         {
             InitializeComponent();
 
-            
-            
-            //DataLabelViewModel
-            //SeriesCollection seriesCollection= new SeriesCollection()
-            //{
-            //        new LineSeries()
-            //        {
-            //            Values = new ChartValues<double> { 3, 5, 7, 4 }
-            //        },
-            //        new ColumnSeries()
-            //        {
-            //            Values = new ChartValues<decimal> { 5, 6, 2, 7 }
-            //        }
-            //};
-            //AAA.Series = seriesCollection;
-            //C.DataContext = new LineSeries() { Values = new ChartValues<double> { 1, 2, 3 } };
             CreateColumns();
         }
 
@@ -207,17 +179,6 @@ namespace OVModel
 
                 Schedule schedule = new Schedule() { };
 
-                //this.shedule.Series.Add(new OxyPlot.Series.LineSeries() { Points = { new OxyPlot.DataPoint(1, 1), new OxyPlot.DataPoint(2, 2)} });
-                // Нужно сделать 3 OxyPlot.Series.LineSeries()
-                // И в них добавлять точки
-
-                schedule.shedule.IsLegendVisible = true;
-
-
-                //schedule.shedule.Legends = { new OxyPlot.Legends.LegendBase() { LegendTitle = "asd" }, new OxyPlot.Legends.LegendBase() { LegendTitle = "2d" } };
-
-
-
                 OxyPlot.Series.LineSeries lineSeries_n = new OxyPlot.Series.LineSeries() { Points = { new OxyPlot.DataPoint(x_start, n), new OxyPlot.DataPoint(x_end, n) }, Title = "n" };
 
                 OxyPlot.Series.LineSeries lineSeries_n_x = new OxyPlot.Series.LineSeries();
@@ -229,19 +190,6 @@ namespace OVModel
                 OxyPlot.Series.LineSeries lineSeries_n_z = new OxyPlot.Series.LineSeries();
                 lineSeries_n_z.Title = "n_z";
 
-
-                // Списки точек x и n для графика (x = n, Y = x)
-                //PointCollection points_n_x = new PointCollection();
-                //PointCollection points_n_y = new PointCollection();
-                //PointCollection points_n_z = new PointCollection();
-                //PointCollection points_n = new PointCollection();
-
-                // Минимальное значение n, которое будет на графике "0"
-                double n_min = double.MaxValue;
-                double n_max = double.MinValue;
-
-                //double scheduleWidth = BorderForSchedule.ActualWidth;
-                //double scheduleHeigth = BorderForSchedule.ActualHeight;
 
                 List<equals> equalsElements = new List<equals>();
 
@@ -289,11 +237,6 @@ namespace OVModel
                         equalsElements.Add(new equals() { x = dot.x, first = "n_x", second = "n_z", n_value = dot.y });
                     }
 
-
-                    // Нахождение минимального и максимального n среди текущих значений
-                    //n_min = Math.Min(Math.Min(Math.Min(n_min, n_x), n_y), n_z);
-                    //n_max = Math.Max(Math.Max(Math.Max(n_max, n_x), n_y), n_z);
-
                     lineSeries_n_x.Points.Add(new OxyPlot.DataPoint(x_now, n_x));
                     lineSeries_n_y.Points.Add(new OxyPlot.DataPoint(x_now, n_y));
                     lineSeries_n_z.Points.Add(new OxyPlot.DataPoint(x_now, n_z));
@@ -312,43 +255,6 @@ namespace OVModel
                 // То есть по сути являясь одной точкой
                 equalsElements = getSetList(equalsElements);
 
-                // Шаг для x
-                //double stepForX = scheduleWidth / count;
-
-                // Шаг для большой(первой) шкалы, т.е. шкалы от 0 до конца  графика
-                //double stepScale1 = BorderForSchedule.ActualHeight / count;
-                // Длина новой(второй) шкалы, для значений n
-                double length = n_max - n_min;
-                // Шаг для второй шкалы
-                double stepScale2 = length / count;
-
-                // Точки для прямой n
-                //points_n.Add(new Point() { X = 0, Y = scheduleHeigth - stepScale1 * (n - n_min) / stepScale2 });
-                //points_n.Add(new Point() { X = scheduleWidth, Y = scheduleHeigth - stepScale1 * (n - n_min) / stepScale2 });
-
-                for (int i = 0; i <= count; i++)
-                {
-                    double n_x = result[i][1];
-                    double n_y = result[i][2];
-                    double n_z = result[i][3];
-
-                    // Разница между n и n_мин
-                    double deltaX = n_x - n_min;
-                    double deltaY = n_y - n_min;
-                    double deltaZ = n_z - n_min;
-
-                    // Количество шагов для Y
-                    double stepsX = deltaX / stepScale2;
-                    double stepsY = deltaY / stepScale2;
-                    double stepsZ = deltaZ / stepScale2;
-
-                    // X = шаг шкалы * индекс точки; Y = длина всей шкалы - шаг * количесвто шагов
-                    // Отнимаем от длины всей шкалы, чтобы инвертировать шкалу, т.к. точка (0;0) в левом верхнем углу графика
-                    //points_n_x.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsX });
-                    //points_n_y.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsY });
-                    //points_n_z.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsZ });
-                }
-
                 schedule.shedule.Series.Add(lineSeries_n);
                 schedule.shedule.Series.Add(lineSeries_n_x);
                 schedule.shedule.Series.Add(lineSeries_n_y);
@@ -356,10 +262,6 @@ namespace OVModel
 
                 OxyPlotSchedule.Model = schedule.shedule;
                 Table.ItemsSource = result;
-                //Schedule_n_x.Points = points_n_x;
-                //Schedule_n_y.Points = points_n_y;
-                //Schedule_n_z.Points = points_n_z;
-                //Schedule_n.Points = points_n;
 
                 PointsLabel.Content = $"Пересечения:\n";
 
