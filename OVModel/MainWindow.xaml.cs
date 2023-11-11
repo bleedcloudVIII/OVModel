@@ -14,49 +14,98 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using OVModel_DopTheory;
 
+using OxyPlot;
+using OxyPlot.Series;
+
 namespace OVModel
 {
+
+    public class MainViewModel
+    {
+        public MainViewModel()
+        {
+            this.MyModel = new PlotModel { Title = "Example 1" };
+            this.MyModel.Series.Add(new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)"));
+        }
+
+        public PlotModel MyModel { get; private set; }
+    }
+
+    public class MainViewModel2
+    {
+        public MainViewModel2()
+        {
+            this.MyModel = new PlotModel { Title = "Example 1" };
+            this.MyModel.Series.Add(new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)"));
+        }
+
+        public PlotModel MyModel { get; private set; }
+    }
+
     public partial class MainWindow : Window
     {
         DataGrid dataGrid = new DataGrid { AutoGenerateColumns = false };
+
+        struct point
+        {
+            public double x { get; set; }
+            public double y { get; set; }
+        }
 
         public MainWindow()
         {
             InitializeComponent();
 
+            
+            
+            
+            //DataLabelViewModel
+            //SeriesCollection seriesCollection= new SeriesCollection()
+            //{
+            //        new LineSeries()
+            //        {
+            //            Values = new ChartValues<double> { 3, 5, 7, 4 }
+            //        },
+            //        new ColumnSeries()
+            //        {
+            //            Values = new ChartValues<decimal> { 5, 6, 2, 7 }
+            //        }
+            //};
+            //AAA.Series = seriesCollection;
+            //C.DataContext = new LineSeries() { Values = new ChartValues<double> { 1, 2, 3 } };
             CreateColumns();
         }
 
         private void CreateColumns()
         {
-            DataGridTextColumn column1 = new DataGridTextColumn();
-            column1.Header = "x";
-            column1.Binding = new Binding($"[0]");
-            column1.MaxWidth = 50;
-            column1.IsReadOnly = true;
-            Table.Columns.Add(column1);
+            //DataGridTextColumn column1 = new DataGridTextColumn();
+            //column1.Header = "x";
+            //column1.Binding = new Binding($"[0]");
+            //column1.MaxWidth = 50;
+            //column1.IsReadOnly = true;
+            //Table.Columns.Add(column1);
 
 
-            DataGridTextColumn column2 = new DataGridTextColumn();
-            column2.Header = "n_x";
-            column2.Binding = new Binding($"[1]");
-            column2.MaxWidth = 75;
-            column2.IsReadOnly = true;
-            Table.Columns.Add(column2);
+            //DataGridTextColumn column2 = new DataGridTextColumn();
+            //column2.Header = "n_x";
+            //column2.Binding = new Binding($"[1]");
+            //column2.MaxWidth = 75;
+            //column2.IsReadOnly = true;
+            //Table.Columns.Add(column2);
 
-            DataGridTextColumn column3 = new DataGridTextColumn();
-            column3.Header = "n_y";
-            column3.Binding = new Binding($"[2]");
-            column3.MaxWidth = 75;
-            column3.IsReadOnly = true;
-            Table.Columns.Add(column3);
+            //DataGridTextColumn column3 = new DataGridTextColumn();
+            //column3.Header = "n_y";
+            //column3.Binding = new Binding($"[2]");
+            //column3.MaxWidth = 75;
+            //column3.IsReadOnly = true;
+            //Table.Columns.Add(column3);
 
-            DataGridTextColumn column4 = new DataGridTextColumn();
-            column4.Header = "n_z";
-            column4.Binding = new Binding($"[3]");
-            column4.MaxWidth = 75;
-            column4.IsReadOnly = true;
-            Table.Columns.Add(column4);
+            //DataGridTextColumn column4 = new DataGridTextColumn();
+            //column4.Header = "n_z";
+            //column4.Binding = new Binding($"[3]");
+            //column4.MaxWidth = 75;
+            //column4.IsReadOnly = true;
+            //Table.Columns.Add(column4);
 
         }
 
@@ -132,162 +181,162 @@ namespace OVModel
         private void StartCalculation()
         {
             // Проверяю все ли значения можно перевести в double
-            if (isCanConvertToDouble(Input_2b.Text) &&
-                isCanConvertToDouble(Input_h.Text) &&
-                isCanConvertToDouble(Input_n.Text) &&
-                isCanConvertToDouble(Input_n_ob.Text) &&
-                isCanConvertToDouble(Input_R.Text) &&
-                isCanConvertToDouble(Input_x_start.Text) &&
-                isCanConvertToDouble(Input_x_end.Text))
-            {
-                // Получаю все значения
-                double b = System.Convert.ToDouble(Input_2b.Text) / 2;
-                double h = System.Convert.ToDouble(Input_h.Text);
-                double n = System.Convert.ToDouble(Input_n.Text);
-                double n_ob = System.Convert.ToDouble(Input_n_ob.Text);
-                double R = System.Convert.ToDouble(Input_R.Text);
-                double x_start = System.Convert.ToDouble(Input_x_start.Text);
-                double x_end = System.Convert.ToDouble(Input_x_end.Text);
+            //if (isCanConvertToDouble(Input_2b.Text) &&
+            //    isCanConvertToDouble(Input_h.Text) &&
+            //    isCanConvertToDouble(Input_n.Text) &&
+            //    isCanConvertToDouble(Input_n_ob.Text) &&
+            //    isCanConvertToDouble(Input_R.Text) &&
+            //    isCanConvertToDouble(Input_x_start.Text) &&
+            //    isCanConvertToDouble(Input_x_end.Text))
+            //{
+            //    // Получаю все значения
+            //    double b = System.Convert.ToDouble(Input_2b.Text) / 2;
+            //    double h = System.Convert.ToDouble(Input_h.Text);
+            //    double n = System.Convert.ToDouble(Input_n.Text);
+            //    double n_ob = System.Convert.ToDouble(Input_n_ob.Text);
+            //    double R = System.Convert.ToDouble(Input_R.Text);
+            //    double x_start = System.Convert.ToDouble(Input_x_start.Text);
+            //    double x_end = System.Convert.ToDouble(Input_x_end.Text);
 
-                // Список элементов x, n_x, n_y, n_z для таюлицы
-                List<List<double>> result = new List<List<double>>();
+            //    // Список элементов x, n_x, n_y, n_z для таюлицы
+            //    List<List<double>> result = new List<List<double>>();
 
-                // Количество x в таблице
-                int count = System.Convert.ToInt32(Math.Abs(x_end - x_start) / h);
-                //Console.WriteLine();
+            //    // Количество x в таблице
+            //    int count = System.Convert.ToInt32(Math.Abs(x_end - x_start) / h);
+            //    //Console.WriteLine();
 
-                // Списки точек x и n для графика (x = n, Y = x)
-                PointCollection points_n_x = new PointCollection();
-                PointCollection points_n_y = new PointCollection();
-                PointCollection points_n_z = new PointCollection();
-                PointCollection points_n = new PointCollection();
+            //    // Списки точек x и n для графика (x = n, Y = x)
+            //    PointCollection points_n_x = new PointCollection();
+            //    PointCollection points_n_y = new PointCollection();
+            //    PointCollection points_n_z = new PointCollection();
+            //    PointCollection points_n = new PointCollection();
 
-                // Минимальное значение n, которое будет на графике "0"
-                double n_min = double.MaxValue;
-                double n_max = double.MinValue;
+            //    // Минимальное значение n, которое будет на графике "0"
+            //    double n_min = double.MaxValue;
+            //    double n_max = double.MinValue;
 
-                double scheduleWidth = BorderForSchedule.ActualWidth;
-                double scheduleHeigth = BorderForSchedule.ActualHeight;
+            //    double scheduleWidth = BorderForSchedule.ActualWidth;
+            //    double scheduleHeigth = BorderForSchedule.ActualHeight;
 
-                List<equals> equalsElements = new List<equals>();
+            //    List<equals> equalsElements = new List<equals>();
 
-                double n_x_prev = 0, n_y_prev = 0, n_z_prev = 0, x_prev = 0;
+            //    double n_x_prev = 0, n_y_prev = 0, n_z_prev = 0, x_prev = 0;
 
-                for (int i = 0; i <= count; i++)
-                {
-                    // Вычисление значений текущего x и значений n
-                    double x_now = x_start + h * i;
-                    double n_x = OVModel_DopTheory.DopTheory.n_x(x_now, n, R, b);
-                    double n_y = OVModel_DopTheory.DopTheory.n_y(x_now, n, R, b);
-                    double n_z = OVModel_DopTheory.DopTheory.n_z(x_now, n, R, b);
+            //    for (int i = 0; i <= count; i++)
+            //    {
+            //        // Вычисление значений текущего x и значений n
+            //        double x_now = x_start + h * i;
+            //        double n_x = OVModel_DopTheory.DopTheory.n_x(x_now, n, R, b);
+            //        double n_y = OVModel_DopTheory.DopTheory.n_y(x_now, n, R, b);
+            //        double n_z = OVModel_DopTheory.DopTheory.n_z(x_now, n, R, b);
 
-                    // Если значения n равны, то помещаем в список элементов точки, пересечения
-                    if (n_x == n_y) equalsElements.Add(new equals() { x = x_now, first = "n_x", second = "n_y", n_value = n_x });
-                    else if (n_x == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_x", second = "n_z", n_value = n_x });
-                    else if (n_y == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_y", second = "n_z", n_value = n_y });
-                    // Т.к. иногда может быть пересечения графиков, не в точках x, а между ними
-                    // Поэтому мы берём 4 точки (2 предыдущих для n и две текущих) и находим их точки пересечения
-                    // x пред     x текущее
-                    // (x3,y3)
-                    //      \    (x2,y2)
-                    //       \   /
-                    //        \ / 
-                    //         X
-                    //        / \
-                    //  (x1,y1)  \
-                    //          (x4,y4)
-                    // В кратце, если точка 3 находится выше(или =) точки 1, а точка 4 ниже 2
-                    // Значит у двух векторов есть точка пересечения, которую мы и расчитываем
-                    // Функция для нахождения точки пересечения взята из интернета https://habr.com/ru/articles/523440/
-                    else if ((n_y_prev >= n_x) && (n_x >= n_y))
-                    {
-                        dot dot = CrossTwoLines(x_prev, n_x_prev, x_now, n_x, x_prev, n_y_prev, x_now, n_y);
-                        equalsElements.Add(new equals() { x = dot.x, first = "n_y", second = "n_x", n_value = dot.y });
-                    }
-                    else if ((n_y_prev >= n_z) && (n_z >= n_y))
-                    {
-                        dot dot = CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_y_prev, x_now, n_y);
-                        equalsElements.Add(new equals() { x = dot.x, first = "n_y", second = "n_z", n_value = dot.y });
-                    }
-                    else if ((n_x_prev >= n_z) && (n_z >= n_x))
-                    {
-                        dot dot = CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_x_prev, x_now, n_x);
-                        equalsElements.Add(new equals() { x = dot.x, first = "n_x", second = "n_z", n_value = dot.y });
-                    }
+            //        // Если значения n равны, то помещаем в список элементов точки, пересечения
+            //        if (n_x == n_y) equalsElements.Add(new equals() { x = x_now, first = "n_x", second = "n_y", n_value = n_x });
+            //        else if (n_x == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_x", second = "n_z", n_value = n_x });
+            //        else if (n_y == n_z) equalsElements.Add(new equals() { x = x_now, first = "n_y", second = "n_z", n_value = n_y });
+            //        // Т.к. иногда может быть пересечения графиков, не в точках x, а между ними
+            //        // Поэтому мы берём 4 точки (2 предыдущих для n и две текущих) и находим их точки пересечения
+            //        // x пред     x текущее
+            //        // (x3,y3)
+            //        //      \    (x2,y2)
+            //        //       \   /
+            //        //        \ / 
+            //        //         X
+            //        //        / \
+            //        //  (x1,y1)  \
+            //        //          (x4,y4)
+            //        // В кратце, если точка 3 находится выше(или =) точки 1, а точка 4 ниже 2
+            //        // Значит у двух векторов есть точка пересечения, которую мы и расчитываем
+            //        // Функция для нахождения точки пересечения взята из интернета https://habr.com/ru/articles/523440/
+            //        else if ((n_y_prev >= n_x) && (n_x >= n_y))
+            //        {
+            //            dot dot = CrossTwoLines(x_prev, n_x_prev, x_now, n_x, x_prev, n_y_prev, x_now, n_y);
+            //            equalsElements.Add(new equals() { x = dot.x, first = "n_y", second = "n_x", n_value = dot.y });
+            //        }
+            //        else if ((n_y_prev >= n_z) && (n_z >= n_y))
+            //        {
+            //            dot dot = CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_y_prev, x_now, n_y);
+            //            equalsElements.Add(new equals() { x = dot.x, first = "n_y", second = "n_z", n_value = dot.y });
+            //        }
+            //        else if ((n_x_prev >= n_z) && (n_z >= n_x))
+            //        {
+            //            dot dot = CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_x_prev, x_now, n_x);
+            //            equalsElements.Add(new equals() { x = dot.x, first = "n_x", second = "n_z", n_value = dot.y });
+            //        }
 
 
-                    // Нахождение минимального и максимального n среди текущих значений
-                    n_min = Math.Min(Math.Min(Math.Min(n_min, n_x), n_y), n_z);
-                    n_max = Math.Max(Math.Max(Math.Max(n_max, n_x), n_y), n_z);
+            //        // Нахождение минимального и максимального n среди текущих значений
+            //        n_min = Math.Min(Math.Min(Math.Min(n_min, n_x), n_y), n_z);
+            //        n_max = Math.Max(Math.Max(Math.Max(n_max, n_x), n_y), n_z);
 
-                    result.Add(new List<double> { x_now, n_x, n_y, n_z });
+            //        result.Add(new List<double> { x_now, n_x, n_y, n_z });
 
-                    n_x_prev = n_x;
-                    n_y_prev = n_y;
-                    n_z_prev = n_z;
-                    x_prev = x_now;
-                }
+            //        n_x_prev = n_x;
+            //        n_y_prev = n_y;
+            //        n_z_prev = n_z;
+            //        x_prev = x_now;
+            //    }
 
-                // Нахождение уникальных точек пересечения, т.к. точки могут пересекаться
-                // Например, значения n равны в точки x
-                // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
-                // То есть по сути являясь одной точкой
-                equalsElements = getSetList(equalsElements);
+            //    // Нахождение уникальных точек пересечения, т.к. точки могут пересекаться
+            //    // Например, значения n равны в точки x
+            //    // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
+            //    // То есть по сути являясь одной точкой
+            //    equalsElements = getSetList(equalsElements);
 
-                // Шаг для x
-                double stepForX = scheduleWidth / count;
+            //    // Шаг для x
+            //    double stepForX = scheduleWidth / count;
 
-                // Шаг для большой(первой) шкалы, т.е. шкалы от 0 до конца  графика
-                double stepScale1 = BorderForSchedule.ActualHeight / count;
-                // Длина новой(второй) шкалы, для значений n
-                double length = n_max - n_min;
-                // Шаг для второй шкалы
-                double stepScale2 = length / count;
+            //    // Шаг для большой(первой) шкалы, т.е. шкалы от 0 до конца  графика
+            //    double stepScale1 = BorderForSchedule.ActualHeight / count;
+            //    // Длина новой(второй) шкалы, для значений n
+            //    double length = n_max - n_min;
+            //    // Шаг для второй шкалы
+            //    double stepScale2 = length / count;
 
-                // Точки для прямой n
-                points_n.Add(new Point() { X = 0, Y = scheduleHeigth - stepScale1 * (n - n_min) / stepScale2 });
-                points_n.Add(new Point() { X = scheduleWidth, Y = scheduleHeigth - stepScale1 * (n - n_min) / stepScale2 });
+            //    // Точки для прямой n
+            //    points_n.Add(new Point() { X = 0, Y = scheduleHeigth - stepScale1 * (n - n_min) / stepScale2 });
+            //    points_n.Add(new Point() { X = scheduleWidth, Y = scheduleHeigth - stepScale1 * (n - n_min) / stepScale2 });
 
-                for (int i = 0; i <= count; i++)
-                {
-                    double n_x = result[i][1];
-                    double n_y = result[i][2];
-                    double n_z = result[i][3];
+            //    for (int i = 0; i <= count; i++)
+            //    {
+            //        double n_x = result[i][1];
+            //        double n_y = result[i][2];
+            //        double n_z = result[i][3];
                     
-                    // Разница между n и n_мин
-                    double deltaX = n_x - n_min;
-                    double deltaY = n_y - n_min;
-                    double deltaZ = n_z - n_min;
+            //        // Разница между n и n_мин
+            //        double deltaX = n_x - n_min;
+            //        double deltaY = n_y - n_min;
+            //        double deltaZ = n_z - n_min;
 
-                    // Количество шагов для Y
-                    double stepsX = deltaX / stepScale2;
-                    double stepsY = deltaY / stepScale2;
-                    double stepsZ = deltaZ / stepScale2;
+            //        // Количество шагов для Y
+            //        double stepsX = deltaX / stepScale2;
+            //        double stepsY = deltaY / stepScale2;
+            //        double stepsZ = deltaZ / stepScale2;
 
-                    // X = шаг шкалы * индекс точки; Y = длина всей шкалы - шаг * количесвто шагов
-                    // Отнимаем от длины всей шкалы, чтобы инвертировать шкалу, т.к. точка (0;0) в левом верхнем углу графика
-                    points_n_x.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsX });
-                    points_n_y.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsY });
-                    points_n_z.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsZ });
-                }
+            //        // X = шаг шкалы * индекс точки; Y = длина всей шкалы - шаг * количесвто шагов
+            //        // Отнимаем от длины всей шкалы, чтобы инвертировать шкалу, т.к. точка (0;0) в левом верхнем углу графика
+            //        points_n_x.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsX });
+            //        points_n_y.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsY });
+            //        points_n_z.Add(new Point() { X = i * stepForX, Y = scheduleHeigth - stepScale1 * stepsZ });
+            //    }
 
-                Table.ItemsSource = result;
-                Schedule_n_x.Points = points_n_x;
-                Schedule_n_y.Points = points_n_y;
-                Schedule_n_z.Points = points_n_z;
-                Schedule_n.Points = points_n;
+            //    Table.ItemsSource = result;
+            //    Schedule_n_x.Points = points_n_x;
+            //    Schedule_n_y.Points = points_n_y;
+            //    Schedule_n_z.Points = points_n_z;
+            //    Schedule_n.Points = points_n;
 
-                PointsLabel.Content = $"Пересечения:\n";
+            //    PointsLabel.Content = $"Пересечения:\n";
 
-                for (int i = 0; i < equalsElements.Count; i++)
-                {
-                    PointsLabel.Content += $"{equalsElements[i].first} и {equalsElements[i].second}:\n x = {equalsElements[i].x}\n n = {equalsElements[i].n_value}\n";
-                }
-            }
-            else
-            {
-                Console.WriteLine("ELSE!");
-            }
+            //    for (int i = 0; i < equalsElements.Count; i++)
+            //    {
+            //        PointsLabel.Content += $"{equalsElements[i].first} и {equalsElements[i].second}:\n x = {equalsElements[i].x}\n n = {equalsElements[i].n_value}\n";
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("ELSE!");
+            //}
             
 
         }

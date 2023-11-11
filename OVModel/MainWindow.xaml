@@ -3,13 +3,18 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
+            xmlns:oxy="http://oxyplot.org/wpf"
             xmlns:local="clr-namespace:OVModel"
             Title="MainWindow"
             Height="500"
-            Width="1300"
-        >
+            Width="1300">
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
     <Grid>
-        <ToolBarPanel Height="25" VerticalAlignment="Top" Margin="5,5,0,10">
+        <oxy:PlotView Model="{Binding MyModel}"/>
+        <!--<oxy:PlotView Model="{Binding MyModel}"/>-->
+        <!--<ToolBarPanel Height="25" VerticalAlignment="Top" Margin="5,5,0,10">
             <ComboBox SelectedIndex="0" HorizontalAlignment="Left" Width="230">
                 <ComboBoxItem>Классическая модель - растяжение</ComboBoxItem>
                 <ComboBoxItem>Классическая модель - сжатие</ComboBoxItem>
@@ -73,6 +78,6 @@
             <StackPanel Margin="10,0,0,0" Height="406" Width="216" VerticalAlignment="Top">
                 <Label x:Name="PointsLabel" Content=""/>
             </StackPanel>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </Window>
