@@ -10,9 +10,9 @@
             Width="1300"
             
         >
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <local:Schedule/>
-    </Window.DataContext>
+    </Window.DataContext>-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7*"/>
@@ -107,11 +107,11 @@
                         <ContextMenu >
                             <MenuItem Header="Оси">
                                 <MenuItem Header="Ось X">
-                                    <MenuItem Header="Изменить название" Click="MenuChangeNameAxisXClick"></MenuItem>
+                                    <MenuItem Header="Изменить название" Click="MenuItem_Click_ChangeTitleAxisX"></MenuItem>
                                     <MenuItem Header="Сбросить название"></MenuItem>
                                 </MenuItem>
                                 <MenuItem Header="Ось Y" >
-                                    <MenuItem Header="Изменить название" Click="MenuChangeNameAxisYClick">
+                                    <MenuItem Header="Изменить название" >
                                         <TextBox Text="asd"></TextBox>
                                     </MenuItem>
                                     <TextBox Text="asd"></TextBox>

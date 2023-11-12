@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using OVModel;
+
 namespace OVModel
 {
     /// <summary>
@@ -26,7 +28,9 @@ namespace OVModel
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
+            Console.WriteLine("ASD");
+            if (ChangeTextBox.Text != "") OVModel.MainWindow.TitleAxisX = ChangeTextBox.Text;
+            MainWindow.Close();
         }
     }
 }
