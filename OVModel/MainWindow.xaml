@@ -102,12 +102,30 @@
                     </Grid>
                 </Border>-->
             <StackPanel>
-                <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Height="408" Width="518" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0"/>
+                <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Height="408" Width="518" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0">
+                    <oxy:PlotView.ContextMenu>
+                        <ContextMenu >
+                            <MenuItem Header="Оси">
+                                <MenuItem Header="Ось X">
+                                    <MenuItem Header="Изменить название" Click="MenuChangeNameAxisXClick"></MenuItem>
+                                    <MenuItem Header="Сбросить название"></MenuItem>
+                                </MenuItem>
+                                <MenuItem Header="Ось Y" >
+                                    <MenuItem Header="Изменить название" Click="MenuChangeNameAxisYClick">
+                                        <TextBox Text="asd"></TextBox>
+                                    </MenuItem>
+                                    <TextBox Text="asd"></TextBox>
+                                    <MenuItem Header="Сбросить название"></MenuItem>
+                                    
+                                </MenuItem>
+                            </MenuItem>
+                        </ContextMenu>
+                    </oxy:PlotView.ContextMenu>
+                    
+                </oxy:PlotView>
             </StackPanel>
             <StackPanel Margin="10,0,0,0" Height="406" Width="216" VerticalAlignment="Top">
-                
                 <Label x:Name="PointsLabel" Content=""/>
-
             </StackPanel>
         </StackPanel>
     </Grid>

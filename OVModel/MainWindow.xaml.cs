@@ -24,12 +24,17 @@ namespace OVModel
     {
         public Schedule()
         {
-            this.shedule = new PlotModel { Title = "Example 1"};
+            this.shedule = new PlotModel { Title = ""};
             this.shedule.Legends.Add(new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom });
             this.shedule.IsLegendVisible = true;
+
+            this.shedule.Axes.Add(new LinearAxis() { Title = titleAxisX, Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false });
+            this.shedule.Axes.Add(new LinearAxis() { Title = titleAxisY, Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false });
         }
 
         public PlotModel shedule { get; private set; }
+        public string titleAxisX { get; set; } = "x, мм";
+        public string titleAxisY { get; set; } = "Значение показателя преломления n";
     }
 
     public partial class MainWindow : Window
@@ -197,10 +202,6 @@ namespace OVModel
                 OxyPlot.Series.LineSeries lineSeries_n_z = new OxyPlot.Series.LineSeries();
                 lineSeries_n_z.Title = "n_z";
 
-                schedule.shedule.Axes.Add(new LinearAxis() { Title = "x, мм",  Position = AxisPosition.Bottom});
-                schedule.shedule.Axes.Add(new LinearAxis() { Title = "Значение показателя преломления n" , Position = AxisPosition.Left });
-
-
                 List<equals> equalsElements = new List<equals>();
 
                 double n_x_prev = 0, n_y_prev = 0, n_z_prev = 0, x_prev = 0;
@@ -302,11 +303,20 @@ namespace OVModel
             }
         }
 
+        private void MenuChangeNameAxisXClick(object sender, RoutedEventArgs e)
+        {
+            ChangeNameAxisWindow window = new ChangeNameAxisWindow();
+            window.Show();
+        }
+        private void MenuChangeNameAxisYClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void Input_TextChanged(object sender, TextChangedEventArgs e)
         {
             StartCalculation();
         }
-
 
     }
 }
