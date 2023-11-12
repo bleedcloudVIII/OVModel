@@ -105,7 +105,9 @@
                 <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Height="408" Width="518" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0"/>
             </StackPanel>
             <StackPanel Margin="10,0,0,0" Height="406" Width="216" VerticalAlignment="Top">
+                
                 <Label x:Name="PointsLabel" Content=""/>
+
             </StackPanel>
         </StackPanel>
     </Grid>

@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using OVModel_DopTheory;
 
 using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.Series;
 
 namespace OVModel
@@ -196,6 +197,9 @@ namespace OVModel
                 OxyPlot.Series.LineSeries lineSeries_n_z = new OxyPlot.Series.LineSeries();
                 lineSeries_n_z.Title = "n_z";
 
+                schedule.shedule.Axes.Add(new LinearAxis() { Title = "x, мм",  Position = AxisPosition.Bottom});
+                schedule.shedule.Axes.Add(new LinearAxis() { Title = "Значение показателя преломления n" , Position = AxisPosition.Left });
+
 
                 List<equals> equalsElements = new List<equals>();
 
@@ -273,6 +277,7 @@ namespace OVModel
 
                 for (int i = 0; i < equalsElements.Count; i++)
                 {
+                    //schedule.shedule..Add(new LineSeries() { Points = { new OxyPlot.DataPoint(equalsElements[i].x, equalsElements[i].n_value)}, Title = "POINT" });
                     PointsLabel.Content += $"{equalsElements[i].first} и {equalsElements[i].second}:\n x = {equalsElements[i].x}\n n = {equalsElements[i].n_value}\n";
                 }
             }
