@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
         <Menu VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="Сохранение/Печать" >
-                <MenuItem Header="Сохранить график"></MenuItem>
+                <MenuItem Header="Сохранить график" Click="MenuItem_Click_Save_Schedule"></MenuItem>
                 <MenuItem Header="Сохранить таблицу"></MenuItem>
                 <MenuItem Header="Печатать график"></MenuItem>
                 <MenuItem Header="Печатать таблицу"></MenuItem>
@@ -107,7 +107,7 @@
                         <ContextMenu >
                             <MenuItem Header="Оси">
                                 <MenuItem Header="Ось X">
-                                    <MenuItem Header="Изменить название" Click="MenuItem_Click_ChangeTitleAxisX"></MenuItem>
+                                    <MenuItem Header="Изменить название" ></MenuItem>
                                     <MenuItem Header="Сбросить название"></MenuItem>
                                 </MenuItem>
                                 <MenuItem Header="Ось Y" >

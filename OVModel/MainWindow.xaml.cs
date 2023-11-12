@@ -14,6 +14,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using OVModel_DopTheory;
 
+using System.IO;
+using System.Drawing;
+
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -311,8 +314,96 @@ namespace OVModel
         private void MenuItem_Click_ChangeTitleAxisX(object sender, RoutedEventArgs e)
         {
             ChangeNameAxisWindow window = new ChangeNameAxisWindow();
-            window.Show();
-            
+           window.Show();  
+        }
+
+        private void MenuItem_Click_Save_Schedule(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "schedule"; // Default file name
+            dlg.DefaultExt = ".png"; // Default file extension
+            dlg.Filter = "Text documents (.png)|*.png |Text documents (.pdf)|*.pdf | Text documents (.jpg)|*.jpg"; // Filter files by extension
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+
+                Console.WriteLine(dlg.FileName);
+
+                Console.WriteLine(dlg.SafeFileName);
+                try
+                {
+                    double screenLeft = SystemParameters.VirtualScreenLeft;
+                    double screenTop = SystemParameters.VirtualScreenTop;
+                    double screenWidth = SystemParameters.VirtualScreenWidth;
+                    double screenHeight = SystemParameters.VirtualScreenHeight;
+                    BitmapImage bi = new BitmapImage();
+                    bi.BeginInit();
+                    bi.UriSource = new Uri(dlg.FileName);
+                    bi.EndInit();
+
+                    JpegBitmapEncoder jpg = new JpegBitmapEncoder();
+                    jpg.Frames.Add(BitmapFrame.Create(bi));
+                    using (Stream stm = File.Create(dlg.SafeFileName))
+                    {
+                        Bitmap bmp = new Bitmap((int)screenWidth, (int)screenHeight);
+                        Graphics g = Graphics.FromImage(bmp);
+                        g.CopyFromScreen((int)screenLeft, (int)screenTop, 0, 0, bmp.Size);
+
+                        stm.Write(bmp);
+                        jpg.Save(stm);
+                    }
+
+                }
+                catch(System.Exception exc) 
+                {
+                    Console.WriteLine(exc);
+                }
+
+                //double screenLeft = SystemParameters.VirtualScreenLeft;
+                //double screenTop = SystemParameters.VirtualScreenTop;
+                //double screenWidth = SystemParameters.VirtualScreenWidth;
+                //double screenHeight = SystemParameters.VirtualScreenHeight;
+
+                //using (Bitmap bmp = new Bitmap((int)screenWidth, (int)screenHeight))
+                //{
+                //    using (Graphics g = Graphics.FromImage(bmp))
+                //    {
+                        
+                //        File.Create(dlg.FileName);
+                //        Opacity = .0;
+                //        g.CopyFromScreen((int)screenLeft, (int)screenTop, 0, 0, bmp.Size);
+                //        bmp.Save(dlg.FileName);
+                //        //bmp.Save(Environment.CurrentDirectory + filename);
+                //        Opacity = 1;
+                //    }
+
+                //}
+            }
+            //double screenLeft = SystemParameters.VirtualScreenLeft;
+            //double screenTop = SystemParameters.VirtualScreenTop;
+            //double screenWidth = SystemParameters.VirtualScreenWidth;
+            //double screenHeight = SystemParameters.VirtualScreenHeight;
+
+            //using (Bitmap bmp = new Bitmap((int)screenWidth,
+            //    (int)screenHeight))
+            //{
+            //    using (Graphics g = Graphics.FromImage(bmp))
+            //    {
+            //        String filename = "ScreenCapture.png";
+            //        File.Create(Environment.CurrentDirectory + filename);
+            //        Opacity = .0;
+            //        g.CopyFromScreen((int)screenLeft, (int)screenTop, 0, 0, bmp.Size);
+            //        bmp.Save(filename);
+            //        //bmp.Save(Environment.CurrentDirectory + filename);
+            //        Opacity = 1;
+            //    }
+
+            //}
         }
     }
 }
