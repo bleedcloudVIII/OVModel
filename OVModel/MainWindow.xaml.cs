@@ -383,6 +383,12 @@ namespace OVModel
             // Process save file dialog box results
             if (result == true)
             {
+                Console.WriteLine(dlg.FileName);
+
+
+                File.Create(dlg.FileName);
+
+                //Error?????
                 PdfWriter writer = new PdfWriter(dlg.FileName);
                 PdfDocument pdf = new PdfDocument(writer);
                 Document document = new Document(pdf);
