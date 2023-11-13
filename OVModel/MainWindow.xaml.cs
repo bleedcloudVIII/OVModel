@@ -389,16 +389,10 @@ namespace OVModel
             // Process save file dialog box results
             if (result == true)
             {
-                Console.WriteLine(dlg.FileName);
-
-
-                File.Create(dlg.FileName);
-
-                //Error?????
                 PdfWriter writer = new PdfWriter(dlg.FileName);
                 PdfDocument pdf = new PdfDocument(writer);
                 Document document = new Document(pdf);
-                //
+                
                 PdfFont font = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
                 PdfFont bold = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
 
@@ -409,10 +403,6 @@ namespace OVModel
                     table.AddCell(new iText.Layout.Element.Paragraph(c.Header.ToString()).SetFont(bold).SetBackgroundColor(ColorConstants.GRAY).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
                 }
 
-
-                //dataGrid.Items.OfType<rowElements>().ToList()
-                //Console.WriteLine("ASDADqw");
-
                 List<List<double>> s = Table.Items.OfType<List<double>>().ToList().ToList();
 
                 foreach(List<double> r in s)
@@ -422,22 +412,6 @@ namespace OVModel
                         table.AddCell(new iText.Layout.Element.Paragraph(r[i].ToString()).SetFont(font).SetBackgroundColor(ColorConstants.WHITE).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
                     }
                 }
-
-                //foreach (DataRow r in dt.Rows)
-                //{
-                //    if (dt.Rows.Count > 0)
-                //    {
-                //        for (int i = 0; i < dt.Columns.Count; i++)
-                //        {
-                //            table.AddCell(new Paragraph(r[i].ToString()).SetFont(font).SetBackgroundColor(ColorConstants.WHITE).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
-                //        }
-                //    }
-                //}
-
-                //foreach (DataGridColumn c in Table.Columns)
-                //{ 
-                //    for (int i = 0; i < c.GetCellContent())
-                //}
 
                 document.Add(table);
                 document.Close();
