@@ -357,12 +357,17 @@ namespace OVModel
             {
                 string extension = GetExtension(dlg.SafeFileName);
                 
-                if (extension == "pdf")
-                {
+                if (extension == "pdf" && OxyPlotSchedule.Model != null)
+                {   
                     var pdfExporter = new PdfExporter { Width = 1000, Height = 800 };
-                    pdfExporter.ExportToFile(OxyPlotSchedule.Model, dlg.FileName);
+                    
+                    PlotModel model = OxyPlotSchedule.Model;
+                    model.Axes[0].Title = "x, mm";
+                    model.Axes[1].Title = "Refractive index value n";
+
+                    pdfExporter.ExportToFile(model, dlg.FileName);
                 }
-                else if(extension == "jpg")
+                else if(extension == "jpg" && OxyPlotSchedule.Model != null)
                 {
                     var pngExporter = new PngExporter { Width = 1000, Height = 800 };
                     pngExporter.ExportToFile(OxyPlotSchedule.Model, dlg.FileName);
@@ -370,6 +375,7 @@ namespace OVModel
                 else { }
             }
         }
+
         private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
