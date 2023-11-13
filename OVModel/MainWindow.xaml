@@ -8,7 +8,7 @@
             Title="OVModel"
             Height="500"
             Width="1300"
-            
+            FontFamily="IBM Plex Sans"
         >
     <!--<Window.DataContext>
         <local:Schedule/>
@@ -21,7 +21,7 @@
         <Menu VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="Сохранение/Печать" >
                 <MenuItem Header="Сохранить график" Click="MenuItem_Click_Save_Schedule"></MenuItem>
-                <MenuItem Header="Сохранить таблицу"></MenuItem>
+                <MenuItem Header="Сохранить таблицу" Click="MenuItem_Click_Save_Table"></MenuItem>
                 <MenuItem Header="Печатать график"></MenuItem>
                 <MenuItem Header="Печатать таблицу"></MenuItem>
             </MenuItem>
@@ -102,7 +102,7 @@
                     </Grid>
                 </Border>-->
             <StackPanel>
-                <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Height="408" Width="518" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0">
+                <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Background="White" Height="408" Width="518" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0">
                     <oxy:PlotView.ContextMenu>
                         <ContextMenu >
                             <MenuItem Header="Оси">

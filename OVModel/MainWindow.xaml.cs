@@ -17,7 +17,18 @@ using OVModel_DopTheory;
 using System.IO;
 using System.Drawing;
 
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using iText.IO.Font;
+using iText.Kernel.Pdf.Canvas.Draw;
+using iText.Kernel.Colors;
+using iText.Kernel.Font;
+using iText.IO.Font.Constants;
+
 using OxyPlot;
+using OxyPlot.Wpf;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
@@ -313,8 +324,22 @@ namespace OVModel
 
         private void MenuItem_Click_ChangeTitleAxisX(object sender, RoutedEventArgs e)
         {
-            ChangeNameAxisWindow window = new ChangeNameAxisWindow();
-           window.Show();  
+            //ChangeNameAxisWindow window = new ChangeNameAxisWindow();
+            //window.Show();  
+        }
+
+        private string GetExtension(string fileName)
+        {
+            int i = fileName.Length - 1;
+            string result = "";
+            while (fileName[i] != '.')
+            {
+                result += fileName[i];
+                i--;
+            }
+            char[] charArray = result.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
         }
 
         private void MenuItem_Click_Save_Schedule(object sender, RoutedEventArgs e)
@@ -322,7 +347,7 @@ namespace OVModel
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.FileName = "schedule"; // Default file name
             dlg.DefaultExt = ".png"; // Default file extension
-            dlg.Filter = "Text documents (.png)|*.png |Text documents (.pdf)|*.pdf | Text documents (.jpg)|*.jpg"; // Filter files by extension
+            dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf"; // Filter files by extension
 
             // Show save file dialog box
             Nullable<bool> result = dlg.ShowDialog();
@@ -330,80 +355,82 @@ namespace OVModel
             // Process save file dialog box results
             if (result == true)
             {
-                // Save document
-
-                Console.WriteLine(dlg.FileName);
-
-                Console.WriteLine(dlg.SafeFileName);
-                try
+                string extension = GetExtension(dlg.SafeFileName);
+                
+                if (extension == "pdf")
                 {
-                    double screenLeft = SystemParameters.VirtualScreenLeft;
-                    double screenTop = SystemParameters.VirtualScreenTop;
-                    double screenWidth = SystemParameters.VirtualScreenWidth;
-                    double screenHeight = SystemParameters.VirtualScreenHeight;
-                    BitmapImage bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.UriSource = new Uri(dlg.FileName);
-                    bi.EndInit();
-
-                    JpegBitmapEncoder jpg = new JpegBitmapEncoder();
-                    jpg.Frames.Add(BitmapFrame.Create(bi));
-                    using (Stream stm = File.Create(dlg.SafeFileName))
-                    {
-                        Bitmap bmp = new Bitmap((int)screenWidth, (int)screenHeight);
-                        Graphics g = Graphics.FromImage(bmp);
-                        g.CopyFromScreen((int)screenLeft, (int)screenTop, 0, 0, bmp.Size);
-
-                        stm.Write(bmp);
-                        jpg.Save(stm);
-                    }
-
+                    var pdfExporter = new PdfExporter { Width = 1000, Height = 800 };
+                    pdfExporter.ExportToFile(OxyPlotSchedule.Model, dlg.FileName);
                 }
-                catch(System.Exception exc) 
+                else if(extension == "jpg")
                 {
-                    Console.WriteLine(exc);
+                    var pngExporter = new PngExporter { Width = 1000, Height = 800 };
+                    pngExporter.ExportToFile(OxyPlotSchedule.Model, dlg.FileName);
                 }
-
-                //double screenLeft = SystemParameters.VirtualScreenLeft;
-                //double screenTop = SystemParameters.VirtualScreenTop;
-                //double screenWidth = SystemParameters.VirtualScreenWidth;
-                //double screenHeight = SystemParameters.VirtualScreenHeight;
-
-                //using (Bitmap bmp = new Bitmap((int)screenWidth, (int)screenHeight))
-                //{
-                //    using (Graphics g = Graphics.FromImage(bmp))
-                //    {
-                        
-                //        File.Create(dlg.FileName);
-                //        Opacity = .0;
-                //        g.CopyFromScreen((int)screenLeft, (int)screenTop, 0, 0, bmp.Size);
-                //        bmp.Save(dlg.FileName);
-                //        //bmp.Save(Environment.CurrentDirectory + filename);
-                //        Opacity = 1;
-                //    }
-
-                //}
+                else { }
             }
-            //double screenLeft = SystemParameters.VirtualScreenLeft;
-            //double screenTop = SystemParameters.VirtualScreenTop;
-            //double screenWidth = SystemParameters.VirtualScreenWidth;
-            //double screenHeight = SystemParameters.VirtualScreenHeight;
+        }
+        private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "schedule"; // Default file name
+            dlg.DefaultExt = ".png"; // Default file extension
+            dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf"; // Filter files by extension
 
-            //using (Bitmap bmp = new Bitmap((int)screenWidth,
-            //    (int)screenHeight))
-            //{
-            //    using (Graphics g = Graphics.FromImage(bmp))
-            //    {
-            //        String filename = "ScreenCapture.png";
-            //        File.Create(Environment.CurrentDirectory + filename);
-            //        Opacity = .0;
-            //        g.CopyFromScreen((int)screenLeft, (int)screenTop, 0, 0, bmp.Size);
-            //        bmp.Save(filename);
-            //        //bmp.Save(Environment.CurrentDirectory + filename);
-            //        Opacity = 1;
-            //    }
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
 
-            //}
+            // Process save file dialog box results
+            if (result == true)
+            {
+                PdfWriter writer = new PdfWriter(dlg.FileName);
+                PdfDocument pdf = new PdfDocument(writer);
+                Document document = new Document(pdf);
+                //
+                PdfFont font = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+                PdfFont bold = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+
+                iText.Layout.Element.Table table = new iText.Layout.Element.Table(Table.Columns.Count);
+
+                foreach (DataGridColumn c in Table.Columns)
+                {
+                    table.AddCell(new iText.Layout.Element.Paragraph(c.Header.ToString()).SetFont(bold).SetBackgroundColor(ColorConstants.GRAY).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
+                }
+
+
+                //dataGrid.Items.OfType<rowElements>().ToList()
+                //Console.WriteLine("ASDADqw");
+
+                List<List<double>> s = Table.Items.OfType<List<double>>().ToList().ToList();
+
+                foreach(List<double> r in s)
+                {
+                    for(int i = 0; i < r.Count; i++)
+                    {
+                        table.AddCell(new iText.Layout.Element.Paragraph(r[i].ToString()).SetFont(font).SetBackgroundColor(ColorConstants.WHITE).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
+                    }
+                }
+
+                //foreach (DataRow r in dt.Rows)
+                //{
+                //    if (dt.Rows.Count > 0)
+                //    {
+                //        for (int i = 0; i < dt.Columns.Count; i++)
+                //        {
+                //            table.AddCell(new Paragraph(r[i].ToString()).SetFont(font).SetBackgroundColor(ColorConstants.WHITE).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
+                //        }
+                //    }
+                //}
+
+                //foreach (DataGridColumn c in Table.Columns)
+                //{ 
+                //    for (int i = 0; i < c.GetCellContent())
+                //}
+
+                document.Add(table);
+                document.Close();
+
+            }
         }
     }
 }
