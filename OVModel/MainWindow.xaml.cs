@@ -349,10 +349,8 @@ namespace OVModel
             dlg.DefaultExt = ".png"; // Default file extension
             dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf"; // Filter files by extension
 
-            // Show save file dialog box
             Nullable<bool> result = dlg.ShowDialog();
 
-            // Process save file dialog box results
             if (result == true)
             {
                 string extension = GetExtension(dlg.SafeFileName);
@@ -381,26 +379,22 @@ namespace OVModel
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.FileName = "schedule"; // Default file name
             dlg.DefaultExt = ".png"; // Default file extension
-            dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf"; // Filter files by extension
+            dlg.Filter = "Text documents (.pdf)|*.pdf"; // Filter files by extension
 
-            // Show save file dialog box
             Nullable<bool> result = dlg.ShowDialog();
 
-            // Process save file dialog box results
             if (result == true)
             {
                 PdfWriter writer = new PdfWriter(dlg.FileName);
                 PdfDocument pdf = new PdfDocument(writer);
                 Document document = new Document(pdf);
                 
-                PdfFont font = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
-                PdfFont bold = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
-
                 iText.Layout.Element.Table table = new iText.Layout.Element.Table(Table.Columns.Count);
 
                 foreach (DataGridColumn c in Table.Columns)
                 {
-                    table.AddCell(new iText.Layout.Element.Paragraph(c.Header.ToString()).SetFont(bold).SetBackgroundColor(ColorConstants.GRAY).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
+                    table.AddCell(new iText.Layout.Element.Paragraph(c.Header.ToString()));
+
                 }
 
                 List<List<double>> s = Table.Items.OfType<List<double>>().ToList().ToList();
@@ -409,7 +403,8 @@ namespace OVModel
                 {
                     for(int i = 0; i < r.Count; i++)
                     {
-                        table.AddCell(new iText.Layout.Element.Paragraph(r[i].ToString()).SetFont(font).SetBackgroundColor(ColorConstants.WHITE).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
+                        table.AddCell(new iText.Layout.Element.Paragraph(r[i].ToString()));
+
                     }
                 }
 
