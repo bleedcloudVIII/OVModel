@@ -13,6 +13,7 @@
     <!--<Window.DataContext>
         <local:Schedule/>
     </Window.DataContext>-->
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7*"/>
@@ -32,6 +33,17 @@
             <MenuItem Header="Справка">
                 <MenuItem Header="Просмотр справки"></MenuItem>
                 <MenuItem Header="О программе OVModel"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="График">
+                <MenuItem Header="Название">
+                    <TextBox x:Name="InputScheduleTitle" Width="100" TextChanged="Input_TextChanged"></TextBox>
+                </MenuItem>
+                <MenuItem Header="Ось X" >
+                    <TextBox x:Name="InputScheduleAxisX" Width="100" TextChanged="Input_TextChanged"></TextBox>
+                </MenuItem>
+                <MenuItem Header="Ось Y">
+                    <TextBox x:Name="InputScheduleAxisY" Width="100" TextChanged="Input_TextChanged"></TextBox>
+                </MenuItem>
             </MenuItem>
         </Menu>
         <!--<oxy:PlotView Model="{Binding shedule}"/>-->

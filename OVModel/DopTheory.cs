@@ -52,8 +52,7 @@ namespace OVModel_DopTheory
             return n + ((n * n * n) / 4) * (f + s + t);
         }
 
-        private const string DefaultTitleAxisX = "x, мм";
-        private const string DefaultTitleAxisY = "Значение показателя преломления n";
+
 
         private static List<EqualElements> getSetList(List<EqualElements> list)
         {
@@ -66,8 +65,7 @@ namespace OVModel_DopTheory
             return result;
         }
 
-
-        public static Data Calculating(double b, double h, double n, double n_ob, double R, double x_start, double x_end)
+        public static Data Calculating(double b, double h, double n, double n_ob, double R, double x_start, double x_end, string title, string titleAxisX, string titleAxisY)
         {
             // Список элементов x, n_x, n_y, n_z для таблицы
             List<List<double>> result = new List<List<double>>();
@@ -77,12 +75,13 @@ namespace OVModel_DopTheory
             if (h != 0) count = System.Convert.ToInt32(Math.Abs(x_end - x_start) / h);
 
             PlotModel schedule = new PlotModel() {
+                Title = title,
                 Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
                 IsLegendVisible = true,
                 Axes =
                 {
-                    new LinearAxis() {Title = DefaultTitleAxisX, Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
-                    new LinearAxis() {Title = DefaultTitleAxisY, Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
+                    new LinearAxis() {Title = titleAxisX, Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
+                    new LinearAxis() {Title = titleAxisY, Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
                 },
             };
 
@@ -235,8 +234,8 @@ namespace OVModel_DopTheory
             var pdfExporter = new PdfExporter { Width = 1000, Height = 800 };
 
             PlotModel model = OxyPlotSchedule.Model;
-            model.Axes[0].Title = "x, mm";
-            model.Axes[1].Title = "Refractive index value n";
+            //model.Axes[0].Title = "x, mm";
+            //model.Axes[1].Title = "Refractive index value n";
 
             pdfExporter.ExportToFile(model, dlg.FileName);
         }

@@ -39,9 +39,8 @@ namespace OVModel
 {
     public partial class MainWindow : Window
     {
-        public static string TitleAxisX = "x, мм";
-
-        public static string TitleAxisY = "Значение показателя преломления n";
+        private const string DefaultTitleAxisX = "x, мм";
+        private const string DefaultTitleAxisY = "Значение показателя преломления n";
 
         public MainWindow()
         {
@@ -70,7 +69,14 @@ namespace OVModel
                 double x_start = System.Convert.ToDouble(Input_x_start.Text);
                 double x_end = System.Convert.ToDouble(Input_x_end.Text);
 
-                Data data = OVModel_DopTheory.DopTheory.Calculating(b, h, n, n_ob, R, x_start, x_end);
+                string title = InputScheduleTitle.Text;
+                string titleAxisX = InputScheduleAxisX.Text;
+                string titleAxisY = InputScheduleAxisY.Text;
+
+                if (titleAxisX == "") titleAxisX = DefaultTitleAxisX;
+                if (titleAxisY == "") titleAxisY = DefaultTitleAxisY;
+
+                Data data = OVModel_DopTheory.DopTheory.Calculating(b, h, n, n_ob, R, x_start, x_end, title, titleAxisX, titleAxisY);
 
                 OxyPlotSchedule.Model = data.scheduleModel;
                 Table.ItemsSource = data.itemsSourceTable;
