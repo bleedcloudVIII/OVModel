@@ -26,10 +26,8 @@
                 <MenuItem Header="Печатать таблицу"></MenuItem>
             </MenuItem>
             <MenuItem Header="Модель">
-                <MenuItem Header="Классическая - растяжение"></MenuItem>
-                <MenuItem Header="Классическая - сжатие"></MenuItem>
-                <MenuItem Header="Дополнительная - растяжение"></MenuItem>
-                <MenuItem Header="Дополнительная - сжатие"></MenuItem>
+                <MenuItem Header="Дополнительная"></MenuItem>
+                <MenuItem Header="Классическая"></MenuItem>
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="Просмотр справки"></MenuItem>

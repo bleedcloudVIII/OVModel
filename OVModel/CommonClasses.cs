@@ -24,10 +24,10 @@ namespace OVModel_CommonClasses
         }
     }
 
-    public class Data
+    public struct Data
     {
         public List<List<double>> itemsSourceTable { get; set; }
         public OxyPlot.PlotModel scheduleModel { get; set; }
-        public List<EqualElements> euqalsElements { get; set; }
+        public List<EqualElements> equalsElements { get; set; }
     }
 }

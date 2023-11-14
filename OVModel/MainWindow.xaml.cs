@@ -17,38 +17,26 @@ using OVModel_DopTheory;
 using OVModel_CommonClasses;
 
 
-using System.IO;
-using System.Drawing;
+//using System.IO;
+//using System.Drawing;
 
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using iText.IO.Font;
-using iText.Kernel.Pdf.Canvas.Draw;
-using iText.Kernel.Colors;
-using iText.Kernel.Font;
-using iText.IO.Font.Constants;
+//using iText.Kernel.Pdf;
+//using iText.Layout;
+//using iText.Layout.Element;
+//using iText.Layout.Properties;
+//using iText.IO.Font;
+//using iText.Kernel.Pdf.Canvas.Draw;
+//using iText.Kernel.Colors;
+//using iText.Kernel.Font;
+//using iText.IO.Font.Constants;
 
-using OxyPlot;
-using OxyPlot.Wpf;
-using OxyPlot.Axes;
-using OxyPlot.Series;
+//using OxyPlot;
+//using OxyPlot.Wpf;
+//using OxyPlot.Axes;
+//using OxyPlot.Series;
 
 namespace OVModel
 {
-    //public class Schedule
-    //{
-    //    public Schedule()
-    //    {
-    //        this.shedule = new PlotModel { Title = " "};
-    //        this.shedule.Legends.Add(new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom });
-    //        this.shedule.IsLegendVisible = true;
-    //    }
-
-    //    public PlotModel shedule { get; private set; }
-    //}
-
     public partial class MainWindow : Window
     {
         public static string TitleAxisX = "x, мм";
@@ -89,14 +77,10 @@ namespace OVModel
 
                 PointsLabel.Content = $"Пересечения:\n";
                 
-                for (int i = 0; i < data.euqalsElements.Count; i++)
+                for (int i = 0; i < data.equalsElements.Count; i++)
                 {
-                    PointsLabel.Content += $"{data.euqalsElements[i].first} и {data.euqalsElements[i].second}:\n x = {data.euqalsElements[i].x}\n n = {data.euqalsElements[i].n_value}\n";
+                    PointsLabel.Content += $"{data.equalsElements[i].first} и {data.equalsElements[i].second}:\n x = {data.equalsElements[i].x}\n n = {data.equalsElements[i].n_value}\n";
                 }
-            }
-            else
-            {
-                Console.WriteLine("ELSE!");
             }
         }
 

@@ -166,7 +166,7 @@ namespace OVModel_DopTheory
             schedule.Series.Add(lineSeries_n_y);
             schedule.Series.Add(lineSeries_n_z);
 
-            return new Data() { euqalsElements = equalsElements, itemsSourceTable = result, scheduleModel = schedule};
+            return new Data() { equalsElements = equalsElements, itemsSourceTable = result, scheduleModel = schedule};
         }
     }
 
