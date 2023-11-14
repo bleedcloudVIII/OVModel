@@ -6,35 +6,12 @@ using System.Threading.Tasks;
 
 using OxyPlot;
 using OxyPlot.Wpf;
+using OxyPlot.Axes;
 
 using iText.Kernel.Pdf;
 using iText.Layout;
 
-public struct EqualElements
-{
-    public double x { get; set; }
-    public double n_value { get; set; }
-    public string first { get; set; }
-    public string second { get; set; }
-
-    public static bool operator ==(EqualElements f, EqualElements s)
-    {
-        return (f.x == s.x && f.n_value == s.n_value && f.first == s.first && f.second == s.second);
-    }
-
-    public static bool operator !=(EqualElements f, EqualElements s)
-    {
-        return !(f == s);
-    }
-}
-
-public class Data
-{ 
-    public List<List<double>> itemsSourceTable { get; set; }
-    public PlotModel scheduleModel { get; set; }
-    public List<EqualElements> euqalsElements { get; set; }
-}
-
+using OVModel_CommonClasses;
 
 namespace OVModel_DopTheory
 {
@@ -75,9 +52,121 @@ namespace OVModel_DopTheory
             return n + ((n * n * n) / 4) * (f + s + t);
         }
 
+        private const string DefaultTitleAxisX = "x, мм";
+        private const string DefaultTitleAxisY = "Значение показателя преломления n";
+
+        private static List<EqualElements> getSetList(List<EqualElements> list)
+        {
+            List<EqualElements> result = new List<EqualElements>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (!result.Contains(list[i])) result.Add(list[i]);
+            }
+            return result;
+        }
+
+
         public static Data Calculating(double b, double h, double n, double n_ob, double R, double x_start, double x_end)
         {
+            // Список элементов x, n_x, n_y, n_z для таблицы
+            List<List<double>> result = new List<List<double>>();
 
+            // Количество x в таблице
+            int count = 0;
+            if (h != 0) count = System.Convert.ToInt32(Math.Abs(x_end - x_start) / h);
+
+            PlotModel schedule = new PlotModel() {
+                Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
+                IsLegendVisible = true,
+                Axes =
+                {
+                    new LinearAxis() {Title = DefaultTitleAxisX, Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
+                    new LinearAxis() {Title = DefaultTitleAxisY, Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
+                },
+            };
+
+            OxyPlot.Series.LineSeries lineSeries_n = new OxyPlot.Series.LineSeries() { Points = { new OxyPlot.DataPoint(x_start, n), new OxyPlot.DataPoint(x_end, n) }, Title = "n" };
+
+            OxyPlot.Series.LineSeries lineSeries_n_x = new OxyPlot.Series.LineSeries();
+            lineSeries_n_x.Title = "n_x";
+
+            OxyPlot.Series.LineSeries lineSeries_n_y = new OxyPlot.Series.LineSeries();
+            lineSeries_n_y.Title = "n_y";
+
+            OxyPlot.Series.LineSeries lineSeries_n_z = new OxyPlot.Series.LineSeries();
+            lineSeries_n_z.Title = "n_z";
+
+            List<EqualElements> equalsElements = new List<EqualElements>();
+
+            double n_x_prev = 0, n_y_prev = 0, n_z_prev = 0, x_prev = 0;
+
+            for (int i = 0; i <= count; i++)
+            {
+                // Вычисление значений текущего x и значений n
+                double x_now = x_start + h * i;
+                double n_x = OVModel_DopTheory.DopTheory.n_x(x_now, n, R, b);
+                double n_y = OVModel_DopTheory.DopTheory.n_y(x_now, n, R, b);
+                double n_z = OVModel_DopTheory.DopTheory.n_z(x_now, n, R, b);
+
+                // Если значения n равны, то помещаем в список элементов точки, пересечения
+                if (n_x == n_y) equalsElements.Add(new EqualElements() { x = x_now, first = "n_x", second = "n_y", n_value = n_x });
+                else if (n_x == n_z) equalsElements.Add(new EqualElements() { x = x_now, first = "n_x", second = "n_z", n_value = n_x });
+                else if (n_y == n_z) equalsElements.Add(new EqualElements() { x = x_now, first = "n_y", second = "n_z", n_value = n_y });
+                // Т.к. иногда может быть пересечения графиков, не в точках x, а между ними
+                // Поэтому мы берём 4 точки (2 предыдущих для n и две текущих) и находим их точки пересечения
+                // x пред     x текущее
+                // (x3,y3)
+                //      \    (x2,y2)
+                //       \   /
+                //        \ / 
+                //         X
+                //        / \
+                //  (x1,y1)  \
+                //          (x4,y4)
+                // В кратце, если точка 3 находится выше(или =) точки 1, а точка 4 ниже 2
+                // Значит у двух векторов есть точка пересечения, которую мы и расчитываем
+                // Функция для нахождения точки пересечения взята из интернета https://habr.com/ru/articles/523440/
+                else if ((n_y_prev >= n_x) && (n_x >= n_y))
+                {
+                    Dot dot = Dot.CrossTwoLines(x_prev, n_x_prev, x_now, n_x, x_prev, n_y_prev, x_now, n_y);
+                    equalsElements.Add(new EqualElements() { x = dot.x, first = "n_y", second = "n_x", n_value = dot.y });
+                }
+                else if ((n_y_prev >= n_z) && (n_z >= n_y))
+                {
+                    Dot dot = Dot.CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_y_prev, x_now, n_y);
+                    equalsElements.Add(new EqualElements() { x = dot.x, first = "n_y", second = "n_z", n_value = dot.y });
+                }
+                else if ((n_x_prev >= n_z) && (n_z >= n_x))
+                {
+                    Dot dot = Dot.CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_x_prev, x_now, n_x);
+                    equalsElements.Add(new EqualElements() { x = dot.x, first = "n_x", second = "n_z", n_value = dot.y });
+                }
+
+                lineSeries_n_x.Points.Add(new OxyPlot.DataPoint(x_now, n_x));
+                lineSeries_n_y.Points.Add(new OxyPlot.DataPoint(x_now, n_y));
+                lineSeries_n_z.Points.Add(new OxyPlot.DataPoint(x_now, n_z));
+
+                result.Add(new List<double> { x_now, n_x, n_y, n_z });
+
+                n_x_prev = n_x;
+                n_y_prev = n_y;
+                n_z_prev = n_z;
+                x_prev = x_now;
+            }
+
+            // Нахождение уникальных точек пересечения, т.к. точки могут пересекаться
+            // Например, значения n равны в точки x
+            // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
+            // То есть по сути являясь одной точкой
+            equalsElements = getSetList(equalsElements);
+
+            schedule.Series.Add(lineSeries_n);
+            schedule.Series.Add(lineSeries_n_x);
+            schedule.Series.Add(lineSeries_n_y);
+            schedule.Series.Add(lineSeries_n_z);
+
+            return new Data() { euqalsElements = equalsElements, itemsSourceTable = result, scheduleModel = schedule};
         }
     }
 
@@ -117,21 +206,6 @@ namespace OVModel_DopTheory
             resultDot.y = y3 + (y4 - y3) * n;  // y3 +(-b(y))*n
             return resultDot;
         }
-    }
-
-    public static class Common
-    {
-        private static List<EqualElements> getSetList(List<EqualElements> list)
-        {
-            List<EqualElements> result = new List<EqualElements>();
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (!result.Contains(list[i])) result.Add(list[i]);
-            }
-            return result;
-        }
-        
     }
 
     public static class Export
