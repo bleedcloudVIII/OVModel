@@ -4,6 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using OxyPlot;
+using OxyPlot.Wpf;
+
+using iText.Kernel.Pdf;
+using iText.Layout;
+
+public struct EqualElements
+{
+    public double x { get; set; }
+    public double n_value { get; set; }
+    public string first { get; set; }
+    public string second { get; set; }
+
+    public static bool operator ==(EqualElements f, EqualElements s)
+    {
+        return (f.x == s.x && f.n_value == s.n_value && f.first == s.first && f.second == s.second);
+    }
+
+    public static bool operator !=(EqualElements f, EqualElements s)
+    {
+        return !(f == s);
+    }
+}
+
+public class Data
+{ 
+    public List<List<double>> itemsSourceTable { get; set; }
+    public PlotModel scheduleModel { get; set; }
+    public List<EqualElements> euqalsElements { get; set; }
+}
+
+
 namespace OVModel_DopTheory
 {
     public static class DopTheory 
@@ -13,7 +45,7 @@ namespace OVModel_DopTheory
         private const double p12 = 0.27;
         private const double mu = 0.164;
 
-        public static double n_x(double x, double n, double R, double b)
+        private static double n_x(double x, double n, double R, double b)
         {
             double mu_R_R = mu / (R * R);
             double f = mu_R_R * x * x * (p12 - (p11 / (2 * mu)));
@@ -23,7 +55,7 @@ namespace OVModel_DopTheory
             return n + ((n * n * n) / 2) * (f + s + t);
         }
 
-        public static double n_y(double x, double n, double R, double b)
+        private static double n_y(double x, double n, double R, double b)
         {
             double mu_R_R = mu / (R * R);
             double f = mu_R_R * x * x * (p11 - (p12 / mu) + p12);
@@ -33,7 +65,7 @@ namespace OVModel_DopTheory
             return n + ((n * n * n) / 4) * (f + s + t);
         }
 
-        public static double n_z(double x, double n, double R, double b)
+        private static double n_z(double x, double n, double R, double b)
         {
             double mu_R_R = mu / (R * R);
             double f = mu_R_R * x * x * (p11 - (p12 / mu) + p12);
@@ -42,7 +74,126 @@ namespace OVModel_DopTheory
             double t = mu_R_R * b * b * ((p12 / mu) - p12 - p11);
             return n + ((n * n * n) / 4) * (f + s + t);
         }
+
+        public static Data Calculating(double b, double h, double n, double n_ob, double R, double x_start, double x_end)
+        {
+
+        }
     }
 
+    struct Dot
+    {
+        public double x { get; set; }
+        public double y { get; set; }
+        public static Dot CrossTwoLines(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+        {
+            // https://habr.com/ru/articles/523440/
+            double n;
+            Dot resultDot = new Dot();
+            if (y2 - y1 != 0)
+            {  // a(y)
+                double q = (x2 - x1) / (y1 - y2);
+                double sn = (x3 - x4) + (y3 - y4) * q;
+                if (sn == 0)
+                {
+                    resultDot.x = -1;
+                    resultDot.y = -1;
+                    return resultDot;
+                }// c(x) + c(y)*q
+                double fn = (x3 - x1) + (y3 - y1) * q;   // b(x) + b(y)*q
+                n = fn / sn;
+            }
+            else
+            {
+                if (y3 - y4 == 0)
+                {
+                    resultDot.x = -1;  // b(y)
+                    resultDot.y = -1;
+                    return resultDot;
+                }
+                n = (y3 - y1) / (y3 - y4);   // c(y)/b(y)
+            }
+            resultDot.x = x3 + (x4 - x3) * n;  // x3 + (-b(x))*n
+            resultDot.y = y3 + (y4 - y3) * n;  // y3 +(-b(y))*n
+            return resultDot;
+        }
+    }
 
+    public static class Common
+    {
+        private static List<EqualElements> getSetList(List<EqualElements> list)
+        {
+            List<EqualElements> result = new List<EqualElements>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (!result.Contains(list[i])) result.Add(list[i]);
+            }
+            return result;
+        }
+        
+    }
+
+    public static class Export
+    {
+        private static string GetExtension(string fileName)
+        {
+            int i = fileName.Length - 1;
+            string result = "";
+            while (fileName[i] != '.')
+            {
+                result += fileName[i];
+                i--;
+            }
+            char[] charArray = result.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
+        }
+
+        public static void Export_Schedule_png(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            var pngExporter = new PngExporter { Width = 1000, Height = 800 };
+            pngExporter.ExportToFile(OxyPlotSchedule.Model, dlg.FileName);
+        }
+
+        public static void Export_Schedule_pdf(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            var pdfExporter = new PdfExporter { Width = 1000, Height = 800 };
+
+            PlotModel model = OxyPlotSchedule.Model;
+            model.Axes[0].Title = "x, mm";
+            model.Axes[1].Title = "Refractive index value n";
+
+            pdfExporter.ExportToFile(model, dlg.FileName);
+        }
+
+        public static void Export_Table_pdf(System.Windows.Controls.DataGrid Table, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            PdfWriter writer = new PdfWriter(dlg.FileName);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+
+            iText.Layout.Element.Table table = new iText.Layout.Element.Table(Table.Columns.Count);
+            
+            foreach (System.Windows.Controls.DataGridColumn c in Table.Columns)
+            {
+                table.AddCell(new iText.Layout.Element.Paragraph(c.Header.ToString()));
+
+            }
+
+            List<List<double>> s = Table.Items.OfType<List<double>>().ToList().ToList();
+
+            foreach (List<double> r in s)
+            {
+                for (int i = 0; i < r.Count; i++)
+                {
+                    table.AddCell(new iText.Layout.Element.Paragraph(r[i].ToString()));
+
+                }
+            }
+
+            document.Add(table);
+            document.Close();
+        }
+    }
 }
