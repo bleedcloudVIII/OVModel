@@ -166,7 +166,7 @@ namespace OVModel
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.FileName = "schedule"; // Default file name
             dlg.DefaultExt = ".png"; // Default file extension
-            dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf"; // Filter files by extension
+            dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf|Text documents (.png)|*.png"; // Filter files by extension
             Nullable<bool> result = dlg.ShowDialog();
 
             if (result == true)
@@ -177,9 +177,14 @@ namespace OVModel
                 {
                     OVModel_DopTheory.Export.Export_Schedule_pdf(OxyPlotSchedule, dlg);
                 }
-                else if(extension == "jpg" && OxyPlotSchedule.Model != null)
+                else if (extension == "png" && OxyPlotSchedule.Model != null)
                 {
                     OVModel_DopTheory.Export.Export_Schedule_png(OxyPlotSchedule, dlg);
+                }
+                else if (extension == "jpg" && OxyPlotSchedule.Model != null)
+                {
+                    OVModel_DopTheory.Export.Export_Schedule_jpg(OxyPlotSchedule, dlg);
+
                 }
                 else { }
             }

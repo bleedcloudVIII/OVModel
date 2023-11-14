@@ -225,19 +225,20 @@ namespace OVModel_DopTheory
 
         public static void Export_Schedule_png(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
         {
-            var pngExporter = new PngExporter { Width = 1000, Height = 800 };
-            pngExporter.ExportToFile(OxyPlotSchedule.Model, dlg.FileName);
+            PlotModel model = OxyPlotSchedule.Model;
+            OxyPlot.SkiaSharp.PngExporter.Export(model, dlg.FileName, 1000, 800);
         }
 
         public static void Export_Schedule_pdf(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
         {
-            var pdfExporter = new PdfExporter { Width = 1000, Height = 800 };
-
             PlotModel model = OxyPlotSchedule.Model;
-            //model.Axes[0].Title = "x, mm";
-            //model.Axes[1].Title = "Refractive index value n";
+            OxyPlot.SkiaSharp.PdfExporter.Export(model, dlg.FileName, 1000, 800);
+        }
 
-            pdfExporter.ExportToFile(model, dlg.FileName);
+        public static void Export_Schedule_jpg(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            PlotModel model = OxyPlotSchedule.Model;
+            OxyPlot.SkiaSharp.JpegExporter.Export(model, dlg.FileName, 1000, 800, 100);
         }
 
         public static void Export_Table_pdf(System.Windows.Controls.DataGrid Table, Microsoft.Win32.SaveFileDialog dlg)
