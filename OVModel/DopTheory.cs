@@ -29,7 +29,7 @@ namespace OVModel_DopTheory
             double mu_R = mu / R;
             double s = mu_R * x * (p11 + p12 - (p12 / mu));
             double t = mu_R_R * b * b * ((p11 / (2 * mu)) - p12);
-            return n + ((n * n * n) / 2) * (f + s + t);
+            return Math.Round(n + ((n * n * n) / 2) * (f + s + t), 9);
         }
 
         private static double n_y(double x, double n, double R, double b)
@@ -39,7 +39,7 @@ namespace OVModel_DopTheory
             double mu_R = mu / R;
             double s = mu_R * x * (2 * p11 + 2 * p12 - (2 * p12 / mu));
             double t = mu_R_R * b * b * ((p12 / mu) - p12 - p11);
-            return n + ((n * n * n) / 4) * (f + s + t);
+            return Math.Round(n + ((n * n * n) / 4) * (f + s + t), 9);
         }
 
         private static double n_z(double x, double n, double R, double b)
@@ -49,7 +49,7 @@ namespace OVModel_DopTheory
             double mu_R = mu / R;
             double s = mu_R * x * (4 * p12 - ((2*p11)/mu));
             double t = mu_R_R * b * b * ((p12 / mu) - p12 - p11);
-            return n + ((n * n * n) / 4) * (f + s + t);
+            return Math.Round(n + ((n * n * n) / 4) * (f + s + t), 9);
         }
 
 
@@ -64,6 +64,7 @@ namespace OVModel_DopTheory
             }
             return result;
         }
+
 
         public static Data Calculating(double b, double h, double n, double n_ob, double R, double x_start, double x_end, string title, string titleAxisX, string titleAxisY)
         {
@@ -153,12 +154,19 @@ namespace OVModel_DopTheory
                 n_z_prev = n_z;
                 x_prev = x_now;
             }
-
             // Нахождение уникальных точек пересечения, т.к. точки могут пересекаться
             // Например, значения n равны в точки x
             // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
             // То есть по сути являясь одной точкой
             equalsElements = getSetList(equalsElements);
+
+            for (int i = 0; i < equalsElements.Count; i++)
+            {
+                EqualElements e = equalsElements[i];
+                e.x = Math.Round(e.x, 6);
+                e.cross = $"{e.first}/{e.second}";
+                equalsElements[i] = e;
+            }
 
             schedule.Series.Add(lineSeries_n);
             schedule.Series.Add(lineSeries_n_x);
@@ -202,7 +210,7 @@ namespace OVModel_DopTheory
                 n = (y3 - y1) / (y3 - y4);   // c(y)/b(y)
             }
             resultDot.x = x3 + (x4 - x3) * n;  // x3 + (-b(x))*n
-            resultDot.y = y3 + (y4 - y3) * n;  // y3 +(-b(y))*n
+            resultDot.y = Math.Round(y3 + (y4 - y3) * n, 9);  // y3 +(-b(y))*n
             return resultDot;
         }
     }

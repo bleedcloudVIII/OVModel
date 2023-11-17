@@ -12,6 +12,7 @@ namespace OVModel_CommonClasses
         public double n_value { get; set; }
         public string first { get; set; }
         public string second { get; set; }
+        public string cross { get; set; }
 
         public static bool operator ==(EqualElements f, EqualElements s)
         {

@@ -80,13 +80,7 @@ namespace OVModel
 
                 OxyPlotSchedule.Model = data.scheduleModel;
                 Table.ItemsSource = data.itemsSourceTable;
-
-                PointsLabel.Content = $"Пересечения:\n";
-                
-                for (int i = 0; i < data.equalsElements.Count; i++)
-                {
-                    PointsLabel.Content += $"{data.equalsElements[i].first} и {data.equalsElements[i].second}:\n x = {data.equalsElements[i].x}\n n = {data.equalsElements[i].n_value}\n";
-                }
+                EqualsTable.ItemsSource = data.equalsElements;
             }
         }
 
@@ -112,7 +106,6 @@ namespace OVModel
             column1.IsReadOnly = true;
             Table.Columns.Add(column1);
 
-
             DataGridTextColumn column2 = new DataGridTextColumn();
             column2.Header = "n_x";
             column2.Binding = new Binding($"[1]");
@@ -134,6 +127,26 @@ namespace OVModel
             column4.IsReadOnly = true;
             Table.Columns.Add(column4);
 
+            DataGridTextColumn c1 = new DataGridTextColumn();
+            c1.Header = "Пересечение";
+            c1.Binding = new Binding($".cross");
+            c1.MaxWidth = 90;
+            c1.IsReadOnly = true;
+            EqualsTable.Columns.Add(c1);
+
+            DataGridTextColumn c2 = new DataGridTextColumn();
+            c2.Header = "x";
+            c2.Binding = new Binding($".x");
+            c2.MaxWidth = 60;
+            c2.IsReadOnly = true;
+            EqualsTable.Columns.Add(c2);
+
+            DataGridTextColumn c3 = new DataGridTextColumn();
+            c3.Header = "n";
+            c3.Binding = new Binding($".n_value");
+            c3.MaxWidth = 75;
+            c3.IsReadOnly = true;
+            EqualsTable.Columns.Add(c3);
         }
 
         private void Input_TextChanged(object sender, TextChangedEventArgs e)
