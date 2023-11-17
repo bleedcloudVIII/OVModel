@@ -102,28 +102,28 @@ namespace OVModel
             DataGridTextColumn column1 = new DataGridTextColumn();
             column1.Header = "x";
             column1.Binding = new Binding($"[0]");
-            column1.MaxWidth = 50;
+            column1.MaxWidth = 100;
             column1.IsReadOnly = true;
             Table.Columns.Add(column1);
 
             DataGridTextColumn column2 = new DataGridTextColumn();
             column2.Header = "n_x";
             column2.Binding = new Binding($"[1]");
-            column2.MaxWidth = 75;
+            column2.MaxWidth = 100;
             column2.IsReadOnly = true;
             Table.Columns.Add(column2);
 
             DataGridTextColumn column3 = new DataGridTextColumn();
             column3.Header = "n_y";
             column3.Binding = new Binding($"[2]");
-            column3.MaxWidth = 75;
+            column3.MaxWidth = 100;
             column3.IsReadOnly = true;
             Table.Columns.Add(column3);
 
             DataGridTextColumn column4 = new DataGridTextColumn();
             column4.Header = "n_z";
             column4.Binding = new Binding($"[3]");
-            column4.MaxWidth = 75;
+            column4.MaxWidth = 100;
             column4.IsReadOnly = true;
             Table.Columns.Add(column4);
 
