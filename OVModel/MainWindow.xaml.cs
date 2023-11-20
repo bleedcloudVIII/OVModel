@@ -188,15 +188,15 @@ namespace OVModel
                 
                 if (extension == "pdf" && OxyPlotSchedule.Model != null)
                 {
-                    OVModel_DopTheory.Export.Export_Schedule_pdf(OxyPlotSchedule, dlg);
+                    Export.Export_Schedule_pdf(OxyPlotSchedule, dlg);
                 }
                 else if (extension == "png" && OxyPlotSchedule.Model != null)
                 {
-                    OVModel_DopTheory.Export.Export_Schedule_png(OxyPlotSchedule, dlg);
+                    Export.Export_Schedule_png(OxyPlotSchedule, dlg);
                 }
                 else if (extension == "jpg" && OxyPlotSchedule.Model != null)
                 {
-                    OVModel_DopTheory.Export.Export_Schedule_jpg(OxyPlotSchedule, dlg);
+                    Export.Export_Schedule_jpg(OxyPlotSchedule, dlg);
 
                 }
                 else { }
@@ -214,7 +214,7 @@ namespace OVModel
 
             if (result == true)
             {
-                OVModel_DopTheory.Export.Export_Table_pdf(Table, dlg);
+                Export.Export_Table_pdf(Table, dlg);
             }
         }
     }

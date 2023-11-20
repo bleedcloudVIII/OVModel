@@ -16,11 +16,9 @@
 
     <Grid x:Name="MainGrid">
         <Menu VerticalAlignment="Top" Grid.ColumnSpan="2">
-            <MenuItem Header="Сохранение/Печать" >
+            <MenuItem Header="Сохранение" >
                 <MenuItem Header="Сохранить график" Click="MenuItem_Click_Save_Schedule"></MenuItem>
                 <MenuItem Header="Сохранить таблицу" Click="MenuItem_Click_Save_Table"></MenuItem>
-                <MenuItem Header="Печатать график"></MenuItem>
-                <MenuItem Header="Печатать таблицу"></MenuItem>
             </MenuItem>
             <MenuItem Header="Модель">
                 <MenuItem Header="Дополнительная"></MenuItem>

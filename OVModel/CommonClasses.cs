@@ -4,6 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using OxyPlot;
+using OxyPlot.Wpf;
+using OxyPlot.Axes;
+
+using iText.Kernel.Pdf;
+using iText.Layout;
+
 namespace OVModel_CommonClasses
 {
     public struct EqualElements
@@ -30,5 +37,92 @@ namespace OVModel_CommonClasses
         public List<List<double>> itemsSourceTable { get; set; }
         public OxyPlot.PlotModel scheduleModel { get; set; }
         public List<EqualElements> equalsElements { get; set; }
+    }
+
+    public static class Export
+    {
+        public static void Export_Schedule_png(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            PlotModel model = OxyPlotSchedule.Model;
+            OxyPlot.SkiaSharp.PngExporter.Export(model, dlg.FileName, 1000, 800);
+        }
+
+        public static void Export_Schedule_pdf(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            PlotModel model = OxyPlotSchedule.Model;
+            OxyPlot.SkiaSharp.PdfExporter.Export(model, dlg.FileName, 1000, 800);
+        }
+
+        public static void Export_Schedule_jpg(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            PlotModel model = OxyPlotSchedule.Model;
+            OxyPlot.SkiaSharp.JpegExporter.Export(model, dlg.FileName, 1000, 800, 100);
+        }
+
+        public static void Export_Table_pdf(System.Windows.Controls.DataGrid Table, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            PdfWriter writer = new PdfWriter(dlg.FileName);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+
+            iText.Layout.Element.Table table = new iText.Layout.Element.Table(Table.Columns.Count);
+
+            foreach (System.Windows.Controls.DataGridColumn c in Table.Columns)
+            {
+                table.AddCell(new iText.Layout.Element.Paragraph(c.Header.ToString()));
+            }
+
+            List<List<double>> s = Table.Items.OfType<List<double>>().ToList().ToList();
+
+            foreach (List<double> r in s)
+            {
+                for (int i = 0; i < r.Count; i++)
+                {
+                    table.AddCell(new iText.Layout.Element.Paragraph(r[i].ToString()));
+
+                }
+            }
+
+            document.Add(table);
+            document.Close();
+        }
+    }
+
+    struct Dot
+    {
+        public double x { get; set; }
+        public double y { get; set; }
+        public static Dot CrossTwoLines(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
+        {
+            // https://habr.com/ru/articles/523440/
+            double n;
+            Dot resultDot = new Dot();
+            if (y2 - y1 != 0)
+            {  // a(y)
+                double q = (x2 - x1) / (y1 - y2);
+                double sn = (x3 - x4) + (y3 - y4) * q;
+                if (sn == 0)
+                {
+                    resultDot.x = -1;
+                    resultDot.y = -1;
+                    return resultDot;
+                }// c(x) + c(y)*q
+                double fn = (x3 - x1) + (y3 - y1) * q;   // b(x) + b(y)*q
+                n = fn / sn;
+            }
+            else
+            {
+                if (y3 - y4 == 0)
+                {
+                    resultDot.x = -1;  // b(y)
+                    resultDot.y = -1;
+                    return resultDot;
+                }
+                n = (y3 - y1) / (y3 - y4);   // c(y)/b(y)
+            }
+            resultDot.x = x3 + (x4 - x3) * n;  // x3 + (-b(x))*n
+            resultDot.y = Math.Round(y3 + (y4 - y3) * n, 9);  // y3 +(-b(y))*n
+            return resultDot;
+        }
     }
 }
