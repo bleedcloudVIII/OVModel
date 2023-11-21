@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 
 using OVModel_DopTheory;
 using OVModel_CommonClasses;
+using OVModel_ClassicalTheory;
 
 
 //using System.IO;
@@ -49,6 +50,12 @@ namespace OVModel
             CreateColumns();
         }
 
+        /*
+         1 - классическая
+         2 - уточнённая
+         */
+        static int model_number = 1;
+
         private void DrawScheduleAndTable()
         {
             //Проверяю все ли значения можно перевести в double
@@ -76,7 +83,8 @@ namespace OVModel
                 if (titleAxisX == "") titleAxisX = DefaultTitleAxisX;
                 if (titleAxisY == "") titleAxisY = DefaultTitleAxisY;
 
-                Data data = OVModel_DopTheory.DopTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY);
+                Data data;
+                data = model_number == 1 ? ClassicalTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY) : DopTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY);
 
                 OxyPlotSchedule.Model = data.scheduleModel;
                 Table.ItemsSource = data.itemsSourceTable;
@@ -217,6 +225,18 @@ namespace OVModel
             {
                 Export.Export_Table_pdf(Table, dlg);
             }
+        }
+
+        private void MenuItem_Click_Model_1(object sender, RoutedEventArgs e)
+        {
+            model_number = 1;
+            DrawScheduleAndTable();
+        }
+
+        private void MenuItem_Click_Model_2(object sender, RoutedEventArgs e)
+        {
+            model_number = 2;
+            DrawScheduleAndTable();
         }
     }
 }

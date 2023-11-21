@@ -21,8 +21,8 @@
                 <MenuItem Header="Сохранить таблицу" Click="MenuItem_Click_Save_Table"></MenuItem>
             </MenuItem>
             <MenuItem Header="Модель">
-                <MenuItem Header="Дополнительная"></MenuItem>
-                <MenuItem Header="Классическая"></MenuItem>
+                <MenuItem Header="Классическая" Click="MenuItem_Click_Model_1"></MenuItem>
+                <MenuItem Header="Уточнённая" Click="MenuItem_Click_Model_2"></MenuItem>
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="Просмотр справки"></MenuItem>
@@ -95,7 +95,7 @@
                     <DataGrid x:Name="EqualsTable"
                   MaxWidth="310"
                   MinWidth="230"
-                  Height="90"
+                  Height="80"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"

@@ -7,57 +7,42 @@ using System.Threading.Tasks;
 using OxyPlot;
 using OxyPlot.Axes;
 
-
 using OVModel_CommonClasses;
 
 namespace OVModel_DopTheory
 {
     public static class DopTheory 
     {
-        // Global Variable
-        private const double p11 = 0.121;
-        private const double p12 = 0.27;
-        private const double mu = 0.164;
+
 
         private static double n_x(double x, double n, double R, double b)
         {
-            double mu_R_R = mu / (R * R);
-            double f = mu_R_R * x * x * (p12 - (p11 / (2 * mu)));
-            double mu_R = mu / R;
-            double s = mu_R * x * (p11 + p12 - (p12 / mu));
-            double t = mu_R_R * b * b * ((p11 / (2 * mu)) - p12);
+            double mu_R_R = GlobalVariable.mu / (R * R);
+            double f = mu_R_R * x * x * (GlobalVariable.p12 - (GlobalVariable.p11 / (2 * GlobalVariable.mu)));
+            double mu_R = GlobalVariable.mu / R;
+            double s = mu_R * x * (GlobalVariable.p11 + GlobalVariable.p12 - (GlobalVariable.p12 / GlobalVariable.mu));
+            double t = mu_R_R * b * b * ((GlobalVariable.p11 / (2 * GlobalVariable.mu)) - GlobalVariable.p12);
             return Math.Round(n + ((n * n * n) / 2) * (f + s + t), 9);
         }
 
         private static double n_y(double x, double n, double R, double b)
         {
-            double mu_R_R = mu / (R * R);
-            double f = mu_R_R * x * x * (p11 - (p12 / mu) + p12);
-            double mu_R = mu / R;
-            double s = mu_R * x * (2 * p11 + 2 * p12 - (2 * p12 / mu));
-            double t = mu_R_R * b * b * ((p12 / mu) - p12 - p11);
+            double mu_R_R = GlobalVariable.mu / (R * R);
+            double f = mu_R_R * x * x * (GlobalVariable.p11 - (GlobalVariable.p12 / GlobalVariable.mu) + GlobalVariable.p12);
+            double mu_R = GlobalVariable.mu / R;
+            double s = mu_R * x * (2 * GlobalVariable.p11 + 2 * GlobalVariable.p12 - (2 * GlobalVariable.p12 / GlobalVariable.mu));
+            double t = mu_R_R * b * b * ((GlobalVariable.p12 / GlobalVariable.mu) - GlobalVariable.p12 - GlobalVariable.p11);
             return Math.Round(n + ((n * n * n) / 4) * (f + s + t), 9);
         }
 
         private static double n_z(double x, double n, double R, double b)
         {
-            double mu_R_R = mu / (R * R);
-            double f = mu_R_R * x * x * (p11 - (p12 / mu) + p12);
-            double mu_R = mu / R;
-            double s = mu_R * x * (4 * p12 - ((2*p11)/mu));
-            double t = mu_R_R * b * b * ((p12 / mu) - p12 - p11);
+            double mu_R_R = GlobalVariable.mu / (R * R);
+            double f = mu_R_R * x * x * (GlobalVariable.p11 - (GlobalVariable.p12 / GlobalVariable.mu) + GlobalVariable.p12);
+            double mu_R = GlobalVariable.mu / R;
+            double s = mu_R * x * (4 * GlobalVariable.p12 - ((2* GlobalVariable.p11)/ GlobalVariable.mu));
+            double t = mu_R_R * b * b * ((GlobalVariable.p12 / GlobalVariable.mu) - GlobalVariable.p12 - GlobalVariable.p11);
             return Math.Round(n + ((n * n * n) / 4) * (f + s + t), 9);
-        }
-
-        private static List<EqualElements> getSetList(List<EqualElements> list)
-        {
-            List<EqualElements> result = new List<EqualElements>();
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (!result.Contains(list[i])) result.Add(list[i]);
-            }
-            return result;
         }
 
         public static Data Calculating(double b, double h, double n, double R, double x_start, double x_end, string title, string titleAxisX, string titleAxisY)
@@ -99,9 +84,9 @@ namespace OVModel_DopTheory
             {
                 // Вычисление значений текущего x и значений n
                 double x_now = x_start + h * i;
-                double n_x = OVModel_DopTheory.DopTheory.n_x(x_now, n, R, b);
-                double n_y = OVModel_DopTheory.DopTheory.n_y(x_now, n, R, b);
-                double n_z = OVModel_DopTheory.DopTheory.n_z(x_now, n, R, b);
+                double n_x = DopTheory.n_x(x_now, n, R, b);
+                double n_y = DopTheory.n_y(x_now, n, R, b);
+                double n_z = DopTheory.n_z(x_now, n, R, b);
 
                 // Если значения n равны, то помещаем в список элементов точки, пересечения
                 if (n_x == n_y) equalsElements.Add(new EqualElements() { x = x_now, first = "n_x", second = "n_y", n_value = n_x });
@@ -152,7 +137,7 @@ namespace OVModel_DopTheory
             // Например, значения n равны в точки x
             // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
             // То есть по сути являясь одной точкой
-            equalsElements = getSetList(equalsElements);
+            equalsElements = CommonMethods.getSetList(equalsElements);
 
             for (int i = 0; i < equalsElements.Count; i++)
             {
