@@ -55,7 +55,7 @@ namespace OVModel
             if (isCanConvertToDouble(Input_2b.Text) &&
                 isCanConvertToDouble(Input_h.Text) &&
                 isCanConvertToDouble(Input_n.Text) &&
-                isCanConvertToDouble(Input_n_ob.Text) &&
+                //isCanConvertToDouble(Input_n_ob.Text) &&
                 isCanConvertToDouble(Input_R.Text) &&
                 isCanConvertToDouble(Input_x_start.Text) &&
                 isCanConvertToDouble(Input_x_end.Text))
@@ -64,7 +64,7 @@ namespace OVModel
                 double b = System.Convert.ToDouble(Input_2b.Text) / 2;
                 double h = System.Convert.ToDouble(Input_h.Text);
                 double n = System.Convert.ToDouble(Input_n.Text);
-                double n_ob = System.Convert.ToDouble(Input_n_ob.Text);
+                //double n_ob = System.Convert.ToDouble(Input_n_ob.Text);
                 double R = System.Convert.ToDouble(Input_R.Text);
                 double x_start = System.Convert.ToDouble(Input_x_start.Text);
                 double x_end = System.Convert.ToDouble(Input_x_end.Text);
@@ -76,7 +76,7 @@ namespace OVModel
                 if (titleAxisX == "") titleAxisX = DefaultTitleAxisX;
                 if (titleAxisY == "") titleAxisY = DefaultTitleAxisY;
 
-                Data data = OVModel_DopTheory.DopTheory.Calculating(b, h, n, n_ob, R, x_start, x_end, title, titleAxisX, titleAxisY);
+                Data data = OVModel_DopTheory.DopTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY);
 
                 OxyPlotSchedule.Model = data.scheduleModel;
                 Table.ItemsSource = data.itemsSourceTable;
@@ -103,48 +103,55 @@ namespace OVModel
             column1.Header = "x";
             column1.Binding = new Binding($"[0]");
             column1.MaxWidth = 100;
+            column1.MinWidth = 75;
             column1.IsReadOnly = true;
             Table.Columns.Add(column1);
 
             DataGridTextColumn column2 = new DataGridTextColumn();
             column2.Header = "n_x";
             column2.Binding = new Binding($"[1]");
-            column2.MaxWidth = 100;
+            column2.MaxWidth = 125;
+            column2.MinWidth = 100;
             column2.IsReadOnly = true;
             Table.Columns.Add(column2);
 
             DataGridTextColumn column3 = new DataGridTextColumn();
             column3.Header = "n_y";
             column3.Binding = new Binding($"[2]");
-            column3.MaxWidth = 100;
+            column3.MaxWidth = 125;
+            column3.MinWidth = 100;
             column3.IsReadOnly = true;
             Table.Columns.Add(column3);
 
             DataGridTextColumn column4 = new DataGridTextColumn();
             column4.Header = "n_z";
             column4.Binding = new Binding($"[3]");
-            column4.MaxWidth = 100;
+            column4.MaxWidth = 125;
+            column4.MinWidth = 100;
             column4.IsReadOnly = true;
             Table.Columns.Add(column4);
 
             DataGridTextColumn c1 = new DataGridTextColumn();
             c1.Header = "Пересечение";
             c1.Binding = new Binding($".cross");
-            c1.MaxWidth = 90;
+            c1.MaxWidth = 115;
+            c1.MinWidth = 90;
             c1.IsReadOnly = true;
             EqualsTable.Columns.Add(c1);
 
             DataGridTextColumn c2 = new DataGridTextColumn();
             c2.Header = "x";
             c2.Binding = new Binding($".x");
-            c2.MaxWidth = 60;
+            c2.MaxWidth = 85;
+            c2.MinWidth = 60;
             c2.IsReadOnly = true;
             EqualsTable.Columns.Add(c2);
 
             DataGridTextColumn c3 = new DataGridTextColumn();
             c3.Header = "n";
             c3.Binding = new Binding($".n_value");
-            c3.MaxWidth = 75;
+            c3.MaxWidth = 100;
+            c3.MinWidth = 75;
             c3.IsReadOnly = true;
             EqualsTable.Columns.Add(c3);
         }
@@ -152,12 +159,6 @@ namespace OVModel
         private void Input_TextChanged(object sender, TextChangedEventArgs e)
         {
             DrawScheduleAndTable();
-        }
-
-        private void MenuItem_Click_ChangeTitleAxisX(object sender, RoutedEventArgs e)
-        {
-            //ChangeNameAxisWindow window = new ChangeNameAxisWindow();
-            //window.Show();  
         }
 
         private string GetExtension(string fileName)

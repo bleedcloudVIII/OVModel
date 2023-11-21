@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using OxyPlot;
-using OxyPlot.Wpf;
 using OxyPlot.Axes;
 
 
@@ -61,7 +60,7 @@ namespace OVModel_DopTheory
             return result;
         }
 
-        public static Data Calculating(double b, double h, double n, double n_ob, double R, double x_start, double x_end, string title, string titleAxisX, string titleAxisY)
+        public static Data Calculating(double b, double h, double n, double R, double x_start, double x_end, string title, string titleAxisX, string titleAxisY)
         {
             // Список элементов x, n_x, n_y, n_z для таблицы
             List<List<double>> result = new List<List<double>>();
