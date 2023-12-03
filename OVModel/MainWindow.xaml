@@ -15,7 +15,7 @@
     </Window.DataContext>-->
 
     <Grid x:Name="MainGrid">
-        <Menu VerticalAlignment="Top" Grid.ColumnSpan="2">
+        <Menu VerticalAlignment="Top">
             <MenuItem Header="Сохранение" >
                 <MenuItem Header="Сохранить график" Click="MenuItem_Click_Save_Schedule"></MenuItem>
                 <MenuItem Header="Сохранить таблицу" Click="MenuItem_Click_Save_Table"></MenuItem>
@@ -25,8 +25,8 @@
                 <MenuItem Header="Уточнённая" Click="MenuItem_Click_Model_2"></MenuItem>
             </MenuItem>
             <MenuItem Header="Справка">
-                <MenuItem Header="Просмотр справки"></MenuItem>
-                <MenuItem Header="О программе OVModel" Click="Spravkra_About_Click"></MenuItem>
+                <MenuItem Header="Просмотр справки" Click="MenuItem_Click_Spravka"></MenuItem>
+                <MenuItem Header="О программе OVModel" Click="MenuItem_Click_Spravka_About"></MenuItem>
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Vertical" Margin="0,20,0,0">

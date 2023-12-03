@@ -234,11 +234,18 @@ namespace OVModel
             }
         }
 
-        private void Spravkra_About_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_Spravka_About(object sender, RoutedEventArgs e)
         {
             Spravka_about spravka_about = new Spravka_about();
             spravka_about.Show();
         }
+
+        private void MenuItem_Click_Spravka(object sender, RoutedEventArgs e)
+        {
+            Spravka_show_spravka spravka_window = new Spravka_show_spravka();
+            spravka_window.Show();
+        }
+
         private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)
         {
             if (Table.Items.OfType<List<double>>().ToList().ToList().Count == 0)

@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OVModel"
         mc:Ignorable="d"
-        Title="О программе" Height="300" Width="500">
+        Title="О программе" Height="150" Width="500">
     <Grid>
-        <Label Content="OVModel&#xA;Приложение для моделирования физических процессов, &#xD;&#xA;происходящих в оптоволокне при его изгибе.&#xA;" HorizontalAlignment="Center" Height="264" VerticalAlignment="Center" Width="480"/>
+        <Label Content="OVModel&#xA;Приложение для моделирования физических процессов, &#xD;&#xA;происходящих в оптоволокне при его изгибе.&#xA;" HorizontalAlignment="Center" Height="114" VerticalAlignment="Center" Width="480"/>
 
     </Grid>
 </Window>
