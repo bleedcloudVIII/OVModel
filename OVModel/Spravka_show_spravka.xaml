@@ -1,0 +1,14 @@
+﻿<Window x:Class="OVModel.Spravka_show_spravka"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OVModel"
+        mc:Ignorable="d"
+        Title="Справка" Height="400" Width="650">
+    <Grid>
+        <Label Content="Для расчёта показателей преломления изогнутого волокна в направлении координатных осей &#xA;введите в поля нужные характеристики(показатель преломления сердечника, радиус оптического волока,&#xA;диаметр волокна, шаг вычисления, начальную и конечную координату x). &#xD;&#xA;При ввода используёте только цифры и символ запятой.&#xA;&#xA;В построенной таблице будут значения x, n_x, n_y, n_z.&#xA;&#xA;На построенном графике будут значения x, n_x, n_y, n_z.&#xA;При зажатии ЛКМ на графике можно будет увидеть координаты точки.&#xA;При нажатии ПКМ на график появляется меню, в котором можно изменить название таблице и её осей.&#xA;&#xA;В верхнем меню можно сохранить полученный график в формате pdf, png, jpg, таблицу в формате pdf.&#xA;Также можно изменить модель. По-умолчанию выбрана классическая модель.&#xA;Модели отличаются своими формулами. В уточнённой модели не убирается x, который близок у нулю.&#xA;&#xA;&#xA;" HorizontalAlignment="Center" Height="364" VerticalAlignment="Center" Width="630"/>
+
+
+    </Grid>
+</Window>

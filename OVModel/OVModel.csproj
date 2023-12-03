@@ -166,9 +166,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Error_input.xaml.cs">
+      <DependentUpon>Error_input.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Spravka_about.xaml.cs">
       <DependentUpon>Spravka_about.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Spravka_show_spravka.xaml.cs">
+      <DependentUpon>Spravka_show_spravka.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Error_input.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -185,6 +195,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Spravka_about.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Spravka_show_spravka.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -91,6 +91,19 @@ namespace OVModel
                 Table.ItemsSource = data.itemsSourceTable;
                 EqualsTable.ItemsSource = data.equalsElements;
             }
+            else if(
+                Input_2b.Text != "" &&
+                Input_h.Text != "" &&
+                Input_n.Text != "" &&
+                //isCanConvertToDouble(Input_n_ob.Text) &&
+                Input_R.Text != "" &&
+                Input_x_start.Text != "" &&
+                Input_x_end.Text != ""
+                )
+            {
+                Error_input err_window = new Error_input();
+                err_window.Show();
+            }
         }
 
         private bool isCanConvertToDouble(string str)
