@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OVModel"
         mc:Ignorable="d"
-        Title="Ошибка" Height="100" Width="300">
+        Title="Ошибка." Height="100" Width="300">
     <Grid>
         <Label Content="Ошибка при вводе. Возможно введены буквы&#xA;или специальные символы.&#xD;&#xA;Вместо точек вводите запятые." HorizontalAlignment="Center" Height="74" Margin="0,10,0,0" VerticalAlignment="Top" Width="280"/>
 

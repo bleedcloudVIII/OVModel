@@ -169,6 +169,9 @@
     <Compile Include="Error_input.xaml.cs">
       <DependentUpon>Error_input.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Error_save_without_schedule.xaml.cs">
+      <DependentUpon>Error_save_without_schedule.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Spravka_about.xaml.cs">
       <DependentUpon>Spravka_about.xaml</DependentUpon>
     </Compile>
@@ -176,6 +179,10 @@
       <DependentUpon>Spravka_show_spravka.xaml</DependentUpon>
     </Compile>
     <Page Include="Error_input.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Error_save_without_schedule.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

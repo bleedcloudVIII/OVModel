@@ -199,30 +199,38 @@ namespace OVModel
 
         private void MenuItem_Click_Save_Schedule(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "schedule"; // Default file name
-            dlg.DefaultExt = ".png"; // Default file extension
-            dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf|Text documents (.png)|*.png"; // Filter files by extension
-            Nullable<bool> result = dlg.ShowDialog();
-
-            if (result == true)
+            if (OxyPlotSchedule.Model == null)
             {
-                string extension = GetExtension(dlg.SafeFileName);
-                
-                if (extension == "pdf" && OxyPlotSchedule.Model != null)
-                {
-                    Export.Export_Schedule_pdf(OxyPlotSchedule, dlg);
-                }
-                else if (extension == "png" && OxyPlotSchedule.Model != null)
-                {
-                    Export.Export_Schedule_png(OxyPlotSchedule, dlg);
-                }
-                else if (extension == "jpg" && OxyPlotSchedule.Model != null)
-                {
-                    Export.Export_Schedule_jpg(OxyPlotSchedule, dlg);
+                Error_save_without_schedule err_window = new Error_save_without_schedule();
+                err_window.Show();
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = "schedule"; // Default file name
+                dlg.DefaultExt = ".png"; // Default file extension
+                dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf|Text documents (.png)|*.png"; // Filter files by extension
+                Nullable<bool> result = dlg.ShowDialog();
 
+                if (result == true)
+                {
+                    string extension = GetExtension(dlg.SafeFileName);
+
+                    if (extension == "pdf" && OxyPlotSchedule.Model != null)
+                    {
+                        Export.Export_Schedule_pdf(OxyPlotSchedule, dlg);
+                    }
+                    else if (extension == "png" && OxyPlotSchedule.Model != null)
+                    {
+                        Export.Export_Schedule_png(OxyPlotSchedule, dlg);
+                    }
+                    else if (extension == "jpg" && OxyPlotSchedule.Model != null)
+                    {
+                        Export.Export_Schedule_jpg(OxyPlotSchedule, dlg);
+
+                    }
+                    else { }
                 }
-                else { }
             }
         }
 
