@@ -241,16 +241,24 @@ namespace OVModel
         }
         private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "schedule"; // Default file name
-            dlg.DefaultExt = ".png"; // Default file extension
-            dlg.Filter = "Text documents (.pdf)|*.pdf"; // Filter files by extension
-
-            Nullable<bool> result = dlg.ShowDialog();
-
-            if (result == true)
+            if (Table.Items.OfType<List<double>>().ToList().ToList().Count == 0)
             {
-                Export.Export_Table_pdf(Table, dlg);
+                Error_save_without_table err_window = new Error_save_without_table();
+                err_window.Show();
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = "table"; // Default file name
+                dlg.DefaultExt = ".png"; // Default file extension
+                dlg.Filter = "Text documents (.pdf)|*.pdf"; // Filter files by extension
+
+                Nullable<bool> result = dlg.ShowDialog();
+
+                if (result == true)
+                {
+                    Export.Export_Table_pdf(Table, dlg);
+                }
             }
         }
 

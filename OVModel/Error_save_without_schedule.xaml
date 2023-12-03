@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OVModel"
         mc:Ignorable="d"
-        Title="Ошибка." Height="200" Width="300">
+        Title="Ошибка." Height="150" Width="300">
     <Grid>
-        <Label Content="Чтобы сохранить график, сначало нужно его&#xD;&#xA;создать.&#xD;&#xA;Пожалуйста, введите нужные физические &#xD;&#xA;характеристики." HorizontalAlignment="Center" Height="164" VerticalAlignment="Center" Width="280"/>
+        <Label Content="Чтобы сохранить график, сначала нужно его&#xA;создать.&#xA;Пожалуйста, введите нужные физические &#xA;характеристики.&#xD;&#xA;А затем сохраняйте график." HorizontalAlignment="Center" Height="114" VerticalAlignment="Center" Width="280"/>
 
     </Grid>
 </Window>

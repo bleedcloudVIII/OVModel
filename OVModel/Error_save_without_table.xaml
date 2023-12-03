@@ -1,0 +1,13 @@
+﻿<Window x:Class="OVModel.Error_save_without_table"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OVModel"
+        mc:Ignorable="d"
+        Title="Error_save_without_table" Height="150" Width="300">
+    <Grid>
+        <Label Content="Чтобы сохранить таблицу, сначала нужно её&#xA;создать.&#xA;Пожалуйста, введите нужные физические &#xA;характеристики.&#xD;&#xA;А затем сохраняйте таблицу." HorizontalAlignment="Center" Height="114" VerticalAlignment="Center" Width="280"/>
+
+    </Grid>
+</Window>
