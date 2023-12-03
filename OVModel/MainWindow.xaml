@@ -26,7 +26,7 @@
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="Просмотр справки"></MenuItem>
-                <MenuItem Header="О программе OVModel"></MenuItem>
+                <MenuItem Header="О программе OVModel" Click="Spravkra_About_Click"></MenuItem>
             </MenuItem>
         </Menu>
         <StackPanel Orientation="Vertical" Margin="0,20,0,0">
@@ -107,6 +107,6 @@
                 </StackPanel>
             </StackPanel>
         </StackPanel>
-        
+
     </Grid>
 </Window>

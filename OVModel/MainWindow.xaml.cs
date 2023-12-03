@@ -18,6 +18,7 @@ using OVModel_CommonClasses;
 using OVModel_ClassicalTheory;
 
 
+
 //using System.IO;
 //using System.Drawing;
 
@@ -212,6 +213,11 @@ namespace OVModel
             }
         }
 
+        private void Spravkra_About_Click(object sender, RoutedEventArgs e)
+        {
+            Spravka_about spravka_about = new Spravka_about();
+            spravka_about.Show();
+        }
         private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
