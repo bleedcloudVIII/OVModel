@@ -236,8 +236,8 @@ namespace OVModel
 
         private void MenuItem_Click_Spravka_About(object sender, RoutedEventArgs e)
         {
-            Spravka_about spravka_about = new Spravka_about();
-            spravka_about.Show();
+            Spravka_about spravka_window = new Spravka_about();
+            spravka_window.Show();
         }
 
         private void MenuItem_Click_Spravka(object sender, RoutedEventArgs e)
