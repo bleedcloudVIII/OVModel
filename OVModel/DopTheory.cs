@@ -122,9 +122,9 @@ namespace OVModel_DopTheory
                     equalsElements.Add(new EqualElements() { x = dot.x, first = "n_x", second = "n_z", n_value = dot.y });
                 }
 
-                lineSeries_n_x.Points.Add(new OxyPlot.DataPoint(x_now, n_x));
-                lineSeries_n_y.Points.Add(new OxyPlot.DataPoint(x_now, n_y));
-                lineSeries_n_z.Points.Add(new OxyPlot.DataPoint(x_now, n_z));
+                //lineSeries_n_x.Points.Add(new OxyPlot.DataPoint(x_now, n_x));
+                //lineSeries_n_y.Points.Add(new OxyPlot.DataPoint(x_now, n_y));
+                //lineSeries_n_z.Points.Add(new OxyPlot.DataPoint(x_now, n_z));
 
                 result.Add(new List<double> { x_now, n_x, n_y, n_z });
 
@@ -133,6 +133,20 @@ namespace OVModel_DopTheory
                 n_z_prev = n_z;
                 x_prev = x_now;
             }
+
+            double h_schedule = 0.00001;
+            for (int i = 0; i < System.Convert.ToInt32(Math.Abs(x_end - x_start) / h_schedule); i++)
+            {
+                double x_now = x_start + h_schedule * i;
+                double n_x = DopTheory.n_x(x_now, n, R, b);
+                double n_y = DopTheory.n_y(x_now, n, R, b);
+                double n_z = DopTheory.n_z(x_now, n, R, b);
+
+                lineSeries_n_x.Points.Add(new OxyPlot.DataPoint(x_now, n_x));
+                lineSeries_n_y.Points.Add(new OxyPlot.DataPoint(x_now, n_y));
+                lineSeries_n_z.Points.Add(new OxyPlot.DataPoint(x_now, n_z));
+            }
+
             // Нахождение уникальных точек пересечения, т.к. точки могут пересекаться
             // Например, значения n равны в точки x
             // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
