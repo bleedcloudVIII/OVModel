@@ -86,58 +86,61 @@ namespace OVModel_ClassicalTheory
 
             for (int i = 0; i <= count; i++)
             {
-                // Вычисление значений текущего x и значений n
                 double x_now = x_start + h * i;
                 double n_x = ClassicalTheory.n_x(x_now, n, R, b);
                 double n_y = ClassicalTheory.n_y(x_now, n, R, b);
                 double n_z = ClassicalTheory.n_z(x_now, n, R, b);
 
-                // Если значения n равны, то помещаем в список элементов точки, пересечения
+                //Conrec
+
                 if (n_x == n_y) equalsElements.Add(new EqualElements() { x = x_now, first = "n_x", second = "n_y", n_value = n_x });
-                else if (n_x == n_z) equalsElements.Add(new EqualElements() { x = x_now, first = "n_x", second = "n_z", n_value = n_x });
-                else if (n_y == n_z) equalsElements.Add(new EqualElements() { x = x_now, first = "n_y", second = "n_z", n_value = n_y });
-                // Т.к. иногда может быть пересечения графиков, не в точках x, а между ними
-                // Поэтому мы берём 4 точки (2 предыдущих для n и две текущих) и находим их точки пересечения
-                // x пред     x текущее
-                // (x3,y3)
-                //      \    (x2,y2)
-                //       \   /
-                //        \ / 
-                //         X
-                //        / \
-                //  (x1,y1)  \
-                //          (x4,y4)
-                // В кратце, если точка 3 находится выше(или =) точки 1, а точка 4 ниже 2
-                // Значит у двух векторов есть точка пересечения, которую мы и расчитываем
+                if (n_x == n_z) equalsElements.Add(new EqualElements() { x = x_now, first = "n_x", second = "n_z", n_value = n_x });
+                if (n_y == n_z) equalsElements.Add(new EqualElements() { x = x_now, first = "n_y", second = "n_z", n_value = n_y });
+                if (n_x == n) equalsElements.Add(new EqualElements() { x = x_now, first = "n_x", second = "n", n_value = n });
+                if (n_y == n) equalsElements.Add(new EqualElements() { x = x_now, first = "n_y", second = "n", n_value = n });
+                if (n_z == n) equalsElements.Add(new EqualElements() { x = x_now, first = "n_z", second = "n", n_value = n });
+
                 // Функция для нахождения точки пересечения взята из интернета https://habr.com/ru/articles/523440/
-                else if ((n_y_prev >= n_x) && (n_x >= n_y))
+                if ((n_y_prev > n_x) && (n_x_prev > n_y))
                 {
                     Dot dot = Dot.CrossTwoLines(x_prev, n_x_prev, x_now, n_x, x_prev, n_y_prev, x_now, n_y);
                     equalsElements.Add(new EqualElements() { x = dot.x, first = "n_y", second = "n_x", n_value = dot.y });
                 }
-                else if ((n_y_prev >= n_z) && (n_z >= n_y))
+                if ((n_y_prev > n_z) && (n_z_prev > n_y))
                 {
                     Dot dot = Dot.CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_y_prev, x_now, n_y);
                     equalsElements.Add(new EqualElements() { x = dot.x, first = "n_y", second = "n_z", n_value = dot.y });
                 }
-                else if ((n_x_prev >= n_z) && (n_z >= n_x))
+                if ((n_x_prev > n_z) && (n_z_prev > n_x))
                 {
                     Dot dot = Dot.CrossTwoLines(x_prev, n_z_prev, x_now, n_z, x_prev, n_x_prev, x_now, n_x);
                     equalsElements.Add(new EqualElements() { x = dot.x, first = "n_x", second = "n_z", n_value = dot.y });
                 }
+                if ((n_x_prev > n) && (n > n_x))
+                {
+                    Dot dot = Dot.CrossTwoLines(x_prev, n, x_now, n, x_prev, n_x_prev, x_now, n_x);
+                    equalsElements.Add(new EqualElements() { x = dot.x, first = "n_x", second = "n", n_value = dot.y });
+                }
+                if ((n_y_prev > n) && (n > n_y))
+                {
+                    Dot dot = Dot.CrossTwoLines(x_prev, n, x_now, n, x_prev, n_y_prev, x_now, n_y);
+                    equalsElements.Add(new EqualElements() { x = dot.x, first = "n_y", second = "n", n_value = dot.y });
+                }
+                if ((n_z_prev > n) && (n > n_z))
+                {
+                    Dot dot = Dot.CrossTwoLines(x_prev, n, x_now, n, x_prev, n_z_prev, x_now, n_z);
+                    equalsElements.Add(new EqualElements() { x = dot.x, first = "n_z", second = "n", n_value = dot.y });
+                }
 
-                //lineSeries_n_x.Points.Add(new OxyPlot.DataPoint(x_now, n_x));
-                //lineSeries_n_y.Points.Add(new OxyPlot.DataPoint(x_now, n_y));
-                //lineSeries_n_z.Points.Add(new OxyPlot.DataPoint(x_now, n_z));
 
                 result.Add(new List<double> { x_now, n_x, n_y, n_z });
-
                 n_x_prev = n_x;
                 n_y_prev = n_y;
                 n_z_prev = n_z;
                 x_prev = x_now;
             }
 
+            // Расчёт графика
             double h_schedule = 0.00001;
             for (int i = 0; i < System.Convert.ToInt32(Math.Abs(x_end - x_start) / h_schedule); i++)
             {
@@ -155,7 +158,6 @@ namespace OVModel_ClassicalTheory
             // Например, значения n равны в точки x
             // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
             // То есть по сути являясь одной точкой
-            equalsElements = CommonMethods.getSetList(equalsElements);
 
             for (int i = 0; i < equalsElements.Count; i++)
             {
@@ -165,12 +167,16 @@ namespace OVModel_ClassicalTheory
                 equalsElements[i] = e;
             }
 
+            equalsElements = CommonMethods.getSetList(equalsElements);
+
             schedule.Series.Add(lineSeries_n);
             schedule.Series.Add(lineSeries_n_x);
             schedule.Series.Add(lineSeries_n_y);
             schedule.Series.Add(lineSeries_n_z);
 
-            return new Data() { equalsElements = equalsElements, itemsSourceTable = result, scheduleModel = schedule };
+            return new Data() { equalsElements = equalsElements,
+                itemsSourceTable = result,
+                scheduleModel = schedule };
         }
     }
 }

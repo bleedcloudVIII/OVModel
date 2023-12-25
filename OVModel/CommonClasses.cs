@@ -94,7 +94,6 @@ namespace OVModel_CommonClasses
         public double y { get; set; }
         public static Dot CrossTwoLines(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
         {
-            // https://habr.com/ru/articles/523440/
             double n;
             Dot resultDot = new Dot();
             if (y2 - y1 != 0)

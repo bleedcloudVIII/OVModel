@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Error_save_without_table" Height="150" Width="300">
     <Grid>
-        <Label Content="Чтобы сохранить таблицу, сначала нужно её&#xA;создать.&#xA;Пожалуйста, введите нужные физические &#xA;характеристики.&#xD;&#xA;А затем сохраняйте таблицу." HorizontalAlignment="Center" Height="114" VerticalAlignment="Center" Width="280"/>
-
+        <Label Content="Чтобы сохранить таблицу, сначала нужно её&#xA;создать.&#xA;Пожалуйста, введите нужные физические &#xA;характеристики.&#xD;&#xA;А затем сохраняйте таблицу." HorizontalAlignment="Center"
+               Height="114" VerticalAlignment="Center" Width="280"/>
     </Grid>
 </Window>

@@ -71,7 +71,8 @@
                   />
                 </StackPanel>
                 <StackPanel>
-                    <oxy:PlotView x:Name="OxyPlotSchedule" Model="{Binding shedule}" Background="White" Height="408" Width="450" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0">
+                    <oxy:PlotView x:Name="OxyPlotSchedule" Background="White" Height="408" Width="450" 
+                                  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0">
                         <oxy:PlotView.ContextMenu>
                             <ContextMenu >
                                 <MenuItem Header="Название">
@@ -94,17 +95,15 @@
                 </StackPanel>
                 <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0">
                     <DataGrid x:Name="EqualsTable"
-                  MaxWidth="310"
-                  MinWidth="230"
-                  Height="80"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  CanUserResizeRows="False"
-                  CanUserReorderColumns="True"
-                  HorizontalScrollBarVisibility="Hidden"
-                  VerticalScrollBarVisibility="Hidden"
-                  />
+                    MaxWidth="310"
+                    MinWidth="230"
+                    Height="80"
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
+                    CanUserResizeRows="False"
+                    CanUserReorderColumns="True"
+                    />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

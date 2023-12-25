@@ -59,11 +59,9 @@ namespace OVModel
 
         private void DrawScheduleAndTable()
         {
-            //Проверяю все ли значения можно перевести в double
             if (isCanConvertToDouble(Input_2b.Text) &&
                 isCanConvertToDouble(Input_h.Text) &&
                 isCanConvertToDouble(Input_n.Text) &&
-                //isCanConvertToDouble(Input_n_ob.Text) &&
                 isCanConvertToDouble(Input_R.Text) &&
                 isCanConvertToDouble(Input_x_start.Text) &&
                 isCanConvertToDouble(Input_x_end.Text))
@@ -72,7 +70,6 @@ namespace OVModel
                 double b = System.Convert.ToDouble(Input_2b.Text) / 2;
                 double h = System.Convert.ToDouble(Input_h.Text);
                 double n = System.Convert.ToDouble(Input_n.Text);
-                //double n_ob = System.Convert.ToDouble(Input_n_ob.Text);
                 double R = System.Convert.ToDouble(Input_R.Text);
                 double x_start = System.Convert.ToDouble(Input_x_start.Text);
                 double x_end = System.Convert.ToDouble(Input_x_end.Text);
@@ -85,7 +82,9 @@ namespace OVModel
                 if (titleAxisY == "") titleAxisY = DefaultTitleAxisY;
 
                 Data data;
-                data = model_number == 1 ? ClassicalTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY) : DopTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY);
+                data = model_number == 1 ? 
+                    ClassicalTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY) :
+                    DopTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY);
 
                 OxyPlotSchedule.Model = data.scheduleModel;
                 Table.ItemsSource = data.itemsSourceTable;
@@ -95,7 +94,6 @@ namespace OVModel
                 Input_2b.Text != "" &&
                 Input_h.Text != "" &&
                 Input_n.Text != "" &&
-                //isCanConvertToDouble(Input_n_ob.Text) &&
                 Input_R.Text != "" &&
                 Input_x_start.Text != "" &&
                 Input_x_end.Text != ""
