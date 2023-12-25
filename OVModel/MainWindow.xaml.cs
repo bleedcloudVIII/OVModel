@@ -207,22 +207,22 @@ namespace OVModel
                 Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = "schedule"; // Default file name
                 dlg.DefaultExt = ".png"; // Default file extension
-                dlg.Filter = "Text documents (.jpg)|*.jpg|Text documents (.pdf)|*.pdf|Text documents (.png)|*.png"; // Filter files by extension
+                dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png"; // Filter files by extension
                 Nullable<bool> result = dlg.ShowDialog();
 
                 if (result == true)
                 {
                     string extension = GetExtension(dlg.SafeFileName);
 
-                    if (extension == "pdf" && OxyPlotSchedule.Model != null)
+                    if (extension == "pdf")
                     {
                         Export.Export_Schedule_pdf(OxyPlotSchedule, dlg);
                     }
-                    else if (extension == "png" && OxyPlotSchedule.Model != null)
+                    else if (extension == "png")
                     {
                         Export.Export_Schedule_png(OxyPlotSchedule, dlg);
                     }
-                    else if (extension == "jpg" && OxyPlotSchedule.Model != null)
+                    else if (extension == "jpg")
                     {
                         Export.Export_Schedule_jpg(OxyPlotSchedule, dlg);
 
@@ -256,13 +256,23 @@ namespace OVModel
                 Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = "table"; // Default file name
                 dlg.DefaultExt = ".png"; // Default file extension
-                dlg.Filter = "Text documents (.pdf)|*.pdf"; // Filter files by extension
+                dlg.Filter = "Pdf documents (.pdf)|*.pdf|Excel document (.xlsx)|*.xlsx"; // Filter files by extension
 
                 Nullable<bool> result = dlg.ShowDialog();
 
                 if (result == true)
                 {
-                    Export.Export_Table_pdf(Table, dlg);
+                    string extension = GetExtension(dlg.SafeFileName);
+                    Console.WriteLine(extension);
+                    if (extension == "pdf")
+                    {
+                        Export.Export_Table_pdf(Table, dlg);
+                    }
+                    else if (extension == "xlsx")
+                    {
+                        Console.WriteLine("QWDQWQDWQDD");
+                        Export.Export_Table_xlsx(Table, dlg);
+                    }
                 }
             }
         }

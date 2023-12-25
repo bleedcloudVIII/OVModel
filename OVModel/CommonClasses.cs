@@ -86,6 +86,67 @@ namespace OVModel_CommonClasses
             document.Add(table);
             document.Close();
         }
+
+        public static void Export_Table_xlsx(System.Windows.Controls.DataGrid Table, Microsoft.Win32.SaveFileDialog dlg)
+        {
+            // https://stackoverflow.com/questions/56351038/how-to-export-a-datagrid-to-excel-in-wpf
+            //Microsoft.Office.Interop.Excel.Application excel = null;
+            //Microsoft.Office.Interop.Excel.Workbook wb = null;
+            //object missing = Type.Missing;
+            //Microsoft.Office.Interop.Excel.Range rng = null;
+
+            // collection of DataGrid Items
+            //var dtExcelDataTable = Microsoft.Office.Interop.Excel.Excel ExcelTimeReport(txtFrmDte.Text, txtToDte.Text, strCondition);
+
+            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+            Microsoft.Office.Interop.Excel.Workbook wb = excel.Workbooks.Add();
+            Microsoft.Office.Interop.Excel.Worksheet ws = null;
+            
+            ws = (Microsoft.Office.Interop.Excel.Worksheet)wb.ActiveSheet;
+            //ws.Columns.AutoFit();
+            ws.Columns.EntireColumn.ColumnWidth = 25;
+
+            int index = 0;
+            foreach (System.Windows.Controls.DataGridColumn c in Table.Columns)
+            {
+                //table.AddCell(new iText.Layout.Element.Paragraph(c.Header.ToString()));
+                ws.Range["A1"].Offset[0, index].Value = c.Header;
+                index++;
+            }
+
+            List<List<double>> s = Table.Items.OfType<List<double>>().ToList().ToList();
+
+            index = 0;
+            foreach (List<double> r in s)
+            {
+                //for (int i = 0; i < r.Count; i++)
+                //{
+                    //table.AddCell(new iText.Layout.Element.Paragraph(r[i].ToString()));
+                ws.Range["A2"].Offset[index].Resize[1, s.Count].Value = r.ToArray();
+                index++;
+                //}
+            }
+
+            //// Header row
+            //for (int i = 0; i < dtExcelDataTable.Columns.Count; i++)
+            //{
+            //    ws.Range["A1"].Offset[0, Idx].Value = dtExcelDataTable.Columns[Idx].ColumnName;
+            //}
+
+            //// Data Rows
+            //for (int Idx = 0; Idx < dtExcelDataTable.Rows.Count; Idx++)
+            //{
+            //    ws.Range["A2"].Offset[Idx].Resize[1, dtExcelDataTable.Columns.Count].Value = dtExcelDataTable.Rows[Idx].ItemArray;
+            //}
+            
+            excel.DisplayAlerts = false;
+            wb.SaveAs(Filename: dlg.SafeFileName, FileFormat: Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault, Local: dlg.FileName);
+            wb.Close();
+            //excel.Visible = true;
+            //excel.GetSaveAsFilename();
+            //wb.Activate();
+            
+        }
     }
 
     struct Dot
