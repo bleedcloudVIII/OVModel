@@ -256,7 +256,7 @@ namespace OVModel
                 Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = "table"; // Default file name
                 dlg.DefaultExt = ".png"; // Default file extension
-                dlg.Filter = "Pdf documents (.pdf)|*.pdf|Excel document (.xlsx)|*.xlsx"; // Filter files by extension
+                dlg.Filter = "Excel document (.xlsx)|*.xlsx|Pdf documents (.pdf)|*.pdf"; // Filter files by extension
 
                 Nullable<bool> result = dlg.ShowDialog();
 
