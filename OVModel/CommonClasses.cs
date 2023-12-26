@@ -46,13 +46,11 @@ namespace OVModel_CommonClasses
             PlotModel model = OxyPlotSchedule.Model;
             OxyPlot.SkiaSharp.PngExporter.Export(model, dlg.FileName, 1000, 800);
         }
-
         public static void Export_Schedule_pdf(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
         {
             PlotModel model = OxyPlotSchedule.Model;
             OxyPlot.SkiaSharp.PdfExporter.Export(model, dlg.FileName, 1000, 800);
         }
-
         public static void Export_Schedule_jpg(OxyPlot.Wpf.PlotView OxyPlotSchedule, Microsoft.Win32.SaveFileDialog dlg)
         {
             PlotModel model = OxyPlotSchedule.Model;
@@ -87,29 +85,28 @@ namespace OVModel_CommonClasses
             document.Close();
         }
 
-        private static void releaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch (Exception ex)
-            {
-                obj = null;
-                //MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        }
+        //private static void releaseObject(object obj)
+        //{
+        //    try
+        //    {
+        //        System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+        //        obj = null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        obj = null;
+        //        //MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
+        //    }
+        //    finally
+        //    {
+        //        GC.Collect();
+        //    }
+        //}
 
+        // https://stackoverflow.com/questions/56351038/how-to-export-a-datagrid-to-excel-in-wpf
+        // https://stackoverflow.com/questions/23928146/populate-excel-sheet-with-c-sharp
         public static void Export_Table_xlsx(System.Windows.Controls.DataGrid Table, Microsoft.Win32.SaveFileDialog dlg)
-        {
-            // https://stackoverflow.com/questions/56351038/how-to-export-a-datagrid-to-excel-in-wpf
-            // https://stackoverflow.com/questions/23928146/populate-excel-sheet-with-c-sharp
-            
+        {    
             Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
             Microsoft.Office.Interop.Excel.Workbook xlWorkBook = xlApp.Workbooks.Add();
             Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
@@ -133,10 +130,6 @@ namespace OVModel_CommonClasses
             xlWorkBook.SaveAs(Filename: dlg.FileName, FileFormat: Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
             xlWorkBook.Close(SaveChanges: true);
             xlApp.Quit();
-
-            releaseObject(xlWorkSheet);
-            releaseObject(xlWorkBook);
-            releaseObject(xlApp);
         }
     }
 
