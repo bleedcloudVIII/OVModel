@@ -270,7 +270,6 @@ namespace OVModel
                     }
                     else if (extension == "xlsx")
                     {
-                        Console.WriteLine("QWDQWQDWQDD");
                         Export.Export_Table_xlsx(Table, dlg);
                     }
                 }
