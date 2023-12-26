@@ -98,7 +98,6 @@ namespace OVModel_CommonClasses
             {
                 obj = null;
                 //MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
-                // asdawdad
             }
             finally
             {
