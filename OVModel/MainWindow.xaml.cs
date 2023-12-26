@@ -187,7 +187,7 @@ namespace OVModel
                 Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = "schedule"; // Default file name
                 dlg.DefaultExt = ".png"; // Default file extension
-                dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png"; // Filter files by extension
+                dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png";
                 Nullable<bool> result = dlg.ShowDialog();
 
                 if (result == true)
@@ -207,21 +207,8 @@ namespace OVModel
                         Export.Export_Schedule_jpg(OxyPlotSchedule, dlg);
 
                     }
-                    else { }
                 }
             }
-        }
-
-        private void MenuItem_Click_Spravka_About(object sender, RoutedEventArgs e)
-        {
-            Spravka_about spravka_window = new Spravka_about();
-            spravka_window.Show();
-        }
-
-        private void MenuItem_Click_Spravka(object sender, RoutedEventArgs e)
-        {
-            Spravka_show_spravka spravka_window = new Spravka_show_spravka();
-            spravka_window.Show();
         }
 
         private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)
@@ -236,7 +223,7 @@ namespace OVModel
                 Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
                 dlg.FileName = "table"; // Default file name
                 dlg.DefaultExt = ".png"; // Default file extension
-                dlg.Filter = "Excel document (.xlsx)|*.xlsx|Pdf documents (.pdf)|*.pdf"; // Filter files by extension
+                dlg.Filter = "Excel document (.xlsx)|*.xlsx|Pdf documents (.pdf)|*.pdf";
 
                 Nullable<bool> result = dlg.ShowDialog();
 
@@ -254,6 +241,18 @@ namespace OVModel
                     }
                 }
             }
+        }
+
+        private void MenuItem_Click_Spravka_About(object sender, RoutedEventArgs e)
+        {
+            Spravka_about spravka_window = new Spravka_about();
+            spravka_window.Show();
+        }
+
+        private void MenuItem_Click_Spravka(object sender, RoutedEventArgs e)
+        {
+            Spravka_show_spravka spravka_window = new Spravka_show_spravka();
+            spravka_window.Show();
         }
 
         private void MenuItem_Click_Model_1(object sender, RoutedEventArgs e)

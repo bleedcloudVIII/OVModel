@@ -59,16 +59,9 @@
                     </StackPanel>
                 </StackPanel>
                 <StackPanel VerticalAlignment="Top" Margin="10,0,0,0">
-                    <DataGrid x:Name="Table"
-                    MinWidth="380"
-                    MaxWidth="485"
-                    Height="410"
-                    AutoGenerateColumns="False"
-                    CanUserAddRows="False"
-                    CanUserDeleteRows="False"
-                    CanUserResizeRows="False"
-                    CanUserReorderColumns="True"
-                  />
+                    <DataGrid x:Name="Table" MinWidth="380" MaxWidth="485" Height="410"
+                    AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                    CanUserResizeRows="False" CanUserReorderColumns="True" />
                 </StackPanel>
                 <StackPanel>
                     <oxy:PlotView x:Name="OxyPlotSchedule" Background="White" Height="408" Width="450" 
@@ -94,16 +87,9 @@
                     <Label Content="Точки перехода изогнутого ООВ из двуосного состояния &quot;кристалла&quot; в одноосное"></Label>
                 </StackPanel>
                 <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0">
-                    <DataGrid x:Name="EqualsTable"
-                    MaxWidth="310"
-                    MinWidth="230"
-                    Height="80"
-                    AutoGenerateColumns="False"
-                    CanUserAddRows="False"
-                    CanUserDeleteRows="False"
-                    CanUserResizeRows="False"
-                    CanUserReorderColumns="True"
-                    />
+                    <DataGrid x:Name="EqualsTable" MaxWidth="310" MinWidth="230" Height="80"
+                    AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                    CanUserResizeRows="False" CanUserReorderColumns="True"/>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

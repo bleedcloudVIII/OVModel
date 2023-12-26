@@ -109,7 +109,7 @@ namespace OVModel_CommonClasses
         {
             // https://stackoverflow.com/questions/56351038/how-to-export-a-datagrid-to-excel-in-wpf
             // https://stackoverflow.com/questions/23928146/populate-excel-sheet-with-c-sharp
-            // dwadad
+            
             Microsoft.Office.Interop.Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
             Microsoft.Office.Interop.Excel.Workbook xlWorkBook = xlApp.Workbooks.Add();
             Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
