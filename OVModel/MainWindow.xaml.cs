@@ -17,26 +17,6 @@ using OVModel_DopTheory;
 using OVModel_CommonClasses;
 using OVModel_ClassicalTheory;
 
-
-
-//using System.IO;
-//using System.Drawing;
-
-//using iText.Kernel.Pdf;
-//using iText.Layout;
-//using iText.Layout.Element;
-//using iText.Layout.Properties;
-//using iText.IO.Font;
-//using iText.Kernel.Pdf.Canvas.Draw;
-//using iText.Kernel.Colors;
-//using iText.Kernel.Font;
-//using iText.IO.Font.Constants;
-
-//using OxyPlot;
-//using OxyPlot.Wpf;
-//using OxyPlot.Axes;
-//using OxyPlot.Series;
-
 namespace OVModel
 {
     public partial class MainWindow : Window
@@ -82,7 +62,7 @@ namespace OVModel
                 if (titleAxisY == "") titleAxisY = DefaultTitleAxisY;
 
                 Data data;
-                data = model_number == 1 ? 
+                data = model_number == 1 ?
                     ClassicalTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY) :
                     DopTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY);
 
@@ -90,7 +70,7 @@ namespace OVModel
                 Table.ItemsSource = data.itemsSourceTable;
                 EqualsTable.ItemsSource = data.equalsElements;
             }
-            else if(
+            else if (
                 Input_2b.Text != "" &&
                 Input_h.Text != "" &&
                 Input_n.Text != "" &&
