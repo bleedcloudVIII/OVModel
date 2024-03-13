@@ -6,14 +6,12 @@
             xmlns:oxy="http://oxyplot.org/wpf"
             xmlns:local="clr-namespace:OVModel"
             Title="OVModel"
-            Height="600"
-            Width="1250"
+            Height="900"
+            Width="1600"
             FontFamily="IBM Plex Sans"
+            WindowState="Maximized"
+            WindowStyle="SingleBorderWindow"
         >
-    <!--<Window.DataContext>
-        <local:Schedule/>
-    </Window.DataContext>-->
-
     <Grid x:Name="MainGrid">
         <Menu VerticalAlignment="Top">
             <MenuItem Header="Сохранение" >
@@ -59,12 +57,12 @@
                     </StackPanel>
                 </StackPanel>
                 <StackPanel VerticalAlignment="Top" Margin="10,0,0,0">
-                    <DataGrid x:Name="Table" MinWidth="380" MaxWidth="485" Height="410"
+                    <DataGrid x:Name="Table" MinWidth="380" MaxWidth="485" Height="300"
                     AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                     CanUserResizeRows="False" CanUserReorderColumns="True" />
                 </StackPanel>
                 <StackPanel>
-                    <oxy:PlotView x:Name="OxyPlotSchedule" Background="White" Height="408" Width="450" 
+                    <oxy:PlotView x:Name="OxyPlotSchedule" Background="White" Height="300" Width="450" 
                                   HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,0,0,0">
                         <oxy:PlotView.ContextMenu>
                             <ContextMenu >
@@ -91,8 +89,13 @@
                     AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                     CanUserResizeRows="False" CanUserReorderColumns="True"/>
                 </StackPanel>
+                <StackPanel >
+                    <oxy:PlotView x:Name="OxyPlotSchedule2" Background="White" Height="300" Width="450" 
+                                  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0">
+
+                    </oxy:PlotView>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
-
     </Grid>
 </Window>
