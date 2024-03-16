@@ -37,6 +37,9 @@ namespace OVModel
          */
         static int model_number = 1;
 
+        List<EqualElements> equals_list = new List<EqualElements>();
+        List<EqualElements> tmp_equals = new List<EqualElements>();
+
         private void DrawScheduleAndTable()
         {
             if (isCanConvertToDouble(Input_2b.Text) &&
@@ -68,7 +71,8 @@ namespace OVModel
 
                 OxyPlotSchedule.Model = data.scheduleModel;
                 Table.ItemsSource = data.itemsSourceTable;
-                EqualsTable.ItemsSource = data.equalsElements;
+                //EqualsTable.ItemsSource = data.equalsElements;
+                tmp_equals = data.equalsElements;
             }
             else if (
                 Input_2b.Text != "" &&
@@ -265,6 +269,17 @@ namespace OVModel
         {
             model_number = 2;
             DrawScheduleAndTable();
+        }
+
+        private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
+        {
+            //equals.Add(tmp_equals);
+            //equals_list.Append(tmp_equals);
+            for (int i = 0; i < tmp_equals.Count; i++)
+            {
+                equals_list.Add(tmp_equals[i]);
+            }
+            EqualsTable.ItemsSource = equals_list;
         }
     }
 }
