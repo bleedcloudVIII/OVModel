@@ -30,6 +30,15 @@ namespace OVModel_CommonClasses
         {
             return !(f == s);
         }
+
+        public EqualElements(EqualElements elem)
+        {
+            x = elem.x;
+            n_value = elem.n_value;
+            first = elem.first;
+            second = elem.second;
+            cross = elem.cross;
+        }
     }
 
     public struct Data

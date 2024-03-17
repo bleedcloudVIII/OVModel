@@ -17,6 +17,10 @@ using OVModel_DopTheory;
 using OVModel_CommonClasses;
 using OVModel_ClassicalTheory;
 
+using OxyPlot;
+using OxyPlot.Axes;
+
+
 namespace OVModel
 {
     public partial class MainWindow : Window
@@ -39,7 +43,7 @@ namespace OVModel
 
         List<EqualElements> equals_list = new List<EqualElements>();
         List<EqualElements> tmp_equals = new List<EqualElements>();
-
+        
         private void DrawScheduleAndTable()
         {
             if (isCanConvertToDouble(Input_2b.Text) &&
@@ -275,11 +279,43 @@ namespace OVModel
         {
             //equals.Add(tmp_equals);
             //equals_list.Append(tmp_equals);
+            EqualsTable.ItemsSource = new List<EqualElements>() { };
             for (int i = 0; i < tmp_equals.Count; i++)
             {
-                equals_list.Add(tmp_equals[i]);
+                Console.WriteLine(tmp_equals[i].n_value);
+                Console.WriteLine(tmp_equals[i].x);
+
+                EqualElements tmp = new EqualElements(tmp_equals[i]);
+                tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
+                tmp.x = Math.Round(tmp_equals[i].x, 6);
+
+                equals_list.Add(tmp);
             }
             EqualsTable.ItemsSource = equals_list;
+
+            OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()
+            {
+                //Title = title,
+                Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
+                IsLegendVisible = true,
+                Axes =
+                {
+                    new LinearAxis() { Title = "titleX", Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
+                    new LinearAxis() { Title = "titleY", Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
+                },
+            };
+
+            OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries();
+            lineSeries.Title = "series_title";
+
+            //lineSeries_n_x.Points.Add(new OxyPlot.DataPoint(x_now, n_x))
+            // 0,123  10
+            for (int i = 0; i < equals_list.Count; i++)
+                lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
+
+            tmp_model.Series.Add(lineSeries);
+
+            OxyPlotSchedule2.Model = tmp_model;
         }
     }
 }
