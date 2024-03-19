@@ -290,6 +290,7 @@ namespace OVModel
 
                 equals_list.Add(tmp);
             }
+            equals_list.Sort();
             EqualsTable.ItemsSource = equals_list;
 
             OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()

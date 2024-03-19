@@ -13,7 +13,7 @@ using iText.Layout;
 
 namespace OVModel_CommonClasses
 {
-    public struct EqualElements
+    public struct EqualElements: IComparable
     {
         public double x { get; set; }
         public double n_value { get; set; }
@@ -38,6 +38,12 @@ namespace OVModel_CommonClasses
             first = elem.first;
             second = elem.second;
             cross = elem.cross;
+        }
+
+        public int CompareTo(object o)
+        {
+            if (o is EqualElements eq) return eq.x.CompareTo(x);
+            else throw new ArgumentException("Error on EqualElements struct");
         }
     }
 

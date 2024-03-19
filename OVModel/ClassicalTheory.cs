@@ -112,6 +112,7 @@ namespace OVModel_ClassicalTheory
             }
 
             equalsElements = Dot.CrossPoints(result, n);
+            //equalsElements.Sort();
 
             // Нахождение уникальных точек пересечения, т.к. точки могут пересекаться
             // Например, значения n равны в точки x
