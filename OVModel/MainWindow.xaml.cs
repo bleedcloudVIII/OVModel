@@ -277,8 +277,7 @@ namespace OVModel
 
         private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
         {
-            //equals.Add(tmp_equals);
-            //equals_list.Append(tmp_equals);
+            //ww(1, 1, 5, 2, 1, 4, 5, 3);
             EqualsTable.ItemsSource = new List<EqualElements>() { };
             for (int i = 0; i < tmp_equals.Count; i++)
             {
@@ -308,8 +307,6 @@ namespace OVModel
             OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries();
             lineSeries.Title = "series_title";
 
-            //lineSeries_n_x.Points.Add(new OxyPlot.DataPoint(x_now, n_x))
-            // 0,123  10
             for (int i = 0; i < equals_list.Count; i++)
                 lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
 
