@@ -332,6 +332,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Methods.cs" />
     <Compile Include="Error_input.xaml.cs">
       <DependentUpon>Error_input.xaml</DependentUpon>
     </Compile>
