@@ -277,7 +277,6 @@ namespace OVModel
 
         private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
         {
-            //ww(1, 1, 5, 2, 1, 4, 5, 3);
             EqualsTable.ItemsSource = new List<EqualElements>() { };
             for (int i = 0; i < tmp_equals.Count; i++)
             {
