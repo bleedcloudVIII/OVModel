@@ -308,31 +308,61 @@ namespace OVModel
                 IsLegendVisible = true,
                 Axes =
                 {
-                    new LinearAxis() { Title = "titleX", Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
-                    new LinearAxis() { Title = "titleY", Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
+                    new LinearAxis() { Title = "x", Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
+                    new LinearAxis() { Title = "n", Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
                 },
             };
 
 
-            OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries();
-            lineSeries.Title = "series_title";
+            OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries
+            {
+                Title = "Точки пересечения"
+            };
 
             // Берутся точки, которые выбрал пользователь
             // Затем добавляются в модель
             for (int i = 0; i < equals_list.Count; i++)
                 lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
 
-            // Рассчёт по методу
-            List<List<double>> result = Approksimacia.approksimacia_polinom_2(equals_list);
+            if (method_number == 1)
+            {
+                // Рассчёт по методу
+                List<List<double>> result = Approksimacia.approksimacia_polinom_1(equals_list);
 
-            OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries();
-            lineSeries2.Title = "TITle ad";
+                OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
+                {
+                    Title = "Аппроксимация(Полином 1 степени)"
+                };
 
-            for (int i = 0; i < result.Count; i++)
-                lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+                for (int i = 0; i < result[0].Count; i++)
+                    lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
 
+                tmp_model.Series.Add(lineSeries2);
+            }
+            else if (method_number == 2)
+            {
+                // Рассчёт по методу
+                List<List<double>> result = Approksimacia.approksimacia_polinom_2(equals_list);
+
+                OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
+                {
+                    Title = "Аппроксимация(Полином 2 степени)"
+                };
+
+                for (int i = 0; i < result[0].Count; i++)
+                    lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+
+                tmp_model.Series.Add(lineSeries2);
+            }
+            else if (method_number == 3)
+            {
+
+            }
+            else
+            {
+                // ERROR
+            }
             tmp_model.Series.Add(lineSeries);
-            tmp_model.Series.Add(lineSeries2);
 
             OxyPlotSchedule2.Model = tmp_model;
         }
