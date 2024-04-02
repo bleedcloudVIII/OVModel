@@ -50,7 +50,7 @@ namespace OVModel_DopTheory
 
             // Количество x в таблице
             int count = 0;
-            if (h != 0) count = System.Convert.ToInt32(Math.Abs(x_end - x_start) / h);
+            if (h != 0) count = (Int32)(Math.Abs(x_end - x_start) / h);
 
             PlotModel schedule = new PlotModel() {
                 Title = title,
@@ -150,7 +150,7 @@ namespace OVModel_DopTheory
             }
 
             double h_schedule = 0.00001;
-            for (int i = 0; i < System.Convert.ToInt32(Math.Abs(x_end - x_start) / h_schedule); i++)
+            for (int i = 0; i < (Int32)(Math.Abs(x_end - x_start) / h_schedule); i++)
             {
                 double x_now = x_start + h_schedule * i;
                 double n_x = DopTheory.n_x(x_now, n, R, b);

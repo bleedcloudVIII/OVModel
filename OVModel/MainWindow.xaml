@@ -19,8 +19,13 @@
                 <MenuItem Header="Сохранить таблицу" Click="MenuItem_Click_Save_Table"></MenuItem>
             </MenuItem>
             <MenuItem Header="Модель">
-                <MenuItem Header="Классическая" Click="MenuItem_Click_Model_1"></MenuItem>
-                <MenuItem Header="Уточнённая" Click="MenuItem_Click_Model_2"></MenuItem>
+                <MenuItem Header="Классическая" IsCheckable="True" Click="MenuItem_Click_Model_1"></MenuItem>
+                <MenuItem Header="Уточнённая" IsCheckable="False" Click="MenuItem_Click_Model_2"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Метод">
+                <MenuItem Header="Аппроксимация(полином 1)" Click="MenuItem_Click_Method_1"></MenuItem>
+                <MenuItem Header="Аппроксимация(полином 2)" Click="MenuItem_Click_Method_2"></MenuItem>
+                <MenuItem Header="Интерполяция" Click="MenuItem_Click_Method_Interpolation"></MenuItem>
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="Просмотр справки" Click="MenuItem_Click_Spravka"></MenuItem>

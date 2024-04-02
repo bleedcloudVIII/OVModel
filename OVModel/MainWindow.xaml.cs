@@ -40,6 +40,7 @@ namespace OVModel
          2 - уточнённая
          */
         static int model_number = 1;
+        static int method_number = 2;
 
         List<EqualElements> equals_list = new List<EqualElements>();
         List<EqualElements> tmp_equals = new List<EqualElements>();
@@ -54,12 +55,12 @@ namespace OVModel
                 isCanConvertToDouble(Input_x_end.Text))
             {
                 // Получаю все значения
-                double b = System.Convert.ToDouble(Input_2b.Text) / 2;
-                double h = System.Convert.ToDouble(Input_h.Text);
-                double n = System.Convert.ToDouble(Input_n.Text);
-                double R = System.Convert.ToDouble(Input_R.Text);
-                double x_start = System.Convert.ToDouble(Input_x_start.Text);
-                double x_end = System.Convert.ToDouble(Input_x_end.Text);
+                double b = double.Parse(Input_2b.Text) / 2;
+                double h = double.Parse(Input_h.Text);
+                double n = double.Parse(Input_n.Text);
+                double R = double.Parse(Input_R.Text);
+                double x_start = double.Parse(Input_x_start.Text);
+                double x_end = double.Parse(Input_x_end.Text);
 
                 string title = InputScheduleTitle.Text;
                 string titleAxisX = InputScheduleAxisX.Text;
@@ -96,7 +97,7 @@ namespace OVModel
         {
             try
             {
-                System.Convert.ToDouble(str);
+                double.Parse(str);
                 return true;
             }
             catch (Exception e)
@@ -275,23 +276,27 @@ namespace OVModel
             DrawScheduleAndTable();
         }
 
-        private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_Method_1(object sender, RoutedEventArgs e)
         {
-            EqualsTable.ItemsSource = new List<EqualElements>() { };
-            for (int i = 0; i < tmp_equals.Count; i++)
-            {
-                Console.WriteLine(tmp_equals[i].n_value);
-                Console.WriteLine(tmp_equals[i].x);
+            method_number = 1;
+            Draw_Schedule_For_Points();
+        }
 
-                EqualElements tmp = new EqualElements(tmp_equals[i]);
-                tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
-                tmp.x = Math.Round(tmp_equals[i].x, 6);
+        private void MenuItem_Click_Method_2(object sender, RoutedEventArgs e)
+        {
+            method_number = 2;
+            
+            Draw_Schedule_For_Points();
+        }
 
-                equals_list.Add(tmp);
-            }
-            equals_list.Sort();
-            EqualsTable.ItemsSource = equals_list;
+        private void MenuItem_Click_Method_Interpolation(object sender, RoutedEventArgs e)
+        {
+            method_number = 3;
+            Draw_Schedule_For_Points();
+        }
 
+        private void Draw_Schedule_For_Points()
+        {
             OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()
             {
                 //Title = title,
@@ -313,6 +318,25 @@ namespace OVModel
             tmp_model.Series.Add(lineSeries);
 
             OxyPlotSchedule2.Model = tmp_model;
+        }
+
+        private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
+        {
+            EqualsTable.ItemsSource = new List<EqualElements>() { };
+            for (int i = 0; i < tmp_equals.Count; i++)
+            {
+                Console.WriteLine(tmp_equals[i].n_value);
+                Console.WriteLine(tmp_equals[i].x);
+
+                EqualElements tmp = new EqualElements(tmp_equals[i]);
+                tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
+                tmp.x = Math.Round(tmp_equals[i].x, 6);
+
+                equals_list.Add(tmp);
+            }
+            equals_list.Sort();
+            EqualsTable.ItemsSource = equals_list;
+            Draw_Schedule_For_Points();
         }
     }
 }
