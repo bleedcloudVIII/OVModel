@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using OVModel_DopTheory;
 using OVModel_CommonClasses;
 using OVModel_ClassicalTheory;
+using OVModel_Methods;
 
 using OxyPlot;
 using OxyPlot.Axes;
@@ -294,9 +295,12 @@ namespace OVModel
             method_number = 3;
             Draw_Schedule_For_Points();
         }
-
+        // TODO:
+        // - Блокировка изменения шага вычислений и предел координат. Также кнопка снятия блокировки, тогда очищается список точек пересечения
+        // - При одном x, разные значение n. Надо что-то делать
         private void Draw_Schedule_For_Points()
         {
+            // Создание модели для графика
             OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()
             {
                 //Title = title,
@@ -309,13 +313,26 @@ namespace OVModel
                 },
             };
 
+
             OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries();
             lineSeries.Title = "series_title";
 
+            // Берутся точки, которые выбрал пользователь
+            // Затем добавляются в модель
             for (int i = 0; i < equals_list.Count; i++)
                 lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
 
+            // Рассчёт по методу
+            List<List<double>> result = Approksimacia.approksimacia_polinom_2(equals_list);
+
+            OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries();
+            lineSeries2.Title = "TITle ad";
+
+            for (int i = 0; i < result.Count; i++)
+                lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+
             tmp_model.Series.Add(lineSeries);
+            tmp_model.Series.Add(lineSeries2);
 
             OxyPlotSchedule2.Model = tmp_model;
         }
@@ -325,9 +342,6 @@ namespace OVModel
             EqualsTable.ItemsSource = new List<EqualElements>() { };
             for (int i = 0; i < tmp_equals.Count; i++)
             {
-                Console.WriteLine(tmp_equals[i].n_value);
-                Console.WriteLine(tmp_equals[i].x);
-
                 EqualElements tmp = new EqualElements(tmp_equals[i]);
                 tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
                 tmp.x = Math.Round(tmp_equals[i].x, 6);
@@ -336,6 +350,7 @@ namespace OVModel
             }
             equals_list.Sort();
             EqualsTable.ItemsSource = equals_list;
+
             Draw_Schedule_For_Points();
         }
     }
