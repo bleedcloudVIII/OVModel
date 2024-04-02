@@ -13,12 +13,79 @@ namespace OVModel_Methods
 {
     public static class Approksimacia
     {
-        public static List<List<double>> approksimacia_polinom_1(List<EqualElements> points)
+        public static List<List<double>> approksimacia_polinom_1(List<EqualElements> list)
         {
-          
-          
+            List<EqualElements> points = new List<EqualElements>(list);
 
-            
+            for (int i = 0; i < points.Count; i++)
+            {
+                EqualElements eq = points[i];
+                eq.n_value = points[i].n_value * 1000000;
+                eq.x = points[i].x * 1000000;
+                points[i] = eq;
+            }
+
+            List<long> x_second = new List<long>(points.Count);
+            for (int i = 0; i < points.Count; i++) x_second.Add((Int64)(points[i].x * points[i].x));
+
+            long sumx = points.Sum(elem => (Int64)elem.x);
+            long sumx2 = x_second.Sum();
+
+            long sumy = points.Sum(elem => (Int64)elem.n_value);
+
+            long sumyx = 0;
+            for (int i = 0; i < points.Count; i++) sumyx += (Int64)(points[i].n_value * points[i].x);
+
+            List<List<long>> C_transport = new List<List<long>>()
+            {
+                new List<long> {sumx2,     (-1)*sumx},
+                new List<long> {(-1)*sumx, points.Count}
+            };
+
+            long opredelitel = points.Count*sumx2 - sumx*sumx;
+            List<List<double>> A_inverse = new List<List<double>>(3) { new List<double>(2) { 0, 0 }, new List<double>(2) { 0, 0 } };
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    A_inverse[i][j] = (double)C_transport[i][j] / (double)opredelitel;
+
+                }
+            }
+
+            List<double> B = new List<double>()
+            {
+                (double)sumy, (double)sumyx
+            };
+
+            List<double> X = new List<double>(3)
+            {
+                (A_inverse[0][0]*B[0] + A_inverse[0][1]*B[1])/1000000,
+                (A_inverse[1][0]*B[0] + A_inverse[1][1]*B[1])/1000000
+            };
+
+            double start = points.Min(elem => elem.x);
+            double end = points.Max(elem => elem.x);
+
+            start = start / 1000000;
+            end = end / 1000000;
+
+            int length = (Int32)((end - start) / 0.000001);
+            List<List<double>> result = new List<List<double>>(2)
+            {
+                new List<double>(length),
+                new List<double>(length)
+            };
+
+            for (int i = 0; i < length; i++)
+            {
+                double x = Math.Round(start + 0.000001 * i, 6);
+                double y = X[0] + X[1] * x;
+                result[0].Add(x);
+                result[1].Add(y);
+            }
+
+            return result;
         }
 
         public static List<List<double>> approksimacia_polinom_2(List<EqualElements> list)
@@ -68,10 +135,6 @@ namespace OVModel_Methods
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Console.WriteLine((double)C_transport[i][j]);
-                    Console.WriteLine((double)opredelitel);
-                    Console.WriteLine((double)C_transport[i][j] / (double)opredelitel);
-
                     A_inverse[i][j] = (double)C_transport[i][j] / (double)opredelitel;
 
                 }

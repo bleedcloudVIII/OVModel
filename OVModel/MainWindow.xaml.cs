@@ -280,20 +280,19 @@ namespace OVModel
         private void MenuItem_Click_Method_1(object sender, RoutedEventArgs e)
         {
             method_number = 1;
-            Draw_Schedule_For_Points();
+            if (equals_list.Count != 0) Draw_Schedule_For_Points();
         }
 
         private void MenuItem_Click_Method_2(object sender, RoutedEventArgs e)
         {
             method_number = 2;
-            
-            Draw_Schedule_For_Points();
+            if (equals_list.Count != 0) Draw_Schedule_For_Points();
         }
 
         private void MenuItem_Click_Method_Interpolation(object sender, RoutedEventArgs e)
         {
             method_number = 3;
-            Draw_Schedule_For_Points();
+            if (equals_list.Count != 0) Draw_Schedule_For_Points();
         }
         // TODO:
         // - Блокировка изменения шага вычислений и предел координат. Также кнопка снятия блокировки, тогда очищается список точек пересечения
