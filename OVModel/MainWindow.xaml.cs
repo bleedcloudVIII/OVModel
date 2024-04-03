@@ -70,14 +70,16 @@ namespace OVModel
                 if (titleAxisX == "") titleAxisX = DefaultTitleAxisX;
                 if (titleAxisY == "") titleAxisY = DefaultTitleAxisY;
 
+                Cursor = Cursors.Wait;
+
                 Data data;
                 data = model_number == 1 ?
                     ClassicalTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY) :
                     DopTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY);
 
+                Cursor = Cursors.Arrow;
                 OxyPlotSchedule.Model = data.scheduleModel;
                 Table.ItemsSource = data.itemsSourceTable;
-                //EqualsTable.ItemsSource = data.equalsElements;
                 tmp_equals = data.equalsElements;
             }
             else if (
@@ -320,6 +322,8 @@ namespace OVModel
                     Title = "Точки пересечения"
                 };
 
+                Cursor = Cursors.Wait;
+
                 // Берутся точки, которые выбрал пользователь
                 // Затем добавляются в модель
                 for (int i = 0; i < equals_list.Count; i++)
@@ -337,6 +341,7 @@ namespace OVModel
 
                     for (int i = 0; i < result[0].Count; i++)
                         lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+
 
                     tmp_model.Series.Add(lineSeries2);
                 }
@@ -366,8 +371,10 @@ namespace OVModel
                 {
                     // ERROR
                 }
-                tmp_model.Series.Add(lineSeries);
 
+                Cursor = Cursors.Arrow;
+
+                tmp_model.Series.Add(lineSeries);
                 OxyPlotSchedule2.Model = tmp_model;
             }
             else
@@ -411,7 +418,6 @@ namespace OVModel
             equals_list = new List<EqualElements>();
             EqualsTable.ItemsSource = equals_list;
             Draw_Schedule_For_Points();
-            // Сбросить массив
         }
     }
 }

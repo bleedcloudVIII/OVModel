@@ -74,8 +74,6 @@ namespace OVModel_DopTheory
             OxyPlot.Series.LineSeries lineSeries_n_z = new OxyPlot.Series.LineSeries();
             lineSeries_n_z.Title = "n_z";
 
-            List<EqualElements> equalsElements = new List<EqualElements>();
-
             for (int i = 0; i <= count; i++)
             {
                 double x_now = x_start + h * i;
@@ -100,7 +98,7 @@ namespace OVModel_DopTheory
             }
 
 
-            equalsElements = Dot.CrossPoints(result, n);
+            List<EqualElements> equalsElements = Dot.CrossPoints(result, n);
             equalsElements = CommonMethods.getSetList(equalsElements);
 
             schedule.Series.Add(lineSeries_n);

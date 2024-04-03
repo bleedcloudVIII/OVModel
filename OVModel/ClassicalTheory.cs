@@ -83,7 +83,7 @@ namespace OVModel_ClassicalTheory
             OxyPlot.Series.LineSeries lineSeries_n_z = new OxyPlot.Series.LineSeries();
             lineSeries_n_z.Title = "n_z";
 
-            List<EqualElements> equalsElements = new List<EqualElements>();
+            
 
             for (int i = 0; i <= count; i++)
             {
@@ -108,7 +108,7 @@ namespace OVModel_ClassicalTheory
                 lineSeries_n_z.Points.Add(new OxyPlot.DataPoint(x_now, n_z));
             }
 
-            equalsElements = Dot.CrossPoints(result, n);
+            List<EqualElements> equalsElements = Dot.CrossPoints(result, n);
             equalsElements = CommonMethods.getSetList(equalsElements);
 
             schedule.Series.Add(lineSeries_n);
