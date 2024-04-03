@@ -278,40 +278,86 @@ namespace OVModel_Methods
         public static List<List<double>> interpolyacia_newtoon(List<EqualElements> list)
         {
             List<List<long>> points = new List<List<long>>();
+            points.Add(new List<long>());
+            points.Add(new List<long>());
 
             for (int i = 0; i < list.Count; i++)
             {
-                List<long> tmp = new List<long>();
-                tmp.Add((long)(list[i].x * 1000000));
-                tmp.Add((long)(list[i].n_value * 1000000));
-                points.Add(tmp);
+                points[0].Add((long)(list[i].x * 1000000));
+                points[1].Add((long)(list[i].n_value * 1000000));
             }
 
             if (points.Count == 0) return new List<List<double>>();
 
             List<List<long>> koeff = new List<List<long>>();
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < points[0].Count; i++)
             {
                 List<long> tmp = new List<long>();
-                for (int j = 0; j < points.Count; j++)
+                for (int j = 0; j < points[0].Count; j++)
                     tmp.Add(0);
                 koeff.Add(tmp);
             }
 
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < points[0].Count; i++)
             {
-                for (int j = 1; j < points.Count; j++)
+                koeff[i][0] = 1;
+                for (int j = 1; j < points[0].Count; j++)
                 {
                     long tmp = 1;
-                    for (int k = 1; k <= j; k++)
-                        tmp *= (points[i][0] - points[k][0]);
+                    for (int k = 0; k < j; k++)
+                        tmp *= (points[0][i] - points[0][k]);
                     koeff[i][j] = tmp;
                 }
             }
 
 
+            List<double> X = new List<double>();
+            X.Add(points[1][0]);
+            for (int i = 1; i < points[0].Count; i++)
+            {
+                double sum = points[1][i];
+                for (int j = 0; j < i; j++)
+                {
+                    sum -= ((double)koeff[i][j] * X[j]);
+                }
+                X.Add((sum / koeff[i][i]));
+            }
 
-            return new List<List<double>>();
+            for (int i = 0; i < points[0].Count; i++) X[i] = X[i] / 1000000;
+
+
+            double start = points[0].Min();
+            double end = points[0].Max();
+
+            start = start / 1000000;
+            end = end / 1000000;
+
+            int length = (Int32)((end - start) / 0.000001);
+            List<List<double>> result = new List<List<double>>(2)
+            {
+                new List<double>(length),
+                new List<double>(length)
+            };
+
+            for (int i = 0; i < length; i++)
+            {
+                double x = Math.Round(start + 0.000001 * i, 6);
+                double y = X[0];
+                for (int j = 1; j < points[0].Count; j++)
+                {
+                    double proiz = X[j];
+                    for (int k = 0; k < j; k++)
+                    {
+                        proiz *= (x - points[0][k]);
+                    }
+                    y += proiz;
+                }
+                //double y = X[0] + X[1] * x + X[2] * x * x;
+                result[0].Add(x);
+                result[1].Add(y);
+            }
+
+            return result;
         }
     }
 }

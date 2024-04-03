@@ -41,7 +41,7 @@ namespace OVModel
          2 - уточнённая
          */
         static int model_number = 1;
-        static int method_number = 2;
+        static int method_number = 3;
 
         List<EqualElements> equals_list = new List<EqualElements>();
         List<EqualElements> tmp_equals = new List<EqualElements>();
