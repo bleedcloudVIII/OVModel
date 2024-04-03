@@ -365,7 +365,20 @@ namespace OVModel
                 }
                 else if (method_number == 3)
                 {
+                    List<List<double>> result = Interpolyacia.interpolyacia_newtoon(equals_list);
 
+                    if (result.Count != 0)
+                    {
+                        OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
+                        {
+                            Title = "Интерполяция"
+                        };
+
+                        for (int i = 0; i < result[0].Count; i++)
+                            lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+
+                        tmp_model.Series.Add(lineSeries2);
+                    }
                 }
                 else
                 {

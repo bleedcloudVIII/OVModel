@@ -66,6 +66,7 @@ namespace OVModel_Methods
             }
             return result;
         }
+
         public static List<double> Zeidelya(List<List<long>> matrix, List<long> B)
         {
             int n = matrix.Count;
@@ -274,6 +275,43 @@ namespace OVModel_Methods
 
     public static class Interpolyacia
     {
+        public static List<List<double>> interpolyacia_newtoon(List<EqualElements> list)
+        {
+            List<List<long>> points = new List<List<long>>();
 
+            for (int i = 0; i < list.Count; i++)
+            {
+                List<long> tmp = new List<long>();
+                tmp.Add((long)(list[i].x * 1000000));
+                tmp.Add((long)(list[i].n_value * 1000000));
+                points.Add(tmp);
+            }
+
+            if (points.Count == 0) return new List<List<double>>();
+
+            List<List<long>> koeff = new List<List<long>>();
+            for (int i = 0; i < points.Count; i++)
+            {
+                List<long> tmp = new List<long>();
+                for (int j = 0; j < points.Count; j++)
+                    tmp.Add(0);
+                koeff.Add(tmp);
+            }
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                for (int j = 1; j < points.Count; j++)
+                {
+                    long tmp = 1;
+                    for (int k = 1; k <= j; k++)
+                        tmp *= (points[i][0] - points[k][0]);
+                    koeff[i][j] = tmp;
+                }
+            }
+
+
+
+            return new List<List<double>>();
+        }
     }
 }
