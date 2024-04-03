@@ -277,22 +277,24 @@ namespace OVModel_Methods
     {
         public static List<List<double>> interpolyacia_newtoon(List<EqualElements> list)
         {
-            List<List<long>> points = new List<List<long>>();
-            points.Add(new List<long>());
-            points.Add(new List<long>());
+            List<List<double>> points = new List<List<double>>();
+            points.Add(new List<double>());
+            points.Add(new List<double>());
 
             for (int i = 0; i < list.Count; i++)
             {
-                points[0].Add((long)(list[i].x * 1000000));
-                points[1].Add((long)(list[i].n_value * 1000000));
+                //points[0].Add((long)(list[i].x * 1000000));
+                //points[1].Add((long)(list[i].n_value * 1000000));
+                points[0].Add((double)(list[i].x));
+                points[1].Add((double)(list[i].n_value));
             }
 
             if (points.Count == 0) return new List<List<double>>();
 
-            List<List<long>> koeff = new List<List<long>>();
+            List<List<double>> koeff = new List<List<double>>();
             for (int i = 0; i < points[0].Count; i++)
             {
-                List<long> tmp = new List<long>();
+                List<double> tmp = new List<double>();
                 for (int j = 0; j < points[0].Count; j++)
                     tmp.Add(0);
                 koeff.Add(tmp);
@@ -303,7 +305,7 @@ namespace OVModel_Methods
                 koeff[i][0] = 1;
                 for (int j = 1; j < points[0].Count; j++)
                 {
-                    long tmp = 1;
+                    double tmp = 1;
                     for (int k = 0; k < j; k++)
                         tmp *= (points[0][i] - points[0][k]);
                     koeff[i][j] = tmp;
@@ -323,16 +325,16 @@ namespace OVModel_Methods
                 X.Add((sum / koeff[i][i]));
             }
 
-            for (int i = 0; i < points[0].Count; i++) X[i] = X[i] / 1000000;
+            //for (int i = 0; i < points[0].Count; i++) X[i] = X[i] / 1000000;
 
 
             double start = points[0].Min();
             double end = points[0].Max();
 
-            start = start / 1000000;
-            end = end / 1000000;
+            //start = start / 1000000;
+            //end = end / 1000000;
 
-            int length = (Int32)((end - start) / 0.000001);
+            int length = (Int32)((end - start)/0.000001);
             List<List<double>> result = new List<List<double>>(2)
             {
                 new List<double>(length),

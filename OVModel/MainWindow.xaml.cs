@@ -409,6 +409,7 @@ namespace OVModel
                 equals_list.Add(tmp);
             }
             equals_list.Sort();
+            equals_list.Reverse();
             EqualsTable.ItemsSource = equals_list;
 
             if (equals_list.Count != 0)
