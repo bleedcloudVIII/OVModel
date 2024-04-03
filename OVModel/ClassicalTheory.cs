@@ -85,9 +85,6 @@ namespace OVModel_ClassicalTheory
 
             List<EqualElements> equalsElements = new List<EqualElements>();
 
-            double n_x_prev = 0, n_y_prev = 0, n_z_prev = 0, x_prev = 0;
-
-
             for (int i = 0; i <= count; i++)
             {
                 double x_now = x_start + h * i;
@@ -112,21 +109,6 @@ namespace OVModel_ClassicalTheory
             }
 
             equalsElements = Dot.CrossPoints(result, n);
-            //equalsElements.Sort();
-
-            // Нахождение уникальных точек пересечения, т.к. точки могут пересекаться
-            // Например, значения n равны в точки x
-            // И значения n равны в точке пересечения графиков, при этом n отличаются на 0.0...01
-            // То есть по сути являясь одной точкой
-
-            //for (int i = 0; i < equalsElements.Count; i++)
-            //{
-            //    EqualElements e = equalsElements[i];
-            //    e.x = Math.Round(e.x, 6);
-            //    e.cross = $"{e.first}/{e.second}";
-            //    equalsElements[i] = e;
-            //}
-
             equalsElements = CommonMethods.getSetList(equalsElements);
 
             schedule.Series.Add(lineSeries_n);
@@ -136,7 +118,8 @@ namespace OVModel_ClassicalTheory
 
             return new Data() { equalsElements = equalsElements,
                 itemsSourceTable = result,
-                scheduleModel = schedule };
+                scheduleModel = schedule 
+            };
         }
     }
 }

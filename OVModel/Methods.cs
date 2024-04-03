@@ -56,21 +56,19 @@ namespace OVModel_Methods
         private static List<double> x_k_plus_1(List<double> x_k)
         {
             List<double> result = new List<double>(global_n);
+            for (int i = 0; i < global_n; i++) result.Add(0);
 
             List<double> C1_x_k = new List<double>();
             C1_x_k = multiplyMatrixOnVector(global_C1, x_k);
             for (int i = 0; i < global_n; i++)
             {
-                result.Add(C1_x_k[i] + multiplyMatrixOnVector(global_C2, result)[i] + global_d[i]);
+                result[i] = C1_x_k[i] + multiplyMatrixOnVector(global_C2, result)[i] + global_d[i];
             }
             return result;
         }
         public static List<double> Zeidelya(List<List<long>> matrix, List<long> B)
         {
             int n = matrix.Count;
-            Console.WriteLine("N");
-            Console.WriteLine(n);
-
             // TODO: Проверка на преобладание главной диагонали
 
             List<List<double>> C = new List<List<double>>();
@@ -93,14 +91,30 @@ namespace OVModel_Methods
 
             for (int i = 0; i < n; i++)
             {
+                double sum = 0;
                 for (int j = 0; j < n; j++)
                 {
-                    if (j < i) C1[i][j] = C[i][j];
-                    else C1[i][j] = 0;
-
-                    if (j > i) C2[i][j] = C[i][j];
-                    else C2[i][j] = 0;
+                    if (i != j) sum += C[i][j];
                 }
+
+                if (sum > C[i][i]) return new List<double>();
+            }
+
+            for (int i = 0; i < n; i++)
+            {
+                List<double> tmp1 = new List<double>();
+                List<double> tmp2 = new List<double>();
+
+                for (int j = 0; j < n; j++)
+                {
+                    if (j < i) tmp1.Add(C[i][j]);
+                    else tmp1.Add(0);
+
+                    if (j > i) tmp2.Add(C[i][j]);
+                    else tmp2.Add(0);
+                }
+                C1.Add(tmp1);
+                C2.Add(tmp2);
             }
 
             global_C1 = C1;
@@ -148,33 +162,16 @@ namespace OVModel_Methods
             long sumyx = 0;
             for (int i = 0; i < points.Count; i++) sumyx += (Int64)(points[i].n_value * points[i].x);
 
-            List<List<long>> C_transport = new List<List<long>>()
+            List<List<long>> A = new List<List<long>>()
             {
-                new List<long> {sumx2,     (-1)*sumx},
-                new List<long> {(-1)*sumx, points.Count}
+                new List<long>() {points.Count, sumx},
+                new List<long>() {sumx, sumx2}
             };
 
-            long opredelitel = points.Count*sumx2 - sumx*sumx;
-            List<List<double>> A_inverse = new List<List<double>>(3) { new List<double>(2) { 0, 0 }, new List<double>(2) { 0, 0 } };
-            for (int i = 0; i < 2; i++)
-            {
-                for (int j = 0; j < 2; j++)
-                {
-                    A_inverse[i][j] = (double)C_transport[i][j] / (double)opredelitel;
+            List<long> B = new List<long>() { sumy, sumyx };
 
-                }
-            }
-
-            List<double> B = new List<double>()
-            {
-                (double)sumy, (double)sumyx
-            };
-
-            List<double> X = new List<double>(3)
-            {
-                (A_inverse[0][0]*B[0] + A_inverse[0][1]*B[1])/1000000,
-                (A_inverse[1][0]*B[0] + A_inverse[1][1]*B[1])/1000000
-            };
+            List<double> X = SLAY.Zeidelya(A, B);
+            for (int i = 0; i < X.Count; i++) X[i] = X[i] / 1000000;
 
             double start = points.Min(elem => elem.x);
             double end = points.Max(elem => elem.x);
@@ -233,40 +230,18 @@ namespace OVModel_Methods
 
             long sumyx2 = 0; ;
             for (int i = 0; i < points.Count; i++) sumyx2 += (Int64)(points[i].n_value * points[i].x * points[i].x);
-
-            List<List<long>> C_transport = new List<List<long>>()
+          
+            List<List<long>> A = new List<List<long>>()
             {
-                new List<long> {sumx2 * sumx4 - sumx3 * sumx3,          (-1) * (sumx * sumx4 - sumx2 * sumx3),         sumx * sumx3 - sumx2 * sumx2},
-                new List<long> {(-1) * (sumx * sumx4 - sumx2 * sumx3),  points.Count * sumx4 - sumx2 * sumx2,           (-1) * (points.Count * sumx3 - sumx * sumx2)},
-                new List<long> {sumx * sumx3 - sumx2 * sumx2,         (-1) * (points.Count * sumx3 - sumx * sumx2),    points.Count * sumx2 - sumx * sumx }
+                new List<long>() {points.Count, sumx, sumx2},
+                new List<long>() {sumx, sumx2, sumx3},
+                new List<long>() {sumx2, sumx3, sumx4}
             };
 
-            long opredelitel = points.Count*sumx2*sumx4 + sumx*sumx3*sumx2 + sumx*sumx3*sumx2 - sumx2*sumx2*sumx2 - sumx*sumx*sumx4 - sumx3*sumx3*points.Count;
-            if (opredelitel == 0) return new List<List<double>>();
+            List<long> B = new List<long>() { sumy, sumyx, sumyx2 };
 
-            List<List<double>> A_inverse = new List<List<double>>(3) { new List<double>(3) { 0, 0, 0}, new List<double>(3) { 0, 0, 0}, new List<double>(3) { 0, 0, 0 } };
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    A_inverse[i][j] = (double)C_transport[i][j] / (double)opredelitel;
-
-                }
-            }
-
-            List<double> B = new List<double>()
-            {
-                (double)sumy, (double)sumyx, (double)sumyx2
-            };
-
-            // A и B должны быть long
-
-            List<double> X = new List<double>(3) 
-            {
-                (A_inverse[0][0]*B[0] + A_inverse[0][1]*B[1] + A_inverse[0][2]*B[2])/1000000,
-                (A_inverse[1][0]*B[0] + A_inverse[1][1]*B[1] + A_inverse[1][2]*B[2])/1000000,
-                (A_inverse[2][0]*B[0]+ A_inverse[2][1]*B[1]+ A_inverse[2][2]*B[2])/1000000,
-            };
+            List<double> X = SLAY.Zeidelya(A, B);
+            for (int i = 0; i < X.Count; i++) X[i] = X[i] / 1000000;
 
             double start = points.Min(elem => elem.x);
             double end = points.Max(elem => elem.x);
