@@ -22,7 +22,7 @@
                 <MenuItem Header="Классическая" IsCheckable="True" Click="MenuItem_Click_Model_1"></MenuItem>
                 <MenuItem Header="Уточнённая" IsCheckable="False" Click="MenuItem_Click_Model_2"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Метод">
+            <MenuItem Header="Метод" x:Name="ViborModeli">
                 <MenuItem Header="Аппроксимация(полином 1)" Click="MenuItem_Click_Method_1"></MenuItem>
                 <MenuItem Header="Аппроксимация(полином 2)" Click="MenuItem_Click_Method_2"></MenuItem>
                 <MenuItem Header="Интерполяция" Click="MenuItem_Click_Method_Interpolation"></MenuItem>
@@ -61,6 +61,7 @@
                         </StackPanel>
                     </StackPanel>
                     <Button Content="Добавить" Margin="0, 10, 0, 0" Width="60px" HorizontalAlignment="left" Click="Button_Click_Add_Points"/>
+                    <Button x:Name="SbrosButton" Content="Сбросить" Margin="0, 10, 0, 0" Width="60px" HorizontalAlignment="left" Click="Button_Click_Sbros" Visibility="Hidden"/>
                 </StackPanel>
                 <StackPanel VerticalAlignment="Top" Margin="10,0,0,0">
                     <DataGrid x:Name="Table" MinWidth="380" MaxWidth="485" Height="400"

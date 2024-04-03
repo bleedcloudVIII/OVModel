@@ -143,6 +143,8 @@ namespace OVModel_Methods
         {
             List<EqualElements> points = new List<EqualElements>(list);
 
+            if (points.Count == 0) return new List<List<double>>();
+
             for (int i = 0; i < points.Count; i++)
             {
                 EqualElements eq = points[i];
@@ -200,6 +202,8 @@ namespace OVModel_Methods
         public static List<List<double>> approksimacia_polinom_2(List<EqualElements> list)
         {
             List<EqualElements> points = new List<EqualElements>(list);
+
+            if (points.Count == 0) return new List<List<double>>();
 
             for (int i = 0; i < points.Count; i++)
             {

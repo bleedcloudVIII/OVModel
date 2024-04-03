@@ -299,55 +299,40 @@ namespace OVModel
         // - При одном x, разные значение n. Надо что-то делать
         private void Draw_Schedule_For_Points()
         {
-            // Создание модели для графика
-            OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()
+            if (equals_list.Count != 0)
             {
-                //Title = title,
-                Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
-                IsLegendVisible = true,
-                Axes =
+                // Создание модели для графика
+                OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()
                 {
-                    new LinearAxis() { Title = "x", Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
-                    new LinearAxis() { Title = "n", Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
-                },
-            };
-
-
-            OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries
-            {
-                Title = "Точки пересечения"
-            };
-
-            // Берутся точки, которые выбрал пользователь
-            // Затем добавляются в модель
-            for (int i = 0; i < equals_list.Count; i++)
-                lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
-
-            if (method_number == 1)
-            {
-                // Рассчёт по методу
-                List<List<double>> result = Approksimacia.approksimacia_polinom_1(equals_list);
-
-                OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
-                {
-                    Title = "Аппроксимация(Полином 1 степени)"
+                    //Title = title,
+                    Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
+                    IsLegendVisible = true,
+                    Axes =
+                    {
+                        new LinearAxis() { Title = "x", Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
+                        new LinearAxis() { Title = "n", Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
+                    },
                 };
 
-                for (int i = 0; i < result[0].Count; i++)
-                    lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
 
-                tmp_model.Series.Add(lineSeries2);
-            }
-            else if (method_number == 2)
-            {
-                // Рассчёт по методу
-                List<List<double>> result = Approksimacia.approksimacia_polinom_2(equals_list);
-
-                if (result.Count != 0)
+                OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries
                 {
+                    Title = "Точки пересечения"
+                };
+
+                // Берутся точки, которые выбрал пользователь
+                // Затем добавляются в модель
+                for (int i = 0; i < equals_list.Count; i++)
+                    lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
+
+                if (method_number == 1)
+                {
+                    // Рассчёт по методу
+                    List<List<double>> result = Approksimacia.approksimacia_polinom_1(equals_list);
+
                     OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
                     {
-                        Title = "Аппроксимация(Полином 2 степени)"
+                        Title = "Аппроксимация(Полином 1 степени)"
                     };
 
                     for (int i = 0; i < result[0].Count; i++)
@@ -355,18 +340,41 @@ namespace OVModel
 
                     tmp_model.Series.Add(lineSeries2);
                 }
-            }
-            else if (method_number == 3)
-            {
+                else if (method_number == 2)
+                {
+                    // Рассчёт по методу
+                    List<List<double>> result = Approksimacia.approksimacia_polinom_2(equals_list);
 
+                    if (result.Count != 0)
+                    {
+                        OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
+                        {
+                            Title = "Аппроксимация(Полином 2 степени)"
+                        };
+
+                        for (int i = 0; i < result[0].Count; i++)
+                            lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+
+                        tmp_model.Series.Add(lineSeries2);
+                    }
+                }
+                else if (method_number == 3)
+                {
+
+                }
+                else
+                {
+                    // ERROR
+                }
+                tmp_model.Series.Add(lineSeries);
+
+                OxyPlotSchedule2.Model = tmp_model;
             }
             else
             {
-                // ERROR
+                OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel();
+                OxyPlotSchedule2.Model = tmp_model;
             }
-            tmp_model.Series.Add(lineSeries);
-
-            OxyPlotSchedule2.Model = tmp_model;
         }
 
         private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
@@ -383,7 +391,27 @@ namespace OVModel
             equals_list.Sort();
             EqualsTable.ItemsSource = equals_list;
 
+            if (equals_list.Count != 0)
+            {
+                Input_x_end.IsReadOnly = true;
+                Input_x_start.IsReadOnly = true;
+                Input_h.IsReadOnly = true;
+                SbrosButton.Visibility = Visibility.Visible;
+                Draw_Schedule_For_Points();
+            }
+        }
+
+        private void Button_Click_Sbros(object sender, RoutedEventArgs e)
+        {
+            Input_x_end.IsReadOnly = false;
+            Input_x_start.IsReadOnly = false;
+            Input_h.IsReadOnly = false;
+            SbrosButton.Visibility = Visibility.Hidden;
+
+            equals_list = new List<EqualElements>();
+            EqualsTable.ItemsSource = equals_list;
             Draw_Schedule_For_Points();
+            // Сбросить массив
         }
     }
 }
