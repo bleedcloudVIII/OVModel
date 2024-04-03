@@ -11,6 +11,118 @@ using OVModel_CommonClasses;
 
 namespace OVModel_Methods
 {
+    
+    public static class SLAY
+    {
+        private static int global_n;
+        private static List<List<double>> global_C1;
+        private static List<List<double>> global_C2;
+        private static List<double> global_d;
+
+
+        public static List<double> multiplyMatrixOnVector(List<List<double>> list, List<double> vector)
+        {
+            List<double> result = new List<double>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                double sum = 0;
+                for (int j = 0; j < list.Count; j++) sum += list[i][j] * vector[j];
+                result.Add(sum);
+            }
+
+            return result;
+        }
+
+        public static double normaForVector(List<double> list)
+        {
+            return list.Max();
+        }
+
+        public static List<double> vectorMinusVector(List<double> list1, List<double> list2)
+        {
+            List<double> result = new List<double>();
+
+            for (int i = 0; i < global_n; i++)
+            {
+                double sum = 0;
+                sum = list1[i] - list2[i];
+                result.Add(sum);
+            }
+
+            return result;
+        }
+
+        private static List<double> x_k_plus_1(List<double> x_k)
+        {
+            List<double> result = new List<double>(global_n);
+
+            List<double> C1_x_k = new List<double>();
+            C1_x_k = multiplyMatrixOnVector(global_C1, x_k);
+            for (int i = 0; i < global_n; i++)
+            {
+                result.Add(C1_x_k[i] + multiplyMatrixOnVector(global_C2, result)[i] + global_d[i]);
+            }
+            return result;
+        }
+        public static List<double> Zeidelya(List<List<long>> matrix, List<long> B)
+        {
+            int n = matrix.Count;
+            Console.WriteLine("N");
+            Console.WriteLine(n);
+
+            // TODO: Проверка на преобладание главной диагонали
+
+            List<List<double>> C = new List<List<double>>();
+            List<List<double>> C1 = new List<List<double>>();
+            List<List<double>> C2 = new List<List<double>>();
+
+            List<double> D = new List<double>();
+
+            for (int i = 0; i < n; i++)
+            {
+                List<double> list = new List<double>();
+                for (int j = 0; j < n; j++)
+                {
+                    if (i != j) list.Add((-1) * ((double)matrix[i][j] / (double)matrix[i][i]));
+                    else list.Add((double)0);
+                }
+                C.Add(list);
+                D.Add((double)B[i] / (double)matrix[i][i]);
+            }
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (j < i) C1[i][j] = C[i][j];
+                    else C1[i][j] = 0;
+
+                    if (j > i) C2[i][j] = C[i][j];
+                    else C2[i][j] = 0;
+                }
+            }
+
+            global_C1 = C1;
+            global_C2 = C2;
+            global_n = n;
+            global_d = D;
+
+            // Метод Зейделя
+            List<double> x_0 = new List<double>(n);
+            for (int i = 0; i < n; i++) x_0.Add(0);
+            double E = 0.000001;
+            
+            List<double> x_1 = x_k_plus_1(x_0);
+            while(normaForVector(vectorMinusVector(x_1, x_0)) >= E)
+            {
+                x_0 = x_1;
+                x_1 = x_k_plus_1(x_0);
+            }
+
+            return x_1; 
+        }
+    }
     public static class Approksimacia
     {
         public static List<List<double>> approksimacia_polinom_1(List<EqualElements> list)
@@ -130,6 +242,8 @@ namespace OVModel_Methods
             };
 
             long opredelitel = points.Count*sumx2*sumx4 + sumx*sumx3*sumx2 + sumx*sumx3*sumx2 - sumx2*sumx2*sumx2 - sumx*sumx*sumx4 - sumx3*sumx3*points.Count;
+            if (opredelitel == 0) return new List<List<double>>();
+
             List<List<double>> A_inverse = new List<List<double>>(3) { new List<double>(3) { 0, 0, 0}, new List<double>(3) { 0, 0, 0}, new List<double>(3) { 0, 0, 0 } };
             for (int i = 0; i < 3; i++)
             {
@@ -144,6 +258,8 @@ namespace OVModel_Methods
             {
                 (double)sumy, (double)sumyx, (double)sumyx2
             };
+
+            // A и B должны быть long
 
             List<double> X = new List<double>(3) 
             {
@@ -172,7 +288,7 @@ namespace OVModel_Methods
                 result[0].Add(x);
                 result[1].Add(y);
             }
-
+            
             return result;
         }
     }

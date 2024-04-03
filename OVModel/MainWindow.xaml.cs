@@ -343,15 +343,18 @@ namespace OVModel
                 // Рассчёт по методу
                 List<List<double>> result = Approksimacia.approksimacia_polinom_2(equals_list);
 
-                OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
+                if (result.Count != 0)
                 {
-                    Title = "Аппроксимация(Полином 2 степени)"
-                };
+                    OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
+                    {
+                        Title = "Аппроксимация(Полином 2 степени)"
+                    };
 
-                for (int i = 0; i < result[0].Count; i++)
-                    lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+                    for (int i = 0; i < result[0].Count; i++)
+                        lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
 
-                tmp_model.Series.Add(lineSeries2);
+                    tmp_model.Series.Add(lineSeries2);
+                }
             }
             else if (method_number == 3)
             {
