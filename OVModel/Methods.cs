@@ -12,7 +12,7 @@ using OVModel_CommonClasses;
 namespace OVModel_Methods
 {
     
-    public static class SLAY
+    public static class SLY
     {
         private static int global_n;
         private static List<List<double>> global_C1;
@@ -70,7 +70,6 @@ namespace OVModel_Methods
         public static List<double> Zeidelya(List<List<long>> matrix, List<long> B)
         {
             int n = matrix.Count;
-            // TODO: Проверка на преобладание главной диагонали
 
             List<List<double>> C = new List<List<double>>();
             List<List<double>> C1 = new List<List<double>>();
@@ -78,6 +77,7 @@ namespace OVModel_Methods
 
             List<double> D = new List<double>();
 
+            // Расчёт C и d
             for (int i = 0; i < n; i++)
             {
                 List<double> list = new List<double>();
@@ -90,6 +90,7 @@ namespace OVModel_Methods
                 D.Add((double)B[i] / (double)matrix[i][i]);
             }
 
+            // Проверка на диагональное преобладание
             for (int i = 0; i < n; i++)
             {
                 double sum = 0;
@@ -101,6 +102,7 @@ namespace OVModel_Methods
                 if (sum > C[i][i]) return new List<double>();
             }
 
+            // Расчёт C1 и C2
             for (int i = 0; i < n; i++)
             {
                 List<double> tmp1 = new List<double>();
@@ -173,7 +175,7 @@ namespace OVModel_Methods
 
             List<long> B = new List<long>() { sumy, sumyx };
 
-            List<double> X = SLAY.Zeidelya(A, B);
+            List<double> X = SLY.Zeidelya(A, B);
             for (int i = 0; i < X.Count; i++) X[i] = X[i] / 1000000;
 
             double start = points.Min(elem => elem.x);
@@ -245,7 +247,7 @@ namespace OVModel_Methods
 
             List<long> B = new List<long>() { sumy, sumyx, sumyx2 };
 
-            List<double> X = SLAY.Zeidelya(A, B);
+            List<double> X = SLY.Zeidelya(A, B);
             for (int i = 0; i < X.Count; i++) X[i] = X[i] / 1000000;
 
             double start = points.Min(elem => elem.x);
@@ -275,6 +277,55 @@ namespace OVModel_Methods
 
     public static class Interpolyacia
     {
+     
+        public static List<List<double>> interpolyacia_lagrange(List<EqualElements> list)
+        {
+            List<List<double>> points = new List<List<double>>();
+            points.Add(new List<double>());
+            points.Add(new List<double>());
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                points[0].Add((double)(list[i].x));
+                points[1].Add((double)(list[i].n_value));
+            }
+
+            double start = points[0].Min();
+            double end = points[0].Max();
+
+            int length = (Int32)((end - start) / 0.000001);
+            List<List<double>> result = new List<List<double>>(2)
+            {
+                new List<double>(length),
+                new List<double>(length)
+            };
+
+            for (int k = 0; k < length; k++)
+            {
+                double x = Math.Round(start + 0.000001 * k, 6);
+                double y = 0;
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    double alpha = 1;
+                    double chisl = 1;
+                    double znam = 1;
+                    for (int j = 0; j < points.Count; j++)
+                    {
+                        chisl *= (x - points[0][j]);
+                        if (j != i) znam *= (points[0][i] - points[0][j]);
+                    }
+                    alpha = chisl / znam;
+                    y += alpha * points[1][i];
+                }
+
+                result[0].Add(x);
+                result[1].Add(y);
+            }
+
+            return result;
+        }
+        
         public static List<List<double>> interpolyacia_newtoon(List<EqualElements> list)
         {
             List<List<double>> points = new List<List<double>>();
@@ -303,7 +354,7 @@ namespace OVModel_Methods
             for (int i = 0; i < points[0].Count; i++)
             {
                 koeff[i][0] = 1;
-                for (int j = 1; j < points[0].Count; j++)
+                for (int j = 1; j < i + 1; j++)
                 {
                     double tmp = 1;
                     for (int k = 0; k < j; k++)
@@ -312,6 +363,19 @@ namespace OVModel_Methods
                 }
             }
 
+            /*
+            for (int i = 0; i < points[0].Count; i++)
+            {
+                koeff[i][0] = 1;
+                for (int j = 1; j < points[0].Count; j++)
+                {
+                    double tmp = 1;
+                    for (int k = 0; k < j; k++)
+                        tmp *= (points[0][i] - points[0][k]);
+                    koeff[i][j] = tmp;
+                }
+            }
+             */
 
             List<double> X = new List<double>();
             X.Add(points[1][0]);

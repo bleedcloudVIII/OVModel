@@ -223,6 +223,42 @@ namespace OVModel
             }
         }
 
+        private void MenuItem_Click_Save_Schedule_2(object sender, RoutedEventArgs e)
+        {
+            if (OxyPlotSchedule2.Model == null)
+            {
+                Error_save_without_schedule err_window = new Error_save_without_schedule();
+                err_window.Show();
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = "schedule"; // Default file name
+                dlg.DefaultExt = ".png"; // Default file extension
+                dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png";
+                Nullable<bool> result = dlg.ShowDialog();
+
+                if (result == true)
+                {
+                    string extension = GetExtension(dlg.SafeFileName);
+
+                    if (extension == "pdf")
+                    {
+                        Export.Export_Schedule_pdf(OxyPlotSchedule2, dlg);
+                    }
+                    else if (extension == "png")
+                    {
+                        Export.Export_Schedule_png(OxyPlotSchedule2, dlg);
+                    }
+                    else if (extension == "jpg")
+                    {
+                        Export.Export_Schedule_jpg(OxyPlotSchedule2, dlg);
+
+                    }
+                }
+            }
+        }
+
         private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)
         {
             if (Table.Items.OfType<List<double>>().ToList().ToList().Count == 0)
@@ -311,8 +347,8 @@ namespace OVModel
                     IsLegendVisible = true,
                     Axes =
                     {
-                        new LinearAxis() { Title = "x", Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
-                        new LinearAxis() { Title = "n", Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
+                        new LinearAxis() { Title = "x", Position = AxisPosition.Bottom, IsZoomEnabled = false },
+                        new LinearAxis() { Title = "n", Position = AxisPosition.Left,  IsZoomEnabled = false },
                     },
                 };
 
@@ -365,7 +401,9 @@ namespace OVModel
                 }
                 else if (method_number == 3)
                 {
-                    List<List<double>> result = Interpolyacia.interpolyacia_newtoon(equals_list);
+                    //List<List<double>> result = Interpolyacia.interpolyacia_newtoon(equals_list);
+                    List<List<double>> result = Interpolyacia.interpolyacia_lagrange(equals_list);
+
 
                     if (result.Count != 0)
                     {

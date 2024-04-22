@@ -17,6 +17,7 @@
             <MenuItem Header="Сохранение" >
                 <MenuItem Header="Сохранить график" Click="MenuItem_Click_Save_Schedule"></MenuItem>
                 <MenuItem Header="Сохранить таблицу" Click="MenuItem_Click_Save_Table"></MenuItem>
+                <MenuItem Header="Сохранить график изучения" Click="MenuItem_Click_Save_Schedule_2"></MenuItem>
             </MenuItem>
             <MenuItem Header="Модель">
                 <MenuItem Header="Классическая" IsCheckable="True" Click="MenuItem_Click_Model_1"></MenuItem>
@@ -60,8 +61,10 @@
                             <TextBox x:Name="Input_x_end" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="50" TextChanged="Input_TextChanged"/>
                         </StackPanel>
                     </StackPanel>
-                    <Button Content="Добавить" Margin="0, 10, 0, 0" Width="60px" HorizontalAlignment="left" Click="Button_Click_Add_Points"/>
-                    <Button x:Name="SbrosButton" Content="Сбросить" Margin="0, 10, 0, 0" Width="60px" HorizontalAlignment="left" Click="Button_Click_Sbros" Visibility="Hidden"/>
+                    <Button Content="Добавить" Margin="0, 10, 0, 0" Width="60px"
+                            HorizontalAlignment="left" Click="Button_Click_Add_Points"/>
+                    <Button x:Name="SbrosButton" Content="Сбросить" Margin="0, 10, 0, 0"
+                            Width="60px" HorizontalAlignment="left" Click="Button_Click_Sbros" Visibility="Hidden"/>
                 </StackPanel>
                 <StackPanel VerticalAlignment="Top" Margin="10,0,0,0">
                     <DataGrid x:Name="Table" MinWidth="380" MaxWidth="485" Height="400"
