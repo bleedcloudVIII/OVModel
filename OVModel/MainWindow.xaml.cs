@@ -37,13 +37,25 @@ namespace OVModel
         }
 
         /*
+         Модель
          1 - классическая
          2 - уточнённая
+         Метод
+         1 - аппроксимация полином 1 степени
+         2 - аппроксимация полином 2 степени
          */
         static int model_number = 1;
-        static int method_number = 3;
+        static int method_number = 2;
 
         List<EqualElements> equals_list = new List<EqualElements>();
+
+        List<EqualElements> equals_list_nx_n = new List<EqualElements>();
+        List<EqualElements> equals_list_ny_n = new List<EqualElements>();
+        List<EqualElements> equals_list_nz_n = new List<EqualElements>();
+        List<EqualElements> equals_list_nx_ny = new List<EqualElements>();
+        List<EqualElements> equals_list_nx_nz = new List<EqualElements>();
+        List<EqualElements> equals_list_ny_nz = new List<EqualElements>();
+
         List<EqualElements> tmp_equals = new List<EqualElements>();
         
         private void DrawScheduleAndTable()
@@ -173,6 +185,174 @@ namespace OVModel
             DrawScheduleAndTable();
         }
 
+        private void Draw_Schedule_For_Points()
+        {
+            if (equals_list.Count != 0)
+            {
+                // Создание модели для графика
+                OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()
+                {
+                    //Title = title,
+                    Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
+                    IsLegendVisible = true,
+                    Axes =
+                    {
+                        new LinearAxis() { Title = "x", Position = AxisPosition.Bottom, IsZoomEnabled = false },
+                        new LinearAxis() { Title = "n", Position = AxisPosition.Left,  IsZoomEnabled = false },
+                    },
+                };
+
+
+                OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries
+                {
+                    Title = "Точки пересечения"
+                };
+
+                Cursor = Cursors.Wait;
+
+                // Берутся точки, которые выбрал пользователь
+                // Затем добавляются в модель
+                for (int i = 0; i < equals_list.Count; i++)
+                    lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
+
+                if (method_number == 1)
+                {
+                    // Рассчёт по методу
+                    //List<List<double>> result = Approksimacia.approksimacia_polinom_1(equals_list);
+
+                    OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
+                    {
+                        Title = "Аппроксимация(Полином 1 степени)"
+                    };
+
+                    //for (int i = 0; i < result[0].Count; i++) lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+
+
+                    tmp_model.Series.Add(lineSeries2);
+                }
+                else if (method_number == 2)
+                {
+                    // Рассчёт по методу
+                    List<List<double>> result_nx_n = Approksimacia.approksimacia_polinom_2(equals_list_nx_n);
+                    List<List<double>> result_ny_n = Approksimacia.approksimacia_polinom_2(equals_list_ny_n);
+                    List<List<double>> result_nz_n = Approksimacia.approksimacia_polinom_2(equals_list_nz_n);
+                    List<List<double>> result_nx_ny = Approksimacia.approksimacia_polinom_2(equals_list_nx_ny);
+                    List<List<double>> result_nx_nz = Approksimacia.approksimacia_polinom_2(equals_list_nx_nz);
+                    List<List<double>> result_ny_nz = Approksimacia.approksimacia_polinom_2(equals_list_ny_nz);
+
+                    OxyPlot.Series.LineSeries lineSeries_nx_n = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
+                    OxyPlot.Series.LineSeries lineSeries_ny_n = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
+                    OxyPlot.Series.LineSeries lineSeries_nz_n = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
+                    OxyPlot.Series.LineSeries lineSeries_nx_ny = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
+                    OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
+                    OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
+
+                    // NOTE
+                    // Добавление серии сделать в if блоке
+                    if (result_nx_n.Count != 0) for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
+                    if (result_ny_n.Count != 0) for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
+                    if (result_nz_n.Count != 0) for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
+                    if (result_nx_ny.Count != 0) for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
+                    if (result_nx_nz.Count != 0) for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
+                    if (result_ny_nz.Count != 0) for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
+
+                    tmp_model.Series.Add(lineSeries_nx_n);
+                    tmp_model.Series.Add(lineSeries_ny_n);
+                    tmp_model.Series.Add(lineSeries_nz_n);
+                    tmp_model.Series.Add(lineSeries_nx_ny);
+                    tmp_model.Series.Add(lineSeries_nx_nz);
+                    tmp_model.Series.Add(lineSeries_ny_nz);
+
+                    OxyPlotScheduleApproksimacia.Model = tmp_model;
+                    //if (result.Count != 0)
+                    //{
+                    //OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
+                    //{
+                    //Title = "Аппроксимация(Полином 2 степени)"
+                    //};
+
+                    //for (int i = 0; i < result[0].Count; i++)
+                    //lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+
+                    //tmp_model.Series.Add(lineSeries2);
+                    //}
+                }
+                else
+                {
+                    // ERROR
+                }
+
+                Cursor = Cursors.Arrow;
+
+                tmp_model.Series.Add(lineSeries);
+                OxyPlotScheduleApproksimacia.Model = tmp_model;
+            }
+            else
+            {
+                OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel();
+                //OxyPlotSchedule2.Model = tmp_model;
+            }
+        }
+
+        private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
+        {
+            /*
+            EqualsTable.ItemsSource = new List<EqualElements>() { };
+            for (int i = 0; i < tmp_equals.Count; i++)
+            {
+                EqualElements tmp = new EqualElements(tmp_equals[i]);
+                tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
+                tmp.x = Math.Round(tmp_equals[i].x, 6);
+
+                equals_list.Add(tmp);
+            }
+            equals_list.Sort();
+            equals_list.Reverse();
+            */
+            for (int i = 0; i  < tmp_equals.Count; i++)
+            {
+                EqualElements tmp = new EqualElements(tmp_equals[i]);
+                tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
+                tmp.x = Math.Round(tmp_equals[i].x, 6);
+
+                Console.Write(tmp.cross);
+
+                if (tmp.cross == "n_x/n") equals_list_nx_n.Add(tmp);
+                else if (tmp.cross == "n_y/n") equals_list_ny_n.Add(tmp);
+                else if (tmp.cross == "n_z/n") equals_list_nz_n.Add(tmp);
+                else if (tmp.cross == "n_x/n_y") equals_list_nx_ny.Add(tmp);
+                else if (tmp.cross == "n_x/n_z") equals_list_nx_nz.Add(tmp);
+                else if (tmp.cross == "n_y/n_z") equals_list_ny_nz.Add(tmp);
+
+                equals_list.Add(tmp);
+            }
+
+            EqualsTable.ItemsSource = equals_list;
+
+
+
+            if (equals_list.Count != 0)
+            {
+                Input_x_end.IsReadOnly = true;
+                Input_x_start.IsReadOnly = true;
+                Input_h.IsReadOnly = true;
+                SbrosButton.Visibility = Visibility.Visible;
+                Draw_Schedule_For_Points();
+            }
+        }
+
+        private void Button_Click_Sbros(object sender, RoutedEventArgs e)
+        {
+            Input_x_end.IsReadOnly = false;
+            Input_x_start.IsReadOnly = false;
+            Input_h.IsReadOnly = false;
+            SbrosButton.Visibility = Visibility.Hidden;
+
+            equals_list = new List<EqualElements>();
+            EqualsTable.ItemsSource = equals_list;
+            Draw_Schedule_For_Points();
+        }
+
         private string GetExtension(string fileName)
         {
             int i = fileName.Length - 1;
@@ -225,38 +405,38 @@ namespace OVModel
 
         private void MenuItem_Click_Save_Schedule_2(object sender, RoutedEventArgs e)
         {
-            if (OxyPlotSchedule2.Model == null)
-            {
-                Error_save_without_schedule err_window = new Error_save_without_schedule();
-                err_window.Show();
-            }
-            else
-            {
-                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-                dlg.FileName = "schedule"; // Default file name
-                dlg.DefaultExt = ".png"; // Default file extension
-                dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png";
-                Nullable<bool> result = dlg.ShowDialog();
+            //if (OxyPlotSchedule2.Model == null)
+            //{
+            //    Error_save_without_schedule err_window = new Error_save_without_schedule();
+            //    err_window.Show();
+            //}
+            //else
+            //{
+            //    Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            //    dlg.FileName = "schedule"; // Default file name
+            //    dlg.DefaultExt = ".png"; // Default file extension
+            //    dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png";
+            //    Nullable<bool> result = dlg.ShowDialog();
 
-                if (result == true)
-                {
-                    string extension = GetExtension(dlg.SafeFileName);
+            //    if (result == true)
+            //    {
+            //        string extension = GetExtension(dlg.SafeFileName);
 
-                    if (extension == "pdf")
-                    {
-                        Export.Export_Schedule_pdf(OxyPlotSchedule2, dlg);
-                    }
-                    else if (extension == "png")
-                    {
-                        Export.Export_Schedule_png(OxyPlotSchedule2, dlg);
-                    }
-                    else if (extension == "jpg")
-                    {
-                        Export.Export_Schedule_jpg(OxyPlotSchedule2, dlg);
+            //        if (extension == "pdf")
+            //        {
+            //            Export.Export_Schedule_pdf(OxyPlotSchedule2, dlg);
+            //        }
+            //        else if (extension == "png")
+            //        {
+            //            Export.Export_Schedule_png(OxyPlotSchedule2, dlg);
+            //        }
+            //        else if (extension == "jpg")
+            //        {
+            //            Export.Export_Schedule_jpg(OxyPlotSchedule2, dlg);
 
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
         }
 
         private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)
@@ -325,151 +505,6 @@ namespace OVModel
         {
             method_number = 2;
             if (equals_list.Count != 0) Draw_Schedule_For_Points();
-        }
-
-        private void MenuItem_Click_Method_Interpolation(object sender, RoutedEventArgs e)
-        {
-            method_number = 3;
-            if (equals_list.Count != 0) Draw_Schedule_For_Points();
-        }
-        // TODO:
-        // - Блокировка изменения шага вычислений и предел координат. Также кнопка снятия блокировки, тогда очищается список точек пересечения
-        // - При одном x, разные значение n. Надо что-то делать
-        private void Draw_Schedule_For_Points()
-        {
-            if (equals_list.Count != 0)
-            {
-                // Создание модели для графика
-                OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()
-                {
-                    //Title = title,
-                    Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
-                    IsLegendVisible = true,
-                    Axes =
-                    {
-                        new LinearAxis() { Title = "x", Position = AxisPosition.Bottom, IsZoomEnabled = false },
-                        new LinearAxis() { Title = "n", Position = AxisPosition.Left,  IsZoomEnabled = false },
-                    },
-                };
-
-
-                OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries
-                {
-                    Title = "Точки пересечения"
-                };
-
-                Cursor = Cursors.Wait;
-
-                // Берутся точки, которые выбрал пользователь
-                // Затем добавляются в модель
-                for (int i = 0; i < equals_list.Count; i++)
-                    lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
-
-                if (method_number == 1)
-                {
-                    // Рассчёт по методу
-                    List<List<double>> result = Approksimacia.approksimacia_polinom_1(equals_list);
-
-                    OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
-                    {
-                        Title = "Аппроксимация(Полином 1 степени)"
-                    };
-
-                    for (int i = 0; i < result[0].Count; i++)
-                        lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
-
-
-                    tmp_model.Series.Add(lineSeries2);
-                }
-                else if (method_number == 2)
-                {
-                    // Рассчёт по методу
-                    List<List<double>> result = Approksimacia.approksimacia_polinom_2(equals_list);
-
-                    if (result.Count != 0)
-                    {
-                        OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
-                        {
-                            Title = "Аппроксимация(Полином 2 степени)"
-                        };
-
-                        for (int i = 0; i < result[0].Count; i++)
-                            lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
-
-                        tmp_model.Series.Add(lineSeries2);
-                    }
-                }
-                else if (method_number == 3)
-                {
-                    //List<List<double>> result = Interpolyacia.interpolyacia_newtoon(equals_list);
-                    List<List<double>> result = Interpolyacia.interpolyacia_lagrange(equals_list);
-
-
-                    if (result.Count != 0)
-                    {
-                        OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
-                        {
-                            Title = "Интерполяция"
-                        };
-
-                        for (int i = 0; i < result[0].Count; i++)
-                            lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
-
-                        tmp_model.Series.Add(lineSeries2);
-                    }
-                }
-                else
-                {
-                    // ERROR
-                }
-
-                Cursor = Cursors.Arrow;
-
-                tmp_model.Series.Add(lineSeries);
-                OxyPlotSchedule2.Model = tmp_model;
-            }
-            else
-            {
-                OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel();
-                OxyPlotSchedule2.Model = tmp_model;
-            }
-        }
-
-        private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
-        {
-            EqualsTable.ItemsSource = new List<EqualElements>() { };
-            for (int i = 0; i < tmp_equals.Count; i++)
-            {
-                EqualElements tmp = new EqualElements(tmp_equals[i]);
-                tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
-                tmp.x = Math.Round(tmp_equals[i].x, 6);
-
-                equals_list.Add(tmp);
-            }
-            equals_list.Sort();
-            equals_list.Reverse();
-            EqualsTable.ItemsSource = equals_list;
-
-            if (equals_list.Count != 0)
-            {
-                Input_x_end.IsReadOnly = true;
-                Input_x_start.IsReadOnly = true;
-                Input_h.IsReadOnly = true;
-                SbrosButton.Visibility = Visibility.Visible;
-                Draw_Schedule_For_Points();
-            }
-        }
-
-        private void Button_Click_Sbros(object sender, RoutedEventArgs e)
-        {
-            Input_x_end.IsReadOnly = false;
-            Input_x_start.IsReadOnly = false;
-            Input_h.IsReadOnly = false;
-            SbrosButton.Visibility = Visibility.Hidden;
-
-            equals_list = new List<EqualElements>();
-            EqualsTable.ItemsSource = equals_list;
-            Draw_Schedule_For_Points();
         }
     }
 }

@@ -26,7 +26,6 @@
             <MenuItem Header="Метод" x:Name="ViborModeli">
                 <MenuItem Header="Аппроксимация(полином 1)" Click="MenuItem_Click_Method_1"></MenuItem>
                 <MenuItem Header="Аппроксимация(полином 2)" Click="MenuItem_Click_Method_2"></MenuItem>
-                <MenuItem Header="Интерполяция" Click="MenuItem_Click_Method_Interpolation"></MenuItem>
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="Просмотр справки" Click="MenuItem_Click_Spravka"></MenuItem>
@@ -97,7 +96,13 @@
                     CanUserResizeRows="False" CanUserReorderColumns="True" />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Left">
-                    <oxy:PlotView x:Name="OxyPlotSchedule2" Background="White" Height="350" Width="450" 
+                    <oxy:PlotView x:Name="OxyPlotSchedulePeresechenie" Background="White" Height="350" Width="450" 
+                                  Margin="10,0,0,0">
+
+                    </oxy:PlotView>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Left">
+                    <oxy:PlotView x:Name="OxyPlotScheduleApproksimacia" Background="White" Height="350" Width="450" 
                                   Margin="10,0,0,0">
 
                     </oxy:PlotView>
