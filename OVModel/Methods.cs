@@ -161,7 +161,7 @@ namespace OVModel_Methods
 
         public static decimal normaForVector(List<decimal> list)
         {
-            return list.Max();
+                return list.Max();
         }
 
         private static List<decimal> x_k_plus_1(List<decimal> x_k)
@@ -195,7 +195,7 @@ namespace OVModel_Methods
         public static List<decimal> Zeidelya(List<List<decimal>> matrix, List<decimal> B)
         {
             int n = matrix.Count;
-
+            global_n = n;
             List<List<decimal>> C = new List<List<decimal>>();
             List<List<decimal>> C1 = new List<List<decimal>>();
             List<List<decimal>> C2 = new List<List<decimal>>();
@@ -215,7 +215,7 @@ namespace OVModel_Methods
                 D.Add(B[i] / matrix[i][i]);
             }
 
-            // Проверка на диагональное преобладание
+            //Проверка на диагональное преобладание
             for (int i = 0; i < n; i++)
             {
                 decimal sum = 0;
@@ -227,7 +227,7 @@ namespace OVModel_Methods
                 if (sum > C[i][i]) return new List<decimal>();
             }
 
-            // Расчёт C1 и C2
+            //Расчёт C1 и C2
             for (int i = 0; i < n; i++)
             {
                 List<decimal> tmp1 = new List<decimal>();
@@ -250,19 +250,186 @@ namespace OVModel_Methods
             global_n = n;
             global_d_dec = D;
 
-            // Метод Зейделя
+            //Метод Зейделя
             List<decimal> x_0 = new List<decimal>(n);
             for (int i = 0; i < n; i++) x_0.Add(0);
             decimal E = 0.000001M;
-
             List<decimal> x_1 = x_k_plus_1(x_0);
+
             while (normaForVector(vectorMinusVector(x_1, x_0)) >= E)
             {
                 x_0 = x_1;
-                x_1 = x_k_plus_1(x_0);
+                x_1 = x_k_plus_1(x_0);   
             }
 
             return x_1;
+        }
+
+
+
+        public static List<decimal> Kramer(List<EqualElements> list)
+        {
+            List<EqualElements> points = new List<EqualElements>(list);
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                EqualElements eq = points[i];
+                eq.n_value = points[i].n_value * 1000000;
+                eq.x = points[i].x * 1000000;
+                points[i] = eq;
+            }
+
+            List<long> x_second = new List<long>(points.Count);
+            for (int i = 0; i < points.Count; i++) x_second.Add((long)points[i].x * (long)points[i].x);
+
+            List<long> x_third = new List<long>(points.Count);
+            for (int i = 0; i < points.Count; i++) x_third.Add((long)points[i].x * x_second[i]);
+
+            List<long> x_fourth = new List<long>(points.Count);
+            for (int i = 0; i < points.Count; i++) x_fourth.Add((long)points[i].x * x_third[i]);
+
+            long sumx = points.Sum(elem => (long)elem.x);
+            long sumx2 = x_second.Sum();
+            long sumx3 = x_third.Sum();
+            long sumx4 = x_fourth.Sum();
+
+            long sumy = points.Sum(elem => (long)elem.n_value);
+
+            long sumyx = 0;
+            for (int i = 0; i < points.Count; i++) sumyx += ((long)points[i].n_value * (long)points[i].x);
+
+            long sumyx2 = 0; ;
+            for (int i = 0; i < points.Count; i++) sumyx2 += ((long)points[i].n_value * (long)points[i].x * (long)points[i].x);
+
+            System.Numerics.BigInteger opredelitel = 0, x1_opred, x2_opred, x3_opred, x1b, x2b, x3b;
+
+            opredelitel = points.Count * sumx2 * sumx4;
+            opredelitel += sumx * sumx2 * sumx3;
+            opredelitel += sumx * sumx2 * sumx3;
+            opredelitel -= sumx2 * sumx2 * sumx2;
+            opredelitel -= sumx * sumx * sumx4;
+            opredelitel -= points.Count * sumx3 * sumx3;
+
+
+            x1_opred = sumy * sumx2 * sumx4 + sumx2 * sumx3 * sumyx + sumx * sumx3 * sumyx2 - sumx * sumyx * sumx4 - sumx3 * sumx3 * sumy;
+            x2_opred = points.Count * sumyx * sumx4 + 2 * sumx * sumx3 * sumx2 - sumx2 * sumx2 * sumyx - sumy * sumx * sumx4 - sumx3 * sumyx2 * points.Count;
+            x3_opred = points.Count * sumx2 * sumyx2 + sumx * sumx3 * sumy + sumx * sumyx * sumy - sumx2 * sumx2 * sumy - sumx * sumx * sumyx2 - sumyx * sumx3 * points.Count;
+
+            //decimal x1 = (decimal)(x1_opred / opredelitel);
+            //decimal x2 = (decimal)(x2_opred / opredelitel);
+            //decimal x3 = (decimal)(x3_opred / opredelitel);
+
+            //x1b = x1_opred / opredelitel;
+            //x2b = x2_opred / opredelitel;
+            //x3b = x3_opred / opredelitel;
+
+            return new List<decimal>() {};
+        }
+
+        private static List<decimal> vectorDevidedNumber(List<decimal> a, decimal number)
+        {
+            List<decimal> result = new List<decimal>();
+
+            for (int i = 0; i < a.Count; i++) result.Add(a[i] * (1/number));
+
+            return result;
+        }
+
+        private static List<decimal> vectorMinusNumber(List<decimal> a, decimal number)
+        {
+            List<decimal> result = new List<decimal>();
+
+            for (int i = 0; i < a.Count; i++) result.Add(a[i] - number);
+
+            return result;
+        }
+        
+        private static List<decimal> vectorMultiplyNumber(List<decimal> a, decimal number)
+        {
+            List<decimal> result = new List<decimal>();
+            for (int i = 0; i < a.Count; i++) result.Add(a[i] * number);
+
+            return result;
+        }
+
+        private static decimal SquareVector(List<decimal> a)
+        {
+            decimal result = 0;
+            for (int i = 0; i < a.Count; i++) result += a[i] * a[i];
+
+            return result;
+        }
+
+        private static List<decimal> VectorPlusVector(List<decimal> a, List<decimal> b)
+        {
+            List<decimal> result = new List<decimal>();
+            for (int i = 0; i < a.Count; i++) result.Add(a[i] + b[i]);
+
+            return result;
+        }
+
+        private static List<decimal> vectorMinusVectorOrtodoks(List<decimal> a, List<decimal> b)
+        {
+            List<decimal> result = new List<decimal>();
+            for (int i = 0; i < a.Count; i++) result.Add(a[i] - b[i]);
+
+            return result;
+        }
+
+        /*
+         matrix(polinom 2) = 
+                  |n    x    x^2  y   |
+                  |x    x^2  x^3  xy  |
+                  |x^2  x^3  x^4  x^2y|
+         */
+        // https://core.ac.uk/download/pdf/77241064.pdf
+        public static List<decimal> ortodoks(List<List<decimal>> matrix)
+        {
+            int count = matrix[0].Count - 1;
+            decimal E = 0.000001M;
+
+            List<List<decimal>> B = new List<List<decimal>>();
+            List<decimal> U = new List<decimal>();
+            //List<decimal> A = new List<decimal>();
+
+            List<List<decimal>> allU = new List<List<decimal>>();
+            U = matrix[0];
+            //decimal sum = U.Sum();
+            B.Add(vectorDevidedNumber(U, U.Sum()));
+            allU.Add(U);
+            for (int i = 1; i < matrix[0].Count; i++)
+            {
+                if (i != matrix[0].Count - 1) U = matrix[i];
+                else
+                {
+                    U = new List<decimal>();
+                    for (int y = 0; y < count; y++) U.Add(0);
+                    U.Add(1);
+                }
+
+                //Для U
+                // Несколько раз, чтобы повысить точность
+                List<decimal> sum = new List<decimal>();
+                for (int k = 0; k < matrix[0].Count; k++) sum.Add(0);
+
+                for (int k = 0; k < 1; k++)
+                {
+                    for (int j = 0; j < i; j++) sum = VectorPlusVector(sum, vectorMultiplyNumber(allU[j], SquareVector(B[j])));
+                    U = vectorMinusVectorOrtodoks(U, sum);
+                }
+
+                allU.Add(U);
+                B.Add(vectorDevidedNumber(U, U.Sum()));
+            }
+
+            List<decimal> result = new List<decimal>()
+            {
+                B[count][0] / B[count][count],
+                B[count][1] / B[count][count],
+                B[count][2] / B[count][count]
+            };
+
+            return result;
         }
     }
     public static class Approksimacia
@@ -301,6 +468,7 @@ namespace OVModel_Methods
             List<long> B = new List<long>() { sumy, sumyx };
 
             List<double> X = SLY.Zeidelya(A, B);
+            //List<double> X = SLY.Kramer(points);
             for (int i = 0; i < X.Count; i++) X[i] = X[i] / 1000000;
 
             double start = points.Min(elem => elem.x);
@@ -333,6 +501,7 @@ namespace OVModel_Methods
             for (int i = 0; i < points.Count; i++) if (!x.Contains(points[i].x)) x.Add(points[i].x);
             return x.Count == 1 ? true : false;
         }
+
         public static List<List<double>> approksimacia_polinom_2(List<EqualElements> list)
         {
             List<EqualElements> points = new List<EqualElements>(list);
@@ -356,15 +525,6 @@ namespace OVModel_Methods
                 return r;
             }
 
-            /*
-            for (int i = 0; i < points.Count; i++)
-            {
-                EqualElements eq = points[i];
-                eq.n_value = points[i].n_value * 1000000;
-                eq.x = points[i].x * 1000000;
-                points[i] = eq;
-            }
-            */
             List<decimal> x_second = new List<decimal>(points.Count);
             for (int i = 0; i < points.Count; i++) x_second.Add((decimal)points[i].x * (decimal)points[i].x);
 
@@ -374,39 +534,153 @@ namespace OVModel_Methods
             List<decimal> x_fourth = new List<decimal>(points.Count);
             for (int i = 0; i < points.Count; i++) x_fourth.Add((decimal)points[i].x * x_third[i]);
 
-            decimal sumx = points.Sum(elem => (Int64)elem.x);
+            decimal sumx = points.Sum(elem => (decimal)elem.x);
             decimal sumx2 = x_second.Sum();
             decimal sumx3 = x_third.Sum();
             decimal sumx4 = x_fourth.Sum();
 
-            decimal sumy = points.Sum(elem => (Int64)elem.n_value);
+            decimal sumy = points.Sum(elem => (decimal)elem.n_value);
 
             decimal sumyx = 0;
             for (int i = 0; i < points.Count; i++) sumyx += ((decimal)points[i].n_value * (decimal)points[i].x);
 
             decimal sumyx2 = 0; ;
             for (int i = 0; i < points.Count; i++) sumyx2 += ((decimal)points[i].n_value * (decimal)points[i].x * (decimal)points[i].x);
-            
+
+            decimal sumx_1 = 0;
+            for (int i = 0; i < points.Count; i++) sumx_1 += ((decimal)points[i].x - 1);
+
+            decimal sumx2_1 = 0;
+            for (int i = 0; i < points.Count; i++) sumx2_1 += ((decimal)points[i].x * (decimal)points[i].x - 1);
+
+            decimal sumx2x_1 = 0;
+            for (int i = 0; i < points.Count; i++) sumx2x_1 += (decimal)points[i].x * (decimal)points[i].x * ((decimal)points[i].x - 1);
+
+            decimal sumxx_1 = 0;
+            for (int i = 0; i < points.Count; i++) sumxx_1 += (decimal)points[i].x * ((decimal)points[i].x - 1);
+
+            decimal sumx2x2_1 = 0;
+            for (int i = 0; i < points.Count; i++) sumx2x2_1 += (decimal)points[i].x * (decimal)points[i].x * ((decimal)points[i].x * (decimal)points[i].x - 1);
+
+            decimal sumxx2_1 = 0;
+            for (int i = 0; i < points.Count; i++) sumxx2_1 += (decimal)points[i].x * ((decimal)points[i].x * (decimal)points[i].x - 1);
+
+            decimal x2 = (sumyx2 - sumx2 - (sumyx - sumx)*sumx2x_1/sumxx_1) / (sumx2x2_1 - sumxx2_1*sumx2x_1/sumxx_1);
+            decimal x1 = ((sumyx - sumx)*sumx2x_1/sumxx_1 - sumxx2_1*sumx2x_1*x2/sumxx_1) / sumx2x_1;
+            decimal x0 = (sumy - sumx2*x2 - sumx*x1) / points.Count;
+
             List<List<decimal>> A = new List<List<decimal>>()
             {
                 new List<decimal>() {points.Count, sumx, sumx2},
-                new List<decimal>() {sumx, sumx2, sumx3},
-                new List<decimal>() {sumx2, sumx3, sumx4}
+                new List<decimal>() {sumx, sumx2, sumx3 },
+                new List<decimal>() {sumx2, sumx3, sumx4 }
             };
 
             List<decimal> B = new List<decimal>() { sumy, sumyx, sumyx2 };
-            
             List<decimal> X = SLY.Zeidelya(A, B);
+
+            double start = points.Min(elem => elem.x);
+            double end = points.Max(elem => elem.x);
+
+            //start = start / 1000000;
+            //end = end / 1000000;
+
+
+
+
+            int length = (Int32)((end - start) / 0.000001);
+
+            List<List<double>> result = new List<List<double>>(2)
+            {
+                new List<double>(length),
+                new List<double>(length)
+            };
+
+            if (X.Count == 0)
+            {
+                for (int i = 0; i < points.Count; i++)
+                {
+                    result[0].Add(points[i].x);
+                    result[1].Add(points[i].n_value);
+                }
+                return result;
+                //return new List<List<double>>() { new List<double>(), new List<double>()};
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                double x = Math.Round(start + 0.000001 * i, 6);
+                double y = (double)X[0] + (double)X[1] * x + (double)X[2] * x * x;
+                result[0].Add(x);
+                result[1].Add(y);
+            }
+
+            return result;
+
+            /*
+            for (int i = 0; i < points.Count; i++)
+            {
+                EqualElements eq = points[i];
+                eq.n_value = points[i].n_value * 1000000;
+                eq.x = points[i].x * 1000000;
+                points[i] = eq;
+            }
+            */
+            /*
+            List<decimal> x_second = new List<decimal>(points.Count);
+            for (int i = 0; i < points.Count; i++) x_second.Add((decimal)points[i].x * (decimal)points[i].x);
+
+            List<decimal> x_third = new List<decimal>(points.Count);
+            for (int i = 0; i < points.Count; i++) x_third.Add((decimal)points[i].x * x_second[i]);
+
+            List<decimal> x_fourth = new List<decimal>(points.Count);
+            for (int i = 0; i < points.Count; i++) x_fourth.Add((decimal)points[i].x * x_third[i]);
+
+            decimal sumx = points.Sum(elem => (decimal)elem.x);
+            decimal sumx2 = x_second.Sum();
+            decimal sumx3 = x_third.Sum();
+            decimal sumx4 = x_fourth.Sum();
+
+            decimal sumy = points.Sum(elem => (decimal)elem.n_value);
+
+            decimal sumyx = 0;
+            for (int i = 0; i < points.Count; i++) sumyx += ((decimal)points[i].n_value * (decimal)points[i].x);
+
+            decimal sumyx2 = 0; ;
+            for (int i = 0; i < points.Count; i++) sumyx2 += ((decimal)points[i].n_value * (decimal)points[i].x * (decimal)points[i].x);
+
+            //SLY.Kramer(points);
+            
+            
+            List<List<decimal>> A = new List<List<decimal>>()
+            {
+                new List<decimal>() {points.Count, sumx, sumx2, -sumy},
+                new List<decimal>() {sumx, sumx2, sumx3, -sumyx },
+                new List<decimal>() {sumx2, sumx3, sumx4, -sumyx2 }
+            };
+
+
+            List<decimal> B = new List<decimal>() {sumy, sumyx, sumyx2 };
+            
+
+
+            List<decimal> X = SLY.ortodoks(A);
+           
+
+
+            */
             //for (int i = 0; i < X.Count; i++) X[i] = X[i] / 1000000;
             /*
-            var A = Matrix<decimal>.Build.DenseOfArray(new decimal[,] {
-                { points.Count, sumx, sumx2},
-                { sumx, sumx2, sumx3 },
-                { sumx2, sumx3, sumx4 }
+            var A = Matrix<double>.Build.DenseOfArray(new double[,] {
+                { (double)points.Count, (double)sumx, (double)sumx2},
+                { (double)sumx, (double)sumx2, (double)sumx3 },
+                { (double)sumx2, (double)sumx3, (double)sumx4 }
             });
-            var B = Vector<decimal>.Build.Dense(new decimal[] { sumy, sumyx, sumyx2 });
+            var B = Vector<double>.Build.Dense(new double[] { (double)sumy, (double)sumyx, (double)sumyx2 });
+            
             var X = A.Solve(B);
             */
+            /*
             double start = points.Min(elem => elem.x);
             double end = points.Max(elem => elem.x);
 
@@ -420,17 +694,30 @@ namespace OVModel_Methods
                 new List<double>(length)
             };
 
-            if (X.Count == 0) return new List<List<double>> { new List<double>(), new List<double>()};
+            if (X.Count == 0)
+            {
+                for (int i = 0; i < points.Count; i++)
+                {
+                    result[0].Add(points[i].x);
+                    result[1].Add(points[i].n_value);
+                }
+                return result;
+                //return new List<List<double>>() { new List<double>(), new List<double>()};
+            }
+
 
             for (int i = 0; i < length; i++)
             {
                 double x = Math.Round(start + 0.000001 * i, 6);
-                double y = (double)X[0] + (double)X[1] * x + (double)X[2] * x * x;
+                double y = (double)X[0] + (double)X[1] * x + (double)X[2] * x * x + x;
                 result[0].Add(x);
                 result[1].Add(y);
             }
             
+
+
             return result;
+            */
         }
     }
 
