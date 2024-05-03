@@ -161,7 +161,7 @@ namespace OVModel_Methods
 
         public static decimal normaForVector(List<decimal> list)
         {
-                return list.Max();
+            return list.Max();
         }
 
         private static List<decimal> x_k_plus_1(List<decimal> x_k)
@@ -195,7 +195,7 @@ namespace OVModel_Methods
         public static List<decimal> Zeidelya(List<List<decimal>> matrix, List<decimal> B)
         {
             int n = matrix.Count;
-            global_n = n;
+
             List<List<decimal>> C = new List<List<decimal>>();
             List<List<decimal>> C1 = new List<List<decimal>>();
             List<List<decimal>> C2 = new List<List<decimal>>();
@@ -215,7 +215,7 @@ namespace OVModel_Methods
                 D.Add(B[i] / matrix[i][i]);
             }
 
-            //Проверка на диагональное преобладание
+            // Проверка на диагональное преобладание
             for (int i = 0; i < n; i++)
             {
                 decimal sum = 0;
@@ -227,7 +227,7 @@ namespace OVModel_Methods
                 if (sum > C[i][i]) return new List<decimal>();
             }
 
-            //Расчёт C1 и C2
+            // Расчёт C1 и C2
             for (int i = 0; i < n; i++)
             {
                 List<decimal> tmp1 = new List<decimal>();
@@ -250,16 +250,16 @@ namespace OVModel_Methods
             global_n = n;
             global_d_dec = D;
 
-            //Метод Зейделя
+            // Метод Зейделя
             List<decimal> x_0 = new List<decimal>(n);
             for (int i = 0; i < n; i++) x_0.Add(0);
             decimal E = 0.000001M;
-            List<decimal> x_1 = x_k_plus_1(x_0);
 
+            List<decimal> x_1 = x_k_plus_1(x_0);
             while (normaForVector(vectorMinusVector(x_1, x_0)) >= E)
             {
                 x_0 = x_1;
-                x_1 = x_k_plus_1(x_0);   
+                x_1 = x_k_plus_1(x_0);
             }
 
             return x_1;
@@ -502,6 +502,66 @@ namespace OVModel_Methods
             return x.Count == 1 ? true : false;
         }
 
+        public static List<List<double>> approksimacia_line(List<EqualElements> list)
+        {
+            List<EqualElements> points = new List<EqualElements>(list);
+
+            if (points.Count == 0) return new List<List<double>>();
+
+            if (isEquals(points))
+            {
+                List<List<double>> r = new List<List<double>>(2)
+                {
+                    new List<double>(points.Count),
+                    new List<double>(points.Count)
+                };
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    r[0].Add(points[i].x);
+                    r[1].Add(points[i].n_value);
+                }
+
+                return r;
+            }
+
+            List<decimal> x_second = new List<decimal>(points.Count);
+            for (int i = 0; i < points.Count; i++) x_second.Add((decimal)points[i].x * (decimal)points[i].x);
+
+            decimal sumx = points.Sum(elem => (decimal)elem.x);
+            decimal sumx2 = x_second.Sum();
+
+            decimal sumy = points.Sum(elem => (decimal)elem.n_value);
+
+            decimal sumyx = 0;
+            for (int i = 0; i < points.Count; i++) sumyx += ((decimal)points[i].n_value * (decimal)points[i].x);
+
+            decimal n = points.Count;
+
+            decimal a = (n * sumyx - sumx * sumy) / (n * sumx2 - sumx * sumx);
+            decimal b = (sumy - a * sumx) / n;
+
+            double start = points.Min(elem => elem.x);
+            double end = points.Max(elem => elem.x);
+
+            int length = (Int32)((end - start) / 0.000001);
+
+            List<List<double>> result = new List<List<double>>(2)
+            {
+                new List<double>(length),
+                new List<double>(length)
+            };
+
+            for (int i = 0; i < length; i++)
+            {
+                double x = Math.Round(start + 0.000001 * i, 6);
+                double y = (double)a*x + (double)b;
+                result[0].Add(x);
+                result[1].Add(y);
+            }
+
+            return result;
+        }
         public static List<List<double>> approksimacia_polinom_2(List<EqualElements> list)
         {
             List<EqualElements> points = new List<EqualElements>(list);
@@ -565,9 +625,20 @@ namespace OVModel_Methods
             decimal sumxx2_1 = 0;
             for (int i = 0; i < points.Count; i++) sumxx2_1 += (decimal)points[i].x * ((decimal)points[i].x * (decimal)points[i].x - 1);
 
-            decimal x2 = (sumyx2 - sumx2 - (sumyx - sumx)*sumx2x_1/sumxx_1) / (sumx2x2_1 - sumxx2_1*sumx2x_1/sumxx_1);
-            decimal x1 = ((sumyx - sumx)*sumx2x_1/sumxx_1 - sumxx2_1*sumx2x_1*x2/sumxx_1) / sumx2x_1;
-            decimal x0 = (sumy - sumx2*x2 - sumx*x1) / points.Count;
+            decimal n = points.Count;
+            /*
+            decimal x2 = 0;
+            x2 += sumyx2;
+            x2 -= (sumy * sumx2) / n;
+            decimal a = (sumyx - (sumy * sumx) / n) * (sumx3 - (sumx * sumx2) / n) / (sumx2 - (sumx * sumx) / n);
+            x2 -= a;
+            x2 /= (sumx4 - (sumx2 * sumx2) / n - ((sumx3 - (sumx * sumx2) / n) * (sumx3 - (sumx * sumx2) / n) / (sumx2 - (sumx * sumx) / n)));
+            */
+            //decimal x2 = (sumyx2 - sumy*sumx2/n - (sumyx - sumy*sumx/n)*(sumx3-sumx*sumx2/n)/(sumx2-sumx*sumx/n)) / (sumx4 - sumx2*sumx2/n - (sumx3-sumx*sumx2/n)*(sumx3-sumx*sumx2/n)/(sumx2 - sumx*sumx/n));
+            decimal x2 = (sumyx - (sumy*sumx/n) - ((sumyx2 - sumy*sumx2/n)*(sumx2 - sumx*sumx/n)/(sumx3-sumx*sumx2/n))) / (sumx3 - (sumx2*sumx2/n) - ((sumx4-sumx2*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n)));
+            //decimal x1 = ((sumyx - sumy*sumx/n)*(sumx3-sumx*sumx2/n)/(sumx2-sumx*sumx/n) - x2*((sumx3-sumx*sumx2)*(sumx3 - sumx * sumx2) /(sumx2-sumx*sumx/n))) / (sumx3-sumx*sumx2/n);
+            decimal x1 = (((sumyx2 - sumy*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n)) - ((sumx4-sumx2*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n))*x2) / (sumx2 - (sumx*sumx/n));
+            decimal x0 = (sumy/n) - (sumx2/n)*x2 - (sumx/n)*x1;
 
             List<List<decimal>> A = new List<List<decimal>>()
             {
@@ -610,7 +681,7 @@ namespace OVModel_Methods
             for (int i = 0; i < length; i++)
             {
                 double x = Math.Round(start + 0.000001 * i, 6);
-                double y = (double)X[0] + (double)X[1] * x + (double)X[2] * x * x;
+                double y = (double)x0 + (double)x1 * x + (double)x2 * x * x;
                 result[0].Add(x);
                 result[1].Add(y);
             }

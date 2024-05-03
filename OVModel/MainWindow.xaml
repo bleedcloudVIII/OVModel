@@ -26,6 +26,7 @@
             <MenuItem Header="Метод" x:Name="ViborModeli">
                 <MenuItem Header="Аппроксимация(полином 1)" Click="MenuItem_Click_Method_1"></MenuItem>
                 <MenuItem Header="Аппроксимация(полином 2)" Click="MenuItem_Click_Method_2"></MenuItem>
+                <MenuItem Header="Линейная" Click="MenuItem_Click_Method_3"></MenuItem>
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="Просмотр справки" Click="MenuItem_Click_Spravka"></MenuItem>
