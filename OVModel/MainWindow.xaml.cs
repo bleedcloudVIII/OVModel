@@ -215,22 +215,7 @@ namespace OVModel
                 for (int i = 0; i < equals_list.Count; i++)
                     lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
 
-                if (method_number == 1)
-                {
-                    // Рассчёт по методу
-                    //List<List<double>> result = Approksimacia.approksimacia_polinom_1(equals_list);
-
-                    OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
-                    {
-                        Title = "Аппроксимация(Полином 1 степени)"
-                    };
-
-                    //for (int i = 0; i < result[0].Count; i++) lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
-
-
-                    tmp_model.Series.Add(lineSeries2);
-                }
-                else if (method_number == 2)
+                if (method_number == 1) // Аппроксимация метод наименьших квадратов (полином Ньютона)
                 {
                     // Рассчёт по методу
 
@@ -242,7 +227,6 @@ namespace OVModel
                     OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
 
                     // NOTE
-                    // Добавление серии сделать в if блоке
                     if (equals_list_nx_n.Count > 1)
                     {
                         List<List<double>> result_nx_n = Approksimacia.approksimacia_polinom_2(equals_list_nx_n);
@@ -306,20 +290,8 @@ namespace OVModel
 
 
                     OxyPlotScheduleApproksimacia.Model = tmp_model;
-                    //if (result.Count != 0)
-                    //{
-                    //OxyPlot.Series.LineSeries lineSeries2 = new OxyPlot.Series.LineSeries
-                    //{
-                    //Title = "Аппроксимация(Полином 2 степени)"
-                    //};
-
-                    //for (int i = 0; i < result[0].Count; i++)
-                    //lineSeries2.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
-
-                    //tmp_model.Series.Add(lineSeries2);
-                    //}
                 }
-                else if (method_number == 3)
+                else if (method_number == 2) // Линейная апроксимация
                 {
                     // Рассчёт по методу
 
@@ -331,7 +303,6 @@ namespace OVModel
                     OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
 
                     // NOTE
-                    // Добавление серии сделать в if блоке
                     if (equals_list_nx_n.Count > 1)
                     {
                         List<List<double>> result_nx_n = Approksimacia.approksimacia_line(equals_list_nx_n);
@@ -396,6 +367,82 @@ namespace OVModel
 
                     OxyPlotScheduleApproksimacia.Model = tmp_model;
                 }
+                else if (method_number == 3) // Интерполяция
+                {
+                    // Рассчёт по методу
+
+                    OxyPlot.Series.LineSeries lineSeries_nx_n = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
+                    OxyPlot.Series.LineSeries lineSeries_ny_n = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
+                    OxyPlot.Series.LineSeries lineSeries_nz_n = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
+                    OxyPlot.Series.LineSeries lineSeries_nx_ny = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
+                    OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
+                    OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
+
+                    // NOTE
+                    if (equals_list_nx_n.Count > 1)
+                    {
+                        List<List<double>> result_nx_n = Interpolyacia.interpolyacia_newtoon(equals_list_nx_n);
+                        if (result_nx_n[0].Count != 0)
+                        {
+                            for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
+                            tmp_model.Series.Add(lineSeries_nx_n);
+                        }
+                    }
+
+                    if (equals_list_ny_n.Count > 1)
+                    {
+                        List<List<double>> result_ny_n = Interpolyacia.interpolyacia_newtoon(equals_list_ny_n);
+                        if (result_ny_n[0].Count != 0)
+                        {
+                            for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
+                            tmp_model.Series.Add(lineSeries_ny_n);
+                        }
+
+                    }
+
+                    if (equals_list_nz_n.Count > 1)
+                    {
+                        List<List<double>> result_nz_n = Interpolyacia.interpolyacia_newtoon(equals_list_nz_n);
+                        if (result_nz_n[0].Count != 0)
+                        {
+                            for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
+                            tmp_model.Series.Add(lineSeries_nz_n);
+                        }
+                    }
+
+                    if (equals_list_nx_ny.Count > 1)
+                    {
+                        List<List<double>> result_nx_ny = Interpolyacia.interpolyacia_newtoon(equals_list_nx_ny);
+                        if (result_nx_ny[0].Count != 0)
+                        {
+                            for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
+                            tmp_model.Series.Add(lineSeries_nx_ny);
+                        }
+                    }
+
+                    if (equals_list_nx_nz.Count > 1)
+                    {
+                        List<List<double>> result_nx_nz = Interpolyacia.interpolyacia_newtoon(equals_list_nx_nz);
+                        if (result_nx_nz[0].Count != 0)
+                        {
+                            for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
+                            tmp_model.Series.Add(lineSeries_nx_nz);
+                        }
+                    }
+
+                    if (equals_list_ny_nz.Count > 1)
+                    {
+                        List<List<double>> result_ny_nz = Interpolyacia.interpolyacia_newtoon(equals_list_ny_nz);
+                        if (result_ny_nz[0].Count != 0)
+                        {
+                            for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
+                            tmp_model.Series.Add(lineSeries_ny_nz);
+                        }
+                    }
+
+
+                    OxyPlotScheduleApproksimacia.Model = tmp_model;
+                }
                 else
                 {
                     // ERROR
@@ -408,7 +455,12 @@ namespace OVModel
             }
             else
             {
-                OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel();
+                // Произошёл сброс данных
+                OxyPlot.PlotModel tmp_model1 = new OxyPlot.PlotModel() { };
+                OxyPlot.PlotModel tmp_model2 = new OxyPlot.PlotModel() { };
+
+                OxyPlotScheduleApproksimacia.Model = tmp_model1;
+                OxyPlotSchedulePeresechenie.Model = tmp_model2;
                 //OxyPlotSchedule2.Model = tmp_model;
             }
         }
@@ -523,9 +575,18 @@ namespace OVModel
             Input_h.IsReadOnly = false;
             SbrosButton.Visibility = Visibility.Hidden;
 
+            equals_list_nx_n = new List<EqualElements>();
+            equals_list_ny_n = new List<EqualElements>();
+            equals_list_nz_n = new List<EqualElements>();
+            equals_list_nx_ny = new List<EqualElements>();
+            equals_list_nx_nz = new List<EqualElements>();
+            equals_list_ny_nz = new List<EqualElements>();
+
+            tmp_equals = new List<EqualElements>();
             equals_list = new List<EqualElements>();
             EqualsTable.ItemsSource = equals_list;
             Draw_Schedule_For_Points();
+            DrawScheduleAndTable();
         }
 
         private string GetExtension(string fileName)
