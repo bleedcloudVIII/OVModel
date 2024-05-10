@@ -202,18 +202,7 @@ namespace OVModel
                     },
                 };
 
-
-                OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries
-                {
-                    Title = "Точки пересечения"
-                };
-
                 Cursor = Cursors.Wait;
-
-                // Берутся точки, которые выбрал пользователь
-                // Затем добавляются в модель
-                for (int i = 0; i < equals_list.Count; i++)
-                    lineSeries.Points.Add(new OxyPlot.DataPoint(equals_list[i].x, equals_list[i].n_value));
 
                 if (method_number == 1) // Аппроксимация метод наименьших квадратов (полином Ньютона)
                 {
@@ -226,7 +215,6 @@ namespace OVModel
                     OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
                     OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
 
-                    // NOTE
                     if (equals_list_nx_n.Count > 1)
                     {
                         List<List<double>> result_nx_n = Approksimacia.approksimacia_polinom_2(equals_list_nx_n);
@@ -381,7 +369,7 @@ namespace OVModel
                     // NOTE
                     if (equals_list_nx_n.Count > 1)
                     {
-                        List<List<double>> result_nx_n = Interpolyacia.interpolyacia_newtoon(equals_list_nx_n);
+                        List<List<double>> result_nx_n = Interpolyacia.interpolyacia_lagrange(equals_list_nx_n);
                         if (result_nx_n[0].Count != 0)
                         {
                             for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
@@ -391,7 +379,7 @@ namespace OVModel
 
                     if (equals_list_ny_n.Count > 1)
                     {
-                        List<List<double>> result_ny_n = Interpolyacia.interpolyacia_newtoon(equals_list_ny_n);
+                        List<List<double>> result_ny_n = Interpolyacia.interpolyacia_lagrange(equals_list_ny_n);
                         if (result_ny_n[0].Count != 0)
                         {
                             for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
@@ -402,7 +390,7 @@ namespace OVModel
 
                     if (equals_list_nz_n.Count > 1)
                     {
-                        List<List<double>> result_nz_n = Interpolyacia.interpolyacia_newtoon(equals_list_nz_n);
+                        List<List<double>> result_nz_n = Interpolyacia.interpolyacia_lagrange(equals_list_nz_n);
                         if (result_nz_n[0].Count != 0)
                         {
                             for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
@@ -412,7 +400,7 @@ namespace OVModel
 
                     if (equals_list_nx_ny.Count > 1)
                     {
-                        List<List<double>> result_nx_ny = Interpolyacia.interpolyacia_newtoon(equals_list_nx_ny);
+                        List<List<double>> result_nx_ny = Interpolyacia.interpolyacia_lagrange(equals_list_nx_ny);
                         if (result_nx_ny[0].Count != 0)
                         {
                             for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
@@ -422,7 +410,7 @@ namespace OVModel
 
                     if (equals_list_nx_nz.Count > 1)
                     {
-                        List<List<double>> result_nx_nz = Interpolyacia.interpolyacia_newtoon(equals_list_nx_nz);
+                        List<List<double>> result_nx_nz = Interpolyacia.interpolyacia_lagrange(equals_list_nx_nz);
                         if (result_nx_nz[0].Count != 0)
                         {
                             for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
@@ -432,7 +420,7 @@ namespace OVModel
 
                     if (equals_list_ny_nz.Count > 1)
                     {
-                        List<List<double>> result_ny_nz = Interpolyacia.interpolyacia_newtoon(equals_list_ny_nz);
+                        List<List<double>> result_ny_nz = Interpolyacia.interpolyacia_lagrange(equals_list_ny_nz);
                         if (result_ny_nz[0].Count != 0)
                         {
                             for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
@@ -449,8 +437,6 @@ namespace OVModel
                 }
 
                 Cursor = Cursors.Arrow;
-
-                tmp_model.Series.Add(lineSeries);
                 OxyPlotScheduleApproksimacia.Model = tmp_model;
             }
             else
@@ -467,27 +453,12 @@ namespace OVModel
 
         private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
         {
-            /*
-            EqualsTable.ItemsSource = new List<EqualElements>() { };
-            for (int i = 0; i < tmp_equals.Count; i++)
-            {
-                EqualElements tmp = new EqualElements(tmp_equals[i]);
-                tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
-                tmp.x = Math.Round(tmp_equals[i].x, 6);
-
-                equals_list.Add(tmp);
-            }
-            equals_list.Sort();
-            equals_list.Reverse();
-            */
             EqualsTable.ItemsSource = new List<EqualElements>() { };
             for (int i = 0; i  < tmp_equals.Count; i++)
             {
                 EqualElements tmp = new EqualElements(tmp_equals[i]);
                 tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
                 tmp.x = Math.Round(tmp_equals[i].x, 6);
-
-                //Console.Write(tmp.cross);
 
                 if (tmp.cross == "n_x/n") equals_list_nx_n.Add(tmp);
                 else if (tmp.cross == "n_y/n") equals_list_ny_n.Add(tmp);
@@ -504,7 +475,6 @@ namespace OVModel
 
             OxyPlot.PlotModel tmp_model = new OxyPlot.PlotModel()
             {
-                //Title = title,
                 Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
                 IsLegendVisible = true,
                 Axes =
@@ -639,40 +609,76 @@ namespace OVModel
             }
         }
 
-        private void MenuItem_Click_Save_Schedule_2(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_Save_Schedule_Peresech(object sender, RoutedEventArgs e)
         {
-            //if (OxyPlotSchedule2.Model == null)
-            //{
-            //    Error_save_without_schedule err_window = new Error_save_without_schedule();
-            //    err_window.Show();
-            //}
-            //else
-            //{
-            //    Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            //    dlg.FileName = "schedule"; // Default file name
-            //    dlg.DefaultExt = ".png"; // Default file extension
-            //    dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png";
-            //    Nullable<bool> result = dlg.ShowDialog();
+            if (OxyPlotSchedulePeresechenie.Model == null)
+            {
+                Error_save_without_schedule err_window = new Error_save_without_schedule();
+                err_window.Show();
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = "schedule"; // Default file name
+                dlg.DefaultExt = ".png"; // Default file extension
+                dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png";
+                Nullable<bool> result = dlg.ShowDialog();
 
-            //    if (result == true)
-            //    {
-            //        string extension = GetExtension(dlg.SafeFileName);
+                if (result == true)
+                {
+                    string extension = GetExtension(dlg.SafeFileName);
 
-            //        if (extension == "pdf")
-            //        {
-            //            Export.Export_Schedule_pdf(OxyPlotSchedule2, dlg);
-            //        }
-            //        else if (extension == "png")
-            //        {
-            //            Export.Export_Schedule_png(OxyPlotSchedule2, dlg);
-            //        }
-            //        else if (extension == "jpg")
-            //        {
-            //            Export.Export_Schedule_jpg(OxyPlotSchedule2, dlg);
+                    if (extension == "pdf")
+                    {
+                        Export.Export_Schedule_pdf(OxyPlotSchedulePeresechenie, dlg);
+                    }
+                    else if (extension == "png")
+                    {
+                        Export.Export_Schedule_png(OxyPlotSchedulePeresechenie, dlg);
+                    }
+                    else if (extension == "jpg")
+                    {
+                        Export.Export_Schedule_jpg(OxyPlotSchedulePeresechenie, dlg);
 
-            //        }
-            //    }
-            //}
+                    }
+                }
+            }
+        }
+
+        private void MenuItem_Click_Save_Schedule_Tendencia(object sender, RoutedEventArgs e)
+        {
+            if (OxyPlotScheduleApproksimacia.Model == null)
+            {
+                Error_save_without_schedule err_window = new Error_save_without_schedule();
+                err_window.Show();
+            }
+            else
+            {
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                dlg.FileName = "schedule"; // Default file name
+                dlg.DefaultExt = ".png"; // Default file extension
+                dlg.Filter = "jpeg image (.jpg)|*.jpg|pdf docuemnt (.pdf)|*.pdf|png image (.png)|*.png";
+                Nullable<bool> result = dlg.ShowDialog();
+
+                if (result == true)
+                {
+                    string extension = GetExtension(dlg.SafeFileName);
+
+                    if (extension == "pdf")
+                    {
+                        Export.Export_Schedule_pdf(OxyPlotScheduleApproksimacia, dlg);
+                    }
+                    else if (extension == "png")
+                    {
+                        Export.Export_Schedule_png(OxyPlotScheduleApproksimacia, dlg);
+                    }
+                    else if (extension == "jpg")
+                    {
+                        Export.Export_Schedule_jpg(OxyPlotScheduleApproksimacia, dlg);
+
+                    }
+                }
+            }
         }
 
         private void MenuItem_Click_Save_Table(object sender, RoutedEventArgs e)

@@ -17,16 +17,17 @@
             <MenuItem Header="Сохранение" >
                 <MenuItem Header="Сохранить график" Click="MenuItem_Click_Save_Schedule"></MenuItem>
                 <MenuItem Header="Сохранить таблицу" Click="MenuItem_Click_Save_Table"></MenuItem>
-                <MenuItem Header="Сохранить график изучения" Click="MenuItem_Click_Save_Schedule_2"></MenuItem>
+                <MenuItem Header="Сохранить график пересчений" Click="MenuItem_Click_Save_Schedule_Peresech"></MenuItem>
+                <MenuItem Header="Сохранить график тенденции" Click="MenuItem_Click_Save_Schedule_Tendencia"></MenuItem>
             </MenuItem>
             <MenuItem Header="Модель">
                 <MenuItem Header="Классическая" IsCheckable="True" Click="MenuItem_Click_Model_1"></MenuItem>
                 <MenuItem Header="Уточнённая" IsCheckable="False" Click="MenuItem_Click_Model_2"></MenuItem>
             </MenuItem>
             <MenuItem Header="Метод" x:Name="ViborModeli">
-                <MenuItem Header="Аппроксимация(полином 2)" Click="MenuItem_Click_Method_1"></MenuItem>
-                <MenuItem Header="Линейная" Click="MenuItem_Click_Method_2"></MenuItem>
-                <MenuItem Header="Интерполяция" Click="MenuItem_Click_Method_3"></MenuItem>
+                <MenuItem Header="Аппроксимация (Полином 2)" Click="MenuItem_Click_Method_1"></MenuItem>
+                <MenuItem Header="Аппроксимация (Линейная)" Click="MenuItem_Click_Method_2"></MenuItem>
+                <MenuItem Header="Интерполяция (Лагранж )" Click="MenuItem_Click_Method_3"></MenuItem>
             </MenuItem>
             <MenuItem Header="Справка">
                 <MenuItem Header="Просмотр справки" Click="MenuItem_Click_Spravka"></MenuItem>

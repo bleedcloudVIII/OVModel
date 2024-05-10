@@ -511,7 +511,7 @@ namespace OVModel_Methods
         {
             List<EqualElements> points = new List<EqualElements>(list);
 
-            if (points.Count == 0) return new List<List<double>>();
+            //if (points.Count == 0) return new List<List<double>>();
 
             if (isEquals(points))
             {
@@ -571,7 +571,7 @@ namespace OVModel_Methods
         {
             List<EqualElements> points = new List<EqualElements>(list);
 
-            if (points.Count == 0) return new List<List<double>>();
+            //if (points.Count == 0) return new List<List<double>>();
 
             if (isEquals(points))
             {
@@ -613,8 +613,10 @@ namespace OVModel_Methods
             for (int i = 0; i < points.Count; i++) sumyx2 += ((decimal)points[i].n_value * (decimal)points[i].x * (decimal)points[i].x);
 
             decimal n = points.Count;
-            decimal x2 = (sumyx - (sumy*sumx/n) - ((sumyx2 - sumy*sumx2/n)*(sumx2 - sumx*sumx/n)/(sumx3-sumx*sumx2/n))) / (sumx3 - (sumx2*sumx2/n) - ((sumx4-sumx2*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n)));
-            decimal x1 = (((sumyx2 - sumy*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n)) - ((sumx4-sumx2*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n))*x2) / (sumx2 - (sumx*sumx/n));
+            decimal x2 = (sumyx - (sumy*sumx/n) - ((sumyx2 - sumy*sumx2/n)*(sumx2 - sumx*sumx/n)/
+                (sumx3-sumx*sumx2/n))) / (sumx3 - (sumx2*sumx2/n) - ((sumx4-sumx2*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n)));
+            decimal x1 = (((sumyx2 - sumy*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n)) 
+                - ((sumx4-sumx2*sumx2/n)*(sumx2-sumx*sumx/n)/(sumx3-sumx*sumx2/n))*x2) / (sumx2 - (sumx*sumx/n));
             decimal x0 = (sumy/n) - (sumx2/n)*x2 - (sumx/n)*x1;
 
 
@@ -656,6 +658,23 @@ namespace OVModel_Methods
             points.Add(new List<double>());
             points.Add(new List<double>());
 
+            if (isEquals(list))
+            {
+                List<List<double>> r = new List<List<double>>(2)
+                {
+                    new List<double>(list.Count),
+                    new List<double>(list.Count)
+                };
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    r[0].Add(list[i].x);
+                    r[1].Add(list[i].n_value);
+                }
+
+                return r;
+            }
+
             for (int i = 0; i < list.Count; i++)
             {
                 points[0].Add((double)(list[i].x));
@@ -672,20 +691,24 @@ namespace OVModel_Methods
                 new List<double>(length)
             };
 
+
             for (int k = 0; k < length; k++)
             {
                 double x = Math.Round(start + 0.000001 * k, 6);
                 double y = 0;
 
-                for (int i = 0; i < points.Count; i++)
+                for (int i = 0; i < points[0].Count; i++)
                 {
                     double alpha = 1;
                     double chisl = 1;
                     double znam = 1;
-                    for (int j = 0; j < points.Count; j++)
+                    for (int j = 0; j < points[0].Count; j++)
                     {
-                        chisl *= (x - points[0][j]);
-                        if (j != i) znam *= (points[0][i] - points[0][j]);
+                        if (j != i)
+                        {
+                            chisl *= (x - points[0][j]);
+                            znam *= (points[0][i] - points[0][j]);
+                        }
                     }
                     alpha = chisl / znam;
                     y += alpha * points[1][i];
@@ -752,20 +775,6 @@ namespace OVModel_Methods
                 }
             }
 
-            /*
-            for (int i = 0; i < points[0].Count; i++)
-            {
-                koeff[i][0] = 1;
-                for (int j = 1; j < points[0].Count; j++)
-                {
-                    double tmp = 1;
-                    for (int k = 0; k < j; k++)
-                        tmp *= (points[0][i] - points[0][k]);
-                    koeff[i][j] = tmp;
-                }
-            }
-             */
-
             List<double> X = new List<double>();
             X.Add(points[1][0]);
             for (int i = 1; i < points[0].Count; i++)
@@ -778,14 +787,8 @@ namespace OVModel_Methods
                 X.Add((sum / koeff[i][i]));
             }
 
-            //for (int i = 0; i < points[0].Count; i++) X[i] = X[i] / 1000000;
-
-
             double start = points[0].Min();
             double end = points[0].Max();
-
-            //start = start / 1000000;
-            //end = end / 1000000;
 
             int length = (Int32)((end - start)/0.000001);
             List<List<double>> result = new List<List<double>>(2)
@@ -807,7 +810,6 @@ namespace OVModel_Methods
                     }
                     y += proiz;
                 }
-                //double y = X[0] + X[1] * x + X[2] * x * x;
                 result[0].Add(x);
                 result[1].Add(y);
             }
