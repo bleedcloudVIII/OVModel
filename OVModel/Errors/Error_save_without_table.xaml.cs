@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace OVModel
+namespace OVModel_Errors
 {
     /// <summary>
-    /// Логика взаимодействия для Error_save_without_schedule.xaml
+    /// Логика взаимодействия для Error_save_without_table.xaml
     /// </summary>
-    public partial class Error_save_without_schedule : Window
+    public partial class Error_save_without_table : Window
     {
-        public Error_save_without_schedule()
+        public Error_save_without_table()
         {
             InitializeComponent();
         }

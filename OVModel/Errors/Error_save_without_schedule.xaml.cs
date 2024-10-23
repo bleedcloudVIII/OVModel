@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace OVModel
+namespace OVModel_Errors
 {
     /// <summary>
-    /// Логика взаимодействия для Spravka_show_spravka.xaml
+    /// Логика взаимодействия для Error_save_without_schedule.xaml
     /// </summary>
-    public partial class Spravka_show_spravka : Window
+    public partial class Error_save_without_schedule : Window
     {
-        public Spravka_show_spravka()
+        public Error_save_without_schedule()
         {
             InitializeComponent();
         }

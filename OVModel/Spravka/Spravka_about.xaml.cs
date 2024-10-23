@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace OVModel
+namespace OVModel_Spravka
 {
     /// <summary>
     /// Логика взаимодействия для Spravka_about.xaml

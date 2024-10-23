@@ -13,13 +13,22 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using OVModel_DopTheory;
+
 using OVModel_CommonClasses;
-using OVModel_ClassicalTheory;
 using OVModel_Methods;
+using OVModel_Errors;
+using OVModel_Spravka;
+using OVModel.Lib.Export;
+using OVModel.Lib.ClassicalTeory;
+using OVModel.Lib.DopTheory;
+using OVModel.Lib.Dot;
+using OVModel.Lib.EqualElements;
+using OVModel.Lib.Data;
+using OVModel.Lib.UserInput;
 
 using OxyPlot;
 using OxyPlot.Axes;
+
 
 
 namespace OVModel
@@ -43,6 +52,7 @@ namespace OVModel
          Метод
          1 - аппроксимация полином 1 степени
          2 - аппроксимация полином 2 степени
+         3 - интерполяция
          */
         static int model_number = 1;
         static int method_number = 2;
@@ -60,66 +70,51 @@ namespace OVModel
         
         private void DrawScheduleAndTable()
         {
-            if (isCanConvertToDouble(Input_2b.Text) &&
-                isCanConvertToDouble(Input_h.Text) &&
-                isCanConvertToDouble(Input_n.Text) &&
-                isCanConvertToDouble(Input_R.Text) &&
-                isCanConvertToDouble(Input_x_start.Text) &&
-                isCanConvertToDouble(Input_x_end.Text))
-            {
-                // Получаю все значения
-                double b = double.Parse(Input_2b.Text) / 2;
-                double h = double.Parse(Input_h.Text);
-                double n = double.Parse(Input_n.Text);
-                double R = double.Parse(Input_R.Text);
-                double x_start = double.Parse(Input_x_start.Text);
-                double x_end = double.Parse(Input_x_end.Text);
 
-                string title = InputScheduleTitle.Text;
-                string titleAxisX = InputScheduleAxisX.Text;
-                string titleAxisY = InputScheduleAxisY.Text;
+            UserInput userInput = new UserInput();
+            
+            int result = userInput.setValues((MainWindow)Application.Current.MainWindow);
 
-                if (titleAxisX == "") titleAxisX = DefaultTitleAxisX;
-                if (titleAxisY == "") titleAxisY = DefaultTitleAxisY;
-
-                Cursor = Cursors.Wait;
-
-                Data data;
-                data = model_number == 1 ?
-                    ClassicalTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY) :
-                    DopTheory.Calculating(b, h, n, R, x_start, x_end, title, titleAxisX, titleAxisY);
-
-                Cursor = Cursors.Arrow;
-                OxyPlotSchedule.Model = data.scheduleModel;
-                Table.ItemsSource = data.itemsSourceTable;
-                tmp_equals = data.equalsElements;
-            }
-            else if (
-                Input_2b.Text != "" &&
-                Input_h.Text != "" &&
-                Input_n.Text != "" &&
-                Input_R.Text != "" &&
-                Input_x_start.Text != "" &&
-                Input_x_end.Text != ""
-                )
+            if (result == -1)
             {
                 Error_input err_window = new Error_input();
                 err_window.Show();
+                return;
             }
+
+            string title = InputScheduleTitle.Text;
+            string titleAxisX = InputScheduleAxisX.Text;
+            string titleAxisY = InputScheduleAxisY.Text;
+
+            if (titleAxisX == "") titleAxisX = DefaultTitleAxisX;
+            if (titleAxisY == "") titleAxisY = DefaultTitleAxisY;
+
+            PlotModel schedule = new PlotModel()
+            {
+                Title = title,
+                Legends = { new OxyPlot.Legends.Legend() { LegendPosition = OxyPlot.Legends.LegendPosition.LeftBottom } },
+                IsLegendVisible = true,
+                Axes =
+            {
+                new LinearAxis() {Title = titleAxisX, Position = AxisPosition.Bottom, IsPanEnabled = false, IsZoomEnabled = false },
+                new LinearAxis() {Title = titleAxisY, Position = AxisPosition.Left, IsPanEnabled = false, IsZoomEnabled = false },
+            },
+            };
+
+            Cursor = Cursors.Wait;
+
+            Data data;
+            data = model_number == 1 ?
+                ClassicalTheory.Calculating(userInput, schedule) :
+                DopTheory.Calculating(userInput, schedule);
+
+            Cursor = Cursors.Arrow;
+            OxyPlotSchedule.Model = data.scheduleModel;
+            Table.ItemsSource = data.itemsSourceTable;
+            tmp_equals = data.equalsElements;
         }
 
-        private bool isCanConvertToDouble(string str)
-        {
-            try
-            {
-                double.Parse(str);
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
+
 
         private void CreateColumns()
         {
@@ -178,6 +173,11 @@ namespace OVModel
             c3.MinWidth = 75;
             c3.IsReadOnly = true;
             EqualsTable.Columns.Add(c3);
+        }
+
+        private void Button_Click_Calculating(object sender, RoutedEventArgs e)
+        {
+            DrawScheduleAndTable();
         }
 
         private void Input_TextChanged(object sender, TextChangedEventArgs e)
@@ -594,6 +594,7 @@ namespace OVModel
 
                     if (extension == "pdf")
                     {
+                        
                         Export.Export_Schedule_pdf(OxyPlotSchedule, dlg);
                     }
                     else if (extension == "png")
