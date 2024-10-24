@@ -10,7 +10,7 @@ using OVModel_CommonClasses;
 using OxyPlot;
 using OxyPlot.Axes;
 using OVModel.Lib.Dot;
-using OVModel.Lib.Data;
+using OVModel.Lib.CalculatingResult;
 using OVModel.Lib.UserInput;
 
 namespace OVModel.Lib.ClassicalTeory
@@ -52,7 +52,7 @@ namespace OVModel.Lib.ClassicalTeory
             return result;
         }
 
-        public static Data.Data Calculating(UserInput.UserInput userInput, PlotModel schedule)
+        public static CalculatingResult.CalculatingResult Calculating(UserInput.UserInput userInput, PlotModel schedule)
         {
 
             double b = userInput.b;
@@ -127,7 +127,7 @@ namespace OVModel.Lib.ClassicalTeory
             schedule.Series.Add(lineSeries_n_y);
             schedule.Series.Add(lineSeries_n_z);
 
-            return new Data.Data() { equalsElements = equalsElements,
+            return new CalculatingResult.CalculatingResult() { equalsElements = equalsElements,
                 itemsSourceTable = result,
                 scheduleModel = schedule 
             };

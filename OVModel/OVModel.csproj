@@ -339,7 +339,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Lib\Data.cs" />
+    <Compile Include="Lib\CalculatingResult.cs" />
     <Compile Include="Lib\Dot.cs" />
     <Compile Include="Lib\EqualElements.cs" />
     <Compile Include="Lib\Export.cs" />

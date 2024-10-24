@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 using OVModel.Lib.EqualElements;
 
-namespace OVModel.Lib.Data
+namespace OVModel.Lib.CalculatingResult
 {
-    public struct Data
+    public struct CalculatingResult
     {
         public List<List<double>> itemsSourceTable { get; set; }
         public OxyPlot.PlotModel scheduleModel { get; set; }

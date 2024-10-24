@@ -23,7 +23,7 @@ using OVModel.Lib.ClassicalTeory;
 using OVModel.Lib.DopTheory;
 using OVModel.Lib.Dot;
 using OVModel.Lib.EqualElements;
-using OVModel.Lib.Data;
+using OVModel.Lib.CalculatingResult;
 using OVModel.Lib.UserInput;
 
 using OxyPlot;
@@ -41,8 +41,19 @@ namespace OVModel
         public MainWindow()
         {
             InitializeComponent();
-
             CreateColumns();
+
+            for (int i = 0; i < CrossingCords.Count; i++)
+                equals.Add(CrossingCords[i], new List<EqualElements>() { });
+
+            //equals.Add("n_x/n", new List<EqualElements>() { });
+            //equals.Add("n_y/n", new List<EqualElements>() { });
+            //equals.Add("n_z/n", new List<EqualElements>() { });
+            //equals.Add("n_x/n_y", new List<EqualElements>() { });
+            //equals.Add("n_x/n_z", new List<EqualElements>() { });
+            //equals.Add("n_y/n_z", new List<EqualElements>() { });
+
+
         }
 
         /*
@@ -59,14 +70,17 @@ namespace OVModel
 
         List<EqualElements> equals_list = new List<EqualElements>();
 
-        List<EqualElements> equals_list_nx_n = new List<EqualElements>();
-        List<EqualElements> equals_list_ny_n = new List<EqualElements>();
-        List<EqualElements> equals_list_nz_n = new List<EqualElements>();
-        List<EqualElements> equals_list_nx_ny = new List<EqualElements>();
-        List<EqualElements> equals_list_nx_nz = new List<EqualElements>();
-        List<EqualElements> equals_list_ny_nz = new List<EqualElements>();
+        //List<EqualElements> equals_list_nx_n = new List<EqualElements>();
+        //List<EqualElements> equals_list_ny_n = new List<EqualElements>();
+        //List<EqualElements> equals_list_nz_n = new List<EqualElements>();
+        //List<EqualElements> equals_list_nx_ny = new List<EqualElements>();
+        //List<EqualElements> equals_list_nx_nz = new List<EqualElements>();
+        //List<EqualElements> equals_list_ny_nz = new List<EqualElements>();
 
-        List<EqualElements> tmp_equals = new List<EqualElements>();
+        public Dictionary<String, List<EqualElements>> equals = new Dictionary<string, List<EqualElements>>();
+        public List<String> CrossingCords = new List<String>() { "n_x/n", "n_y/n", "n_z/n", "n_x/n_y", "n_x/n_z", "n_y/n_z"};
+
+        List<EqualElements> cur_equals = new List<EqualElements>();
         
         private void DrawScheduleAndTable()
         {
@@ -103,7 +117,7 @@ namespace OVModel
 
             Cursor = Cursors.Wait;
 
-            Data data;
+            CalculatingResult data;
             data = model_number == 1 ?
                 ClassicalTheory.Calculating(userInput, schedule) :
                 DopTheory.Calculating(userInput, schedule);
@@ -111,7 +125,7 @@ namespace OVModel
             Cursor = Cursors.Arrow;
             OxyPlotSchedule.Model = data.scheduleModel;
             Table.ItemsSource = data.itemsSourceTable;
-            tmp_equals = data.equalsElements;
+            cur_equals = data.equalsElements;
         }
 
 
@@ -180,11 +194,6 @@ namespace OVModel
             DrawScheduleAndTable();
         }
 
-        private void Input_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            DrawScheduleAndTable();
-        }
-
         private void Draw_Schedule_For_Points()
         {
             if (equals_list.Count != 0)
@@ -208,229 +217,263 @@ namespace OVModel
                 {
                     // Рассчёт по методу
 
-                    OxyPlot.Series.LineSeries lineSeries_nx_n = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
-                    OxyPlot.Series.LineSeries lineSeries_ny_n = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
-                    OxyPlot.Series.LineSeries lineSeries_nz_n = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
-                    OxyPlot.Series.LineSeries lineSeries_nx_ny = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
-                    OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
-                    OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
+                    //OxyPlot.Series.LineSeries lineSeries_nx_n = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
+                    //OxyPlot.Series.LineSeries lineSeries_ny_n = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
+                    //OxyPlot.Series.LineSeries lineSeries_nz_n = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
+                    //OxyPlot.Series.LineSeries lineSeries_nx_ny = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
+                    //OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
+                    //OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
 
-                    if (equals_list_nx_n.Count > 1)
+                    //List<OxyPlot.Series.LineSeries> all_lineSeries = new List<OxyPlot.Series.LineSeries> { lineSeries_nx_n, lineSeries_ny_n, lineSeries_nz_n, lineSeries_nx_ny, lineSeries_nx_nz, lineSeries_ny_nz };
+                    //Dictionary<String, OxyPlot.Series.LineSeries> all_lineSeries = new Dictionary<string, OxyPlot.Series.LineSeries> ();
+
+                    //for (int i = 0; i < CrossingCords.Count; i++) all_lineSeries.Add(CrossingCords[i], new OxyPlot.Series.LineSeries() { });
+
+
+                    int n = 0;
+                    foreach (var equal_list in equals)
                     {
-                        List<List<double>> result_nx_n = Approksimacia.approksimacia_polinom_2(equals_list_nx_n);
-                        if (result_nx_n[0].Count != 0)
+                        if (equal_list.Value.Count > 1)
                         {
-                            for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_n);
+                            List<List<double>> result = Approksimacia.approksimacia_polinom_2(equal_list.Value);
+                            if (result[0].Count != 0)
+                            {
+                                OxyPlot.Series.LineSeries lineSeries = new OxyPlot.Series.LineSeries() { Title = CrossingCords[n] };
+                                for (int i = 0; i < result[0].Count;i++) lineSeries.Points.Add(new OxyPlot.DataPoint(result[0][i], result[1][i]));
+                                tmp_model.Series.Add(lineSeries);
+                            }
                         }
+                        n++;
                     }
 
-                    if (equals_list_ny_n.Count > 1)
-                    {
-                        List<List<double>> result_ny_n = Approksimacia.approksimacia_polinom_2(equals_list_ny_n);
-                        if (result_ny_n[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_ny_n);
-                        }
+                    //for (int i = 0; i <  all_lineSeries.Count; i++)
+                    //{
+                    //    //List<List<double>> result = Approksimacia.approksimacia_polinom_2(all_lineSeries[i]);
+                    //    //if (result.Count > 1)
+                    //    //{
+                    //    //    for (int j = 0; j < result.Count; j++) 
+                    //    //}
 
-                    }
+                    //}
 
-                    if (equals_list_nz_n.Count > 1)
-                    {
-                        List<List<double>> result_nz_n = Approksimacia.approksimacia_polinom_2(equals_list_nz_n);
-                        if (result_nz_n[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_nz_n);
-                        }
-                    }
+                    // Сдлеать хеш таблицу?
 
-                    if (equals_list_nx_ny.Count > 1)
-                    {
-                        List<List<double>> result_nx_ny = Approksimacia.approksimacia_polinom_2(equals_list_nx_ny);
-                        if (result_nx_ny[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_ny);
-                        }
-                    }
+                    //if (equals_list_nx_n.Count > 1)
+                    //{
+                    //    List<List<double>> result_nx_n = Approksimacia.approksimacia_polinom_2(equals_list_nx_n);
+                    //    if (result_nx_n[0].Count != 0)
+                    //    {
+                    //        for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
+                    //        tmp_model.Series.Add(lineSeries_nx_n);
+                    //    }
+                    //}
 
-                    if (equals_list_nx_nz.Count > 1)
-                    {
-                        List<List<double>> result_nx_nz = Approksimacia.approksimacia_polinom_2(equals_list_nx_nz);
-                        if (result_nx_nz[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_nz);
-                        }
-                    }
+                    //if (equals_list_ny_n.Count > 1)
+                    //{
+                    //    List<List<double>> result_ny_n = Approksimacia.approksimacia_polinom_2(equals_list_ny_n);
+                    //    if (result_ny_n[0].Count != 0)
+                    //    {
+                    //        for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
+                    //        tmp_model.Series.Add(lineSeries_ny_n);
+                    //    }
 
-                    if (equals_list_ny_nz.Count > 1)
-                    {
-                        List<List<double>> result_ny_nz = Approksimacia.approksimacia_polinom_2(equals_list_ny_nz);
-                        if (result_ny_nz[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
-                            tmp_model.Series.Add(lineSeries_ny_nz);
-                        }
-                    }
+                    //}
+
+                    //if (equals_list_nz_n.Count > 1)
+                    //{
+                    //    List<List<double>> result_nz_n = Approksimacia.approksimacia_polinom_2(equals_list_nz_n);
+                    //    if (result_nz_n[0].Count != 0)
+                    //    {
+                    //        for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
+                    //        tmp_model.Series.Add(lineSeries_nz_n);
+                    //    }
+                    //}
+
+                    //if (equals_list_nx_ny.Count > 1)
+                    //{
+                    //    List<List<double>> result_nx_ny = Approksimacia.approksimacia_polinom_2(equals_list_nx_ny);
+                    //    if (result_nx_ny[0].Count != 0)
+                    //    {
+                    //        for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
+                    //        tmp_model.Series.Add(lineSeries_nx_ny);
+                    //    }
+                    //}
+
+                    //if (equals_list_nx_nz.Count > 1)
+                    //{
+                    //    List<List<double>> result_nx_nz = Approksimacia.approksimacia_polinom_2(equals_list_nx_nz);
+                    //    if (result_nx_nz[0].Count != 0)
+                    //    {
+                    //        for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
+                    //        tmp_model.Series.Add(lineSeries_nx_nz);
+                    //    }
+                    //}
+
+                    //if (equals_list_ny_nz.Count > 1)
+                    //{
+                    //    List<List<double>> result_ny_nz = Approksimacia.approksimacia_polinom_2(equals_list_ny_nz);
+                    //    if (result_ny_nz[0].Count != 0)
+                    //    {
+                    //        for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
+                    //        tmp_model.Series.Add(lineSeries_ny_nz);
+                    //    }
+                    //}
 
 
                     OxyPlotScheduleApproksimacia.Model = tmp_model;
                 }
-                else if (method_number == 2) // Линейная апроксимация
-                {
-                    // Рассчёт по методу
+                //else if (method_number == 2) // Линейная апроксимация
+                //{
+                //    // Рассчёт по методу
 
-                    OxyPlot.Series.LineSeries lineSeries_nx_n = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
-                    OxyPlot.Series.LineSeries lineSeries_ny_n = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
-                    OxyPlot.Series.LineSeries lineSeries_nz_n = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
-                    OxyPlot.Series.LineSeries lineSeries_nx_ny = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
-                    OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
-                    OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
+                //    OxyPlot.Series.LineSeries lineSeries_nx_n = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
+                //    OxyPlot.Series.LineSeries lineSeries_ny_n = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
+                //    OxyPlot.Series.LineSeries lineSeries_nz_n = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
+                //    OxyPlot.Series.LineSeries lineSeries_nx_ny = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
+                //    OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
+                //    OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
 
-                    // NOTE
-                    if (equals_list_nx_n.Count > 1)
-                    {
-                        List<List<double>> result_nx_n = Approksimacia.approksimacia_line(equals_list_nx_n);
-                        if (result_nx_n[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_n);
-                        }
-                    }
+                //    // NOTE
+                //    if (equals_list_nx_n.Count > 1)
+                //    {
+                //        List<List<double>> result_nx_n = Approksimacia.approksimacia_line(equals_list_nx_n);
+                //        if (result_nx_n[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
+                //            tmp_model.Series.Add(lineSeries_nx_n);
+                //        }
+                //    }
 
-                    if (equals_list_ny_n.Count > 1)
-                    {
-                        List<List<double>> result_ny_n = Approksimacia.approksimacia_line(equals_list_ny_n);
-                        if (result_ny_n[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_ny_n);
-                        }
+                //    if (equals_list_ny_n.Count > 1)
+                //    {
+                //        List<List<double>> result_ny_n = Approksimacia.approksimacia_line(equals_list_ny_n);
+                //        if (result_ny_n[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
+                //            tmp_model.Series.Add(lineSeries_ny_n);
+                //        }
 
-                    }
+                //    }
 
-                    if (equals_list_nz_n.Count > 1)
-                    {
-                        List<List<double>> result_nz_n = Approksimacia.approksimacia_line(equals_list_nz_n);
-                        if (result_nz_n[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_nz_n);
-                        }
-                    }
+                //    if (equals_list_nz_n.Count > 1)
+                //    {
+                //        List<List<double>> result_nz_n = Approksimacia.approksimacia_line(equals_list_nz_n);
+                //        if (result_nz_n[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
+                //            tmp_model.Series.Add(lineSeries_nz_n);
+                //        }
+                //    }
 
-                    if (equals_list_nx_ny.Count > 1)
-                    {
-                        List<List<double>> result_nx_ny = Approksimacia.approksimacia_line(equals_list_nx_ny);
-                        if (result_nx_ny[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_ny);
-                        }
-                    }
+                //    if (equals_list_nx_ny.Count > 1)
+                //    {
+                //        List<List<double>> result_nx_ny = Approksimacia.approksimacia_line(equals_list_nx_ny);
+                //        if (result_nx_ny[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
+                //            tmp_model.Series.Add(lineSeries_nx_ny);
+                //        }
+                //    }
 
-                    if (equals_list_nx_nz.Count > 1)
-                    {
-                        List<List<double>> result_nx_nz = Approksimacia.approksimacia_line(equals_list_nx_nz);
-                        if (result_nx_nz[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_nz);
-                        }
-                    }
+                //    if (equals_list_nx_nz.Count > 1)
+                //    {
+                //        List<List<double>> result_nx_nz = Approksimacia.approksimacia_line(equals_list_nx_nz);
+                //        if (result_nx_nz[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
+                //            tmp_model.Series.Add(lineSeries_nx_nz);
+                //        }
+                //    }
 
-                    if (equals_list_ny_nz.Count > 1)
-                    {
-                        List<List<double>> result_ny_nz = Approksimacia.approksimacia_line(equals_list_ny_nz);
-                        if (result_ny_nz[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
-                            tmp_model.Series.Add(lineSeries_ny_nz);
-                        }
-                    }
-
-
-                    OxyPlotScheduleApproksimacia.Model = tmp_model;
-                }
-                else if (method_number == 3) // Интерполяция
-                {
-                    // Рассчёт по методу
-
-                    OxyPlot.Series.LineSeries lineSeries_nx_n = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
-                    OxyPlot.Series.LineSeries lineSeries_ny_n = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
-                    OxyPlot.Series.LineSeries lineSeries_nz_n = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
-                    OxyPlot.Series.LineSeries lineSeries_nx_ny = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
-                    OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
-                    OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
-
-                    // NOTE
-                    if (equals_list_nx_n.Count > 1)
-                    {
-                        List<List<double>> result_nx_n = Interpolyacia.interpolyacia_lagrange(equals_list_nx_n);
-                        if (result_nx_n[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_n);
-                        }
-                    }
-
-                    if (equals_list_ny_n.Count > 1)
-                    {
-                        List<List<double>> result_ny_n = Interpolyacia.interpolyacia_lagrange(equals_list_ny_n);
-                        if (result_ny_n[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_ny_n);
-                        }
-
-                    }
-
-                    if (equals_list_nz_n.Count > 1)
-                    {
-                        List<List<double>> result_nz_n = Interpolyacia.interpolyacia_lagrange(equals_list_nz_n);
-                        if (result_nz_n[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
-                            tmp_model.Series.Add(lineSeries_nz_n);
-                        }
-                    }
-
-                    if (equals_list_nx_ny.Count > 1)
-                    {
-                        List<List<double>> result_nx_ny = Interpolyacia.interpolyacia_lagrange(equals_list_nx_ny);
-                        if (result_nx_ny[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_ny);
-                        }
-                    }
-
-                    if (equals_list_nx_nz.Count > 1)
-                    {
-                        List<List<double>> result_nx_nz = Interpolyacia.interpolyacia_lagrange(equals_list_nx_nz);
-                        if (result_nx_nz[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
-                            tmp_model.Series.Add(lineSeries_nx_nz);
-                        }
-                    }
-
-                    if (equals_list_ny_nz.Count > 1)
-                    {
-                        List<List<double>> result_ny_nz = Interpolyacia.interpolyacia_lagrange(equals_list_ny_nz);
-                        if (result_ny_nz[0].Count != 0)
-                        {
-                            for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
-                            tmp_model.Series.Add(lineSeries_ny_nz);
-                        }
-                    }
+                //    if (equals_list_ny_nz.Count > 1)
+                //    {
+                //        List<List<double>> result_ny_nz = Approksimacia.approksimacia_line(equals_list_ny_nz);
+                //        if (result_ny_nz[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
+                //            tmp_model.Series.Add(lineSeries_ny_nz);
+                //        }
+                //    }
 
 
-                    OxyPlotScheduleApproksimacia.Model = tmp_model;
-                }
+                //    OxyPlotScheduleApproksimacia.Model = tmp_model;
+                //}
+                //else if (method_number == 3) // Интерполяция
+                //{
+                //    // Рассчёт по методу
+
+                //    OxyPlot.Series.LineSeries lineSeries_nx_n = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
+                //    OxyPlot.Series.LineSeries lineSeries_ny_n = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
+                //    OxyPlot.Series.LineSeries lineSeries_nz_n = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
+                //    OxyPlot.Series.LineSeries lineSeries_nx_ny = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
+                //    OxyPlot.Series.LineSeries lineSeries_nx_nz = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
+                //    OxyPlot.Series.LineSeries lineSeries_ny_nz = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
+
+                //    // NOTE
+                //    if (equals_list_nx_n.Count > 1)
+                //    {
+                //        List<List<double>> result_nx_n = Interpolyacia.interpolyacia_lagrange(equals_list_nx_n);
+                //        if (result_nx_n[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_nx_n[0].Count; i++) lineSeries_nx_n.Points.Add(new OxyPlot.DataPoint(result_nx_n[0][i], result_nx_n[1][i]));
+                //            tmp_model.Series.Add(lineSeries_nx_n);
+                //        }
+                //    }
+
+                //    if (equals_list_ny_n.Count > 1)
+                //    {
+                //        List<List<double>> result_ny_n = Interpolyacia.interpolyacia_lagrange(equals_list_ny_n);
+                //        if (result_ny_n[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_ny_n[0].Count; i++) lineSeries_ny_n.Points.Add(new OxyPlot.DataPoint(result_ny_n[0][i], result_ny_n[1][i]));
+                //            tmp_model.Series.Add(lineSeries_ny_n);
+                //        }
+
+                //    }
+
+                //    if (equals_list_nz_n.Count > 1)
+                //    {
+                //        List<List<double>> result_nz_n = Interpolyacia.interpolyacia_lagrange(equals_list_nz_n);
+                //        if (result_nz_n[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_nz_n[0].Count; i++) lineSeries_nz_n.Points.Add(new OxyPlot.DataPoint(result_nz_n[0][i], result_nz_n[1][i]));
+                //            tmp_model.Series.Add(lineSeries_nz_n);
+                //        }
+                //    }
+
+                //    if (equals_list_nx_ny.Count > 1)
+                //    {
+                //        List<List<double>> result_nx_ny = Interpolyacia.interpolyacia_lagrange(equals_list_nx_ny);
+                //        if (result_nx_ny[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_nx_ny[0].Count; i++) lineSeries_nx_ny.Points.Add(new OxyPlot.DataPoint(result_nx_ny[0][i], result_nx_ny[1][i]));
+                //            tmp_model.Series.Add(lineSeries_nx_ny);
+                //        }
+                //    }
+
+                //    if (equals_list_nx_nz.Count > 1)
+                //    {
+                //        List<List<double>> result_nx_nz = Interpolyacia.interpolyacia_lagrange(equals_list_nx_nz);
+                //        if (result_nx_nz[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_nx_nz[0].Count; i++) lineSeries_nx_nz.Points.Add(new OxyPlot.DataPoint(result_nx_nz[0][i], result_nx_nz[1][i]));
+                //            tmp_model.Series.Add(lineSeries_nx_nz);
+                //        }
+                //    }
+
+                //    if (equals_list_ny_nz.Count > 1)
+                //    {
+                //        List<List<double>> result_ny_nz = Interpolyacia.interpolyacia_lagrange(equals_list_ny_nz);
+                //        if (result_ny_nz[0].Count != 0)
+                //        {
+                //            for (int i = 0; i < result_ny_nz[0].Count; i++) lineSeries_ny_nz.Points.Add(new OxyPlot.DataPoint(result_ny_nz[0][i], result_ny_nz[1][i]));
+                //            tmp_model.Series.Add(lineSeries_ny_nz);
+                //        }
+                //    }
+
+
+                //    OxyPlotScheduleApproksimacia.Model = tmp_model;
+                //}
                 else
                 {
                     // ERROR
@@ -454,18 +497,25 @@ namespace OVModel
         private void Button_Click_Add_Points(object sender, RoutedEventArgs e)
         {
             EqualsTable.ItemsSource = new List<EqualElements>() { };
-            for (int i = 0; i  < tmp_equals.Count; i++)
+            for (int i = 0; i  < cur_equals.Count; i++)
             {
-                EqualElements tmp = new EqualElements(tmp_equals[i]);
-                tmp.n_value = Math.Round(tmp_equals[i].n_value, 6);
-                tmp.x = Math.Round(tmp_equals[i].x, 6);
+                EqualElements tmp = new EqualElements(cur_equals[i]);
+                tmp.n_value = Math.Round(cur_equals[i].n_value, 6);
+                tmp.x = Math.Round(cur_equals[i].x, 6);
 
-                if (tmp.cross == "n_x/n") equals_list_nx_n.Add(tmp);
-                else if (tmp.cross == "n_y/n") equals_list_ny_n.Add(tmp);
-                else if (tmp.cross == "n_z/n") equals_list_nz_n.Add(tmp);
-                else if (tmp.cross == "n_x/n_y") equals_list_nx_ny.Add(tmp);
-                else if (tmp.cross == "n_x/n_z") equals_list_nx_nz.Add(tmp);
-                else if (tmp.cross == "n_y/n_z") equals_list_ny_nz.Add(tmp);
+                if (tmp.cross == "n_x/n") equals["n_x/n"].Add(tmp);
+                else if (tmp.cross == "n_y/n") equals["n_y/n"].Add(tmp);
+                else if (tmp.cross == "n_z/n") equals["n_z/n"].Add(tmp);
+                else if (tmp.cross == "n_x/n_y") equals["n_x/n_y"].Add(tmp);
+                else if (tmp.cross == "n_x/n_z") equals["n_x/n_z"].Add(tmp);
+                else if (tmp.cross == "n_y/n_z") equals["n_y/n_z"].Add(tmp);
+
+                //if (tmp.cross == "n_x/n") equals_list_nx_n.Add(tmp);
+                //else if (tmp.cross == "n_y/n") equals_list_ny_n.Add(tmp);
+                //else if (tmp.cross == "n_z/n") equals_list_nz_n.Add(tmp);
+                //else if (tmp.cross == "n_x/n_y") equals_list_nx_ny.Add(tmp);
+                //else if (tmp.cross == "n_x/n_z") equals_list_nx_nz.Add(tmp);
+                //else if (tmp.cross == "n_y/n_z") equals_list_ny_nz.Add(tmp);
 
                 equals_list.Add(tmp);
             }
@@ -484,47 +534,59 @@ namespace OVModel
                     },
             };
 
-            if (equals_list_nx_n.Count > 1)
+            int n = 0;
+            foreach (var equal_list in equals.ToArray())
             {
-                OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
-                for (int i = 0; i < equals_list_nx_n.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_nx_n[i].x, equals_list_nx_n[i].n_value));
-                tmp_model.Series.Add(tmp);
+                if (equal_list.Value.Count > 1)
+                {
+                    OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = CrossingCords[n] };
+                    for (int j = 0; j < equal_list.Value.Count; j++) tmp.Points.Add(new OxyPlot.DataPoint(equal_list.Value[j].x, equal_list.Value[j].n_value));
+                    tmp_model.Series.Add(tmp);
+                }
+                n++;
             }
 
-            if (equals_list_ny_n.Count > 1)
-            {
-                OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
-                for (int i = 0; i < equals_list_ny_n.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_ny_n[i].x, equals_list_ny_n[i].n_value));
-                tmp_model.Series.Add(tmp);
-            }
+            //if (equals_list_nx_n.Count > 1)
+            //{
+            //    OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_x/n" };
+            //    for (int i = 0; i < equals_list_nx_n.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_nx_n[i].x, equals_list_nx_n[i].n_value));
+            //    tmp_model.Series.Add(tmp);
+            //}
 
-            if (equals_list_nz_n.Count > 1)
-            {
-                OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
-                for (int i = 0; i < equals_list_nz_n.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_nz_n[i].x, equals_list_nz_n[i].n_value));
-                tmp_model.Series.Add(tmp);
-            }
+            //if (equals_list_ny_n.Count > 1)
+            //{
+            //    OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_y/n" };
+            //    for (int i = 0; i < equals_list_ny_n.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_ny_n[i].x, equals_list_ny_n[i].n_value));
+            //    tmp_model.Series.Add(tmp);
+            //}
 
-            if (equals_list_nx_ny.Count > 1)
-            {
-                OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
-                for (int i = 0; i < equals_list_nx_ny.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_nx_ny[i].x, equals_list_nx_ny[i].n_value));
-                tmp_model.Series.Add(tmp);
-            }
+            //if (equals_list_nz_n.Count > 1)
+            //{
+            //    OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_z/n" };
+            //    for (int i = 0; i < equals_list_nz_n.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_nz_n[i].x, equals_list_nz_n[i].n_value));
+            //    tmp_model.Series.Add(tmp);
+            //}
 
-            if (equals_list_nx_nz.Count > 1)
-            {
-                OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
-                for (int i = 0; i < equals_list_nx_nz.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_nx_nz[i].x, equals_list_nx_nz[i].n_value));
-                tmp_model.Series.Add(tmp);
-            }
+            //if (equals_list_nx_ny.Count > 1)
+            //{
+            //    OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_x/n_y" };
+            //    for (int i = 0; i < equals_list_nx_ny.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_nx_ny[i].x, equals_list_nx_ny[i].n_value));
+            //    tmp_model.Series.Add(tmp);
+            //}
 
-            if (equals_list_ny_nz.Count > 1)
-            {
-                OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
-                for (int i = 0; i < equals_list_ny_nz.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_ny_nz[i].x, equals_list_ny_n[i].n_value));
-                tmp_model.Series.Add(tmp);
-            }
+            //if (equals_list_nx_nz.Count > 1)
+            //{
+            //    OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_x/n_z" };
+            //    for (int i = 0; i < equals_list_nx_nz.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_nx_nz[i].x, equals_list_nx_nz[i].n_value));
+            //    tmp_model.Series.Add(tmp);
+            //}
+
+            //if (equals_list_ny_nz.Count > 1)
+            //{
+            //    OxyPlot.Series.LineSeries tmp = new OxyPlot.Series.LineSeries { Title = "n_y/n_z" };
+            //    for (int i = 0; i < equals_list_ny_nz.Count; i++) tmp.Points.Add(new OxyPlot.DataPoint(equals_list_ny_nz[i].x, equals_list_ny_n[i].n_value));
+            //    tmp_model.Series.Add(tmp);
+            //}
 
             OxyPlotSchedulePeresechenie.Model = tmp_model;
 
@@ -545,14 +607,19 @@ namespace OVModel
             Input_h.IsReadOnly = false;
             SbrosButton.Visibility = Visibility.Hidden;
 
-            equals_list_nx_n = new List<EqualElements>();
-            equals_list_ny_n = new List<EqualElements>();
-            equals_list_nz_n = new List<EqualElements>();
-            equals_list_nx_ny = new List<EqualElements>();
-            equals_list_nx_nz = new List<EqualElements>();
-            equals_list_ny_nz = new List<EqualElements>();
+            for (int i = 0; i < CrossingCords.Count; i++)
+            {
+                equals[CrossingCords[i]] = new List<EqualElements>();
+            }
 
-            tmp_equals = new List<EqualElements>();
+            //equals_list_nx_n = new List<EqualElements>();
+            //equals_list_ny_n = new List<EqualElements>();
+            //equals_list_nz_n = new List<EqualElements>();
+            //equals_list_nx_ny = new List<EqualElements>();
+            //equals_list_nx_nz = new List<EqualElements>();
+            //equals_list_ny_nz = new List<EqualElements>();
+
+            cur_equals = new List<EqualElements>();
             equals_list = new List<EqualElements>();
             EqualsTable.ItemsSource = equals_list;
             Draw_Schedule_For_Points();
@@ -754,6 +821,11 @@ namespace OVModel
         {
             method_number = 3;
             if (equals_list.Count != 0) Draw_Schedule_For_Points();
+        }
+
+        private void Input_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            DrawScheduleAndTable();
         }
     }
 }

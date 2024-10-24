@@ -8,7 +8,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OVModel.Lib.Dot;
 using OVModel_CommonClasses;
-using OVModel.Lib.Data;
+using OVModel.Lib.CalculatingResult;
 using OVModel.Lib.UserInput;
 
 namespace OVModel.Lib.DopTheory
@@ -45,7 +45,7 @@ namespace OVModel.Lib.DopTheory
             return Math.Round(n + ((n * n * n) / 4) * (f + s + t), 9);
         }
 
-        public static Data.Data Calculating(UserInput.UserInput userInput, PlotModel schedule)
+        public static CalculatingResult.CalculatingResult Calculating(UserInput.UserInput userInput, PlotModel schedule)
         {
             double b = userInput.b;
             double h = userInput.h;
@@ -115,7 +115,7 @@ namespace OVModel.Lib.DopTheory
             schedule.Series.Add(lineSeries_n_y);
             schedule.Series.Add(lineSeries_n_z);
 
-            return new Data.Data()
+            return new CalculatingResult.CalculatingResult()
             {
                 equalsElements = equalsElements,
                 itemsSourceTable = result,
