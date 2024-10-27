@@ -309,6 +309,12 @@ namespace OVModel
             }
         }
 
+        private void Button_Click_Create_Model(object sender, RoutedEventArgs e)
+        {
+            ModelOfOV modelOfOV_window = new ModelOfOV();
+            modelOfOV_window.Show();
+        }
+
         private void Button_Click_Sbros(object sender, RoutedEventArgs e)
         {
             Input_x_end.IsReadOnly = false;

@@ -67,8 +67,11 @@
                             HorizontalAlignment="left" Click="Button_Click_Calculating"/>
                         <Button Content="Добавить" Margin="10, 10, 0, 0" Width="60px"
                             HorizontalAlignment="left" Click="Button_Click_Add_Points"/>
+                        <Button Content="3D Модель" Margin="10, 10, 0, 0"
+                            Width="70px" HorizontalAlignment="left" Click="Button_Click_Create_Model"/>
                         <Button x:Name="SbrosButton" Content="Сбросить" Margin="10, 10, 0, 0"
                             Width="60px" HorizontalAlignment="left" Click="Button_Click_Sbros" Visibility="Hidden"/>
+                        
                     </StackPanel>
                     
                 </StackPanel>

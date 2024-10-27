@@ -354,6 +354,9 @@
     <Compile Include="Errors\Error_save_without_table.xaml.cs">
       <DependentUpon>Error_save_without_table.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModelOfOV.xaml.cs">
+      <DependentUpon>ModelOfOV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Spravka\Spravka_about.xaml.cs">
       <DependentUpon>Spravka_about.xaml</DependentUpon>
     </Compile>
@@ -387,6 +390,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ModelOfOV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Spravka\Spravka_about.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
