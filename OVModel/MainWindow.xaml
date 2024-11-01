@@ -54,6 +54,10 @@
                         <Label Content="Введите шаг вычислений: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <TextBox x:Name="Input_h" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Введите Угол: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <TextBox x:Name="Input_Alpha" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60"/>
+                    </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="Введите пределы координаты x: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <StackPanel Orientation="Horizontal">
