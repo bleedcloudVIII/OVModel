@@ -15,8 +15,8 @@
                 Value="{Binding ElementName=rotate, Path= Angle}" />
         <Viewport3D x:Name="viewport" Grid.Row="1">
             <Viewport3D.Camera>
-                <PerspectiveCamera x:Name="camera" Position="0 -50 0" LookDirection="0 1 0" UpDirection="0 0 1"/>
-                <!--<PerspectiveCamera x:Name="camera" Position="0 0 100" LookDirection="0 0 -1" UpDirection="0 1 0"/>-->
+                <PerspectiveCamera x:Name="camera" Position="0 -400 0" LookDirection="0 1 0" UpDirection="0 0 1"/>
+                <!--<PerspectiveCamera x:Name="camera" Position="0 0 10" LookDirection="0 0 -1" UpDirection="0 1 0"/>-->
                 <!--<PerspectiveCamera x:Name="camera" Position="0 0 5" LookDirection="0 0 -1" UpDirection="0 1 0"/>-->
 
             </Viewport3D.Camera>

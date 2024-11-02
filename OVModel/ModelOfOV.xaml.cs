@@ -48,43 +48,42 @@ namespace OVModel
         {
             const int segments = 30; // Количество сегментов для круга
             const double R = 0.5; // Радиус круга
+            const double b = 0.5;
             const double angleStep = Math.PI * 2 / segments;
 
             MeshGeometry3D mesh = new MeshGeometry3D();
             Point3DCollection positions = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
 
-            double Alpha_angle = 45;
-            double h_for_z = 0.1;
-            double z_max = 10;
-            int z_count = (int)(z_max / h_for_z);
-            double h_for_angle = Alpha_angle / z_count;
-
+            double Alpha_angle = 180;
+            double h = 0.1;
+            double dlina = 100;
+            int dlina_count = (int)(dlina/ h);
+            double h_for_angle = Alpha_angle / dlina_count;
             // Создаем вершины круга
 
 
-            for (double z = 0; z < z_count; z += 1)
+            for (double j = 0; j <= dlina_count; j += 1)
             {
-                // Точка центра окружности
-                double rotationAngle = 0.0175 * z * h_for_angle;
-                //double rotationAngle = 45;
-                positions.Add(new Point3D(0, 0, z * h_for_z));
+                double rotationAngle = (Math.PI / 180) * j * h_for_angle;
+                double centr_x = (R + b) * Math.Cos(rotationAngle);
+                double centr_z = (R + b) * Math.Sin(rotationAngle);
+                positions.Add(new Point3D(centr_x, 0, centr_z));
                 for (int i = 0; i < segments; i++)
                 {
                     double angle = i * angleStep;
                     double x = Math.Cos(angle);
                     double y = Math.Sin(angle);
-                    List<double> coords = calcCoords(R, rotationAngle, x, y, z * h_for_z);
-                    //Console.WriteLine($"{x}, {y}, {z}");
-                    //positions.Add(new Point3D(x, y, z));
-                    //Console.WriteLine($"{z} {h_for_z} {h_for_angle} {rotationAngle} {coords[0]} {coords[1]} {coords[2]}");
+                    double z = j * h;
+                    List<double> coords = calcCoords(R, rotationAngle / 2, x, y, z);
+                    Console.WriteLine($"{j * h_for_angle} {rotationAngle}, {centr_x}, {centr_z}\t{x}, {y}, {z}\t{centr_x + coords[0]}, {coords[1]}, {centr_z + coords[2]}");
                     positions.Add(new Point3D(coords[0], coords[1], coords[2]));
                 }
             }
 
             int segmentsOnEveryCircle = segments + 1;
 
-            for (int z_layer = 0; z_layer < (z_max / h_for_z) - 1; z_layer++)
+            for (int z_layer = 0; z_layer < (dlina / h) - 1; z_layer++)
             {
                 for (int i = 0; i < segments; i++)
                 {
