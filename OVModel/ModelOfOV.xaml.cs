@@ -57,54 +57,25 @@ namespace OVModel
         private void DrawWire()
         {
             const int segments = 30; // Количество сегментов для круга
-            const double R = 1; // Радиус круга
-            const double b = 0.5;
+            const double R = 2; // Радиус круга
+            const double b = 0.025;
             const double angle_step = Math.PI * 2 / segments;
             
             MeshGeometry3D mesh = new MeshGeometry3D();
             Point3DCollection positions = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
 
-            double Alpha_angle = 180;
+            double Alpha_angle = 90;
             double h = 0.1;
             double dlina = 100;
             int dlina_count = (int)(dlina/ h);
             double h_for_angle = Alpha_angle / dlina_count;
-            double step = (Alpha_angle * Math.PI) / (180 * dlina_count);
-            // Создаем вершины круга
+            double step = (Alpha_angle / dlina_count) * 0.01745;
 
-
-            //for (int i = 0; i <= dlina_count; i++)
-            //{
-            //    double rotation_angle = i * step;
-            //    double rotation_x = (R + b) * Math.Cos(rotation_angle);
-            //    double rotation_y = (R + b) * Math.Sin(rotation_angle);
-
-            //    positions.Add(new Point3D(rotation_x, rotation_y, 0));
-            //    for (int j = 0; j < segments; j++)
-            //    {
-            //        double circle_angle = j * angle_step;
-            //        double circle_z = Math.Cos(circle_angle);
-            //        double circle_y = Math.Sin(circle_angle);
-            //        double circle_x = i * h;
-
-            //        double f_x = circle_x * Math.Cos(rotation_angle) + Math.Sin(rotation_angle) * circle_x;
-            //        double f_y = rotation_y + b * circle_y;
-            //        double f_z = rotation_x + b * (- Math.Sin(rotation_angle) * circle_z + Math.Cos(rotation_angle) * circle_x);
-            //        positions.Add(new Point3D(f_x, f_y, f_z));
-
-
-            //        //List<double> c = calcCoordsRotationZ(b, rotation_angle, circle_x, circle_y, circle_z);
-            //        //positions.Add(new Point3D(rotation_x + c[0], rotation_y + c[1], c[2]));
-            //        //positions.Add(new Point3D(rotation_x + b * circle_x, b * circle_y, rotation_z + circle_z));
-            //    }
-            //}
-            double angle_test = Alpha_angle;
-            double angle_for_rotation = angle_test;
-            double angle_for_wire =  (90 - Alpha_angle / 2) * 0.01745;
+            double angle_for_rotation = -(90) * 0.01745;
+            double angle_for_wire = 0;
             for (int i = 0; i <= dlina_count; i++)
             {
-                //double rotation_angle = i * step;
                 double rotation_x = (R + b) * Math.Cos(angle_for_wire);
                 double rotation_y = (R + b) * Math.Sin(angle_for_wire);
 
@@ -112,43 +83,20 @@ namespace OVModel
                 for (int j = 0; j < segments; j++)
                 {
                     double circle_angle = j * angle_step;
-                    double circle_x = rotation_x;
-                    double circle_y = rotation_y + b * Math.Sin(circle_angle);
+                    double circle_x = 0;
+                    double circle_y = b * Math.Sin(circle_angle);
                     double circle_z = b * Math.Cos(circle_angle);
 
-                    //double after_rotation_x = Math.Cos(angle_for_rotation) * circle_x - Math.Sin(angle_for_rotation) * circle_y;
-                    //double after_rotation_y = Math.Sin(angle_for_rotation) * circle_x + Math.Cos(angle_for_rotation) * circle_y;
-                    //double after_rotation_z = circle_z;
+                    double after_rotation_x = Math.Cos(angle_for_rotation) * circle_x - Math.Sin(angle_for_rotation) * circle_y;
+                    double after_rotation_y = Math.Sin(angle_for_rotation) * circle_x + Math.Cos(angle_for_rotation) * circle_y;
+                    double after_rotation_z = circle_z;
 
-                    positions.Add(new Point3D(circle_x, circle_y, circle_z));
-
-                    //List<double> c = calcCoordsRotationY(b, rotation_angle, circle_z, circle_y, circle_x);
-                    //positions.Add(new Point3D(after_rotation_x, after_rotation_y, after_rotation_z));
-                    //positions.Add(new Point3D(rotation_x + b * circle_x, b * circle_y, rotation_z + circle_z));
+                    positions.Add(new Point3D(after_rotation_x + rotation_x, rotation_y + after_rotation_y, after_rotation_z));
                 }
 
-                angle_for_rotation -= step;
+                angle_for_rotation += step;
                 angle_for_wire += step;
             }
-
-            //for (double j = 0; j <= dlina_count; j += 1)
-            //{
-            //    double rotationAngle = j * step;
-            //    double centr_x = (R + b) * Math.Cos(rotationAngle);
-            //    double centr_z = (R + b) * Math.Sin(rotationAngle);
-            //    positions.Add(new Point3D(centr_x, 0, centr_z));
-            //    for (int i = 0; i < segments; i++)
-            //    {
-            //        double angle = i * angle_step;
-            //        double y = Math.Cos(angle);
-            //        double z = Math.Sin(angle);
-            //        double x = j * h;
-            //        List<double> coords = calcCoordsRotationY(b, rotationAngle, y, z, x);
-            //        positions.Add(new Point3D(coords[0], coords[1], coords[2]));
-            //        //positions.Add(new Point3D(centr_x + b * x, b * y, centr_z + z));
-
-            //    }
-            //}
 
             int segmentsOnEveryCircle = segments + 1;
 
