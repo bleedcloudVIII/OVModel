@@ -24,46 +24,40 @@ namespace OVModel
         public ModelOfOV()
         {
             InitializeComponent();
+            //DrawCircle();
             DrawWire();
-            //DrawWire();
         }
 
-        private List<double> calcCoordsRotationY(double R, double rotationAngle, double x, double y, double z)
-        {
-            return new List<double>()
-            {
-                R * (Math.Cos(rotationAngle) * x + Math.Sin(rotationAngle) * z),
-                R * y,
-                -1 * Math.Sin(rotationAngle) * x + Math.Cos(rotationAngle) * z
-            };
-        }
-
-        private List<double> calcCoordsRotationZ(double R, double rotationAngle, double x, double y, double z)
-        {
-            return new List<double>()
-            {
-                R * (Math.Cos(rotationAngle) * x - Math.Sin(rotationAngle) * y),
-                R * (Math.Sin(rotationAngle) * x + Math.Cos(rotationAngle * y)),
-                z,
-            };
-        }
-
-        //private List<double> testc(double R, double z, double theta, )
-        //{
-        //    double theta = (2 * Math.PI / pointsPerCirle) * j; // равномерные углы
-        //    double x = R * Math.Cos(theta); // координата X
-        //    double y = R * Math.Sin(theta); // координата Y
-        //}
         private void DrawWire()
         {
-            const int segments = 30; // Количество сегментов для круга
-            const double R = 2; // Радиус круга
-            const double b = 0.025;
+            const int segments = 32; // Количество сегментов для круга
+            Console.WriteLine("ASD");
+            const double R = 1; // Радиус круга
+            const double b = 0.25; // Радиус волокна
             const double angle_step = Math.PI * 2 / segments;
-            
+
+            // Коэффициенты для линейной функции нахождения соотношения изменения верхней части волокна и нижней (при деформации)
+            // верх = b1*x + b0
+            // низ = верх + 1 (b1*x + [b0+1])
+            const double b1 = -0.0189;
+            const double b0 = 0.519;
+
+            const double coeff_verx = b1 * b + b0;
+            //const double coeff_niz = coeff_verx + 1;
+
+            //const int quarter_of_circle = segments / 4;
+
+            //const double h_quarter_1 = (coeff_verx * b - b) / quarter_of_circle;
+            //const double h_quarter_2 = (b - coeff_verx * b) / quarter_of_circle;
+            //const double h_quarter_3 = (coeff_niz * b - b) / quarter_of_circle;
+            //const double h_quarter_4 = (b - coeff_niz * b) / quarter_of_circle;
+
+            //double tmp_b = b;
+
             MeshGeometry3D mesh = new MeshGeometry3D();
             Point3DCollection positions = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
+
 
             double Alpha_angle = 90;
             double h = 0.1;
@@ -83,13 +77,22 @@ namespace OVModel
                 for (int j = 0; j < segments; j++)
                 {
                     double circle_angle = j * angle_step;
+
+                    Console.WriteLine(circle_angle);
+
+                    double r;
+                    if (circle_angle < 3.1415) r = b - (b * (1 - coeff_verx)) * Math.Sin(circle_angle);
+                    else r = b - (b * coeff_verx) * Math.Sin(circle_angle);
+                    
+
                     double circle_x = 0;
-                    double circle_y = b * Math.Sin(circle_angle);
-                    double circle_z = b * Math.Cos(circle_angle);
+                    double circle_y = r * Math.Sin(circle_angle);
+                    double circle_z = r * Math.Cos(circle_angle);
 
                     double after_rotation_x = Math.Cos(angle_for_rotation) * circle_x - Math.Sin(angle_for_rotation) * circle_y;
                     double after_rotation_y = Math.Sin(angle_for_rotation) * circle_x + Math.Cos(angle_for_rotation) * circle_y;
                     double after_rotation_z = circle_z;
+
 
                     positions.Add(new Point3D(after_rotation_x + rotation_x, rotation_y + after_rotation_y, after_rotation_z));
                 }
@@ -145,14 +148,6 @@ namespace OVModel
                 }
             }
 
-
-            //triangleIndices.Add(1);
-            //triangleIndices.Add(12);
-            //triangleIndices.Add(13);
-
-            //triangleIndices.Add(2);
-            //triangleIndices.Add(1);
-            //triangleIndices.Add(13);
             mesh.Positions = positions;
             mesh.TriangleIndices = triangleIndices;
 
@@ -175,9 +170,29 @@ namespace OVModel
 
         private void DrawCircle()
         {
-            const int segments = 50; // Количество сегментов для круга
-            const double radius = 1.0; // Радиус круга
-            const double angleStep = Math.PI * 2 / segments;
+            const int segments = 32; // Количество сегментов для круга
+            Console.WriteLine("ASD");
+            const double R = 1; // Радиус круга
+            const double b = 0.25; // Радиус волокна
+            const double angle_step = Math.PI * 2 / segments;
+
+            // Коэффициенты для линейной функции нахождения соотношения изменения верхней части волокна и нижней (при деформации)
+            // верх = b1*x + b0
+            // низ = верх + 1 (b1*x + [b0+1])
+            const double b1 = -0.0189;
+            const double b0 = 0.519;
+
+            const double coeff_verx = b1 * b + b0;
+            const double coeff_niz = coeff_verx + 1;
+
+            const int quarter_of_circle = segments / 4;
+
+            const double h_quarter_1 = (coeff_verx * b - b) / quarter_of_circle;
+            const double h_quarter_2 = (b - coeff_verx * b) / quarter_of_circle;
+            const double h_quarter_3 = (coeff_niz * b - b) / quarter_of_circle;
+            const double h_quarter_4 = (b - coeff_niz * b) / quarter_of_circle;
+
+            //double tmp_b = b;
 
             MeshGeometry3D mesh = new MeshGeometry3D();
             Point3DCollection positions = new Point3DCollection();
@@ -186,13 +201,24 @@ namespace OVModel
             double Alpha_angle = 45;
             double Alpha_angle_rad = 0.0175 * Alpha_angle;
 
+            //double b1_ = -(coeff_verx * b) / 900 - b / 450 + (coeff_niz * b) / 300;
+            //double b0_ = 0.8 * b + 0.4 * coeff_verx * b - 0.2 * coeff_niz * b;
+
+
             // Создаем вершины круга
             for (int i = 0; i <= segments; i++)
             {
-                double angle = i * angleStep;
-                double x = radius * Math.Cos(angle) * Math.Cos(Alpha_angle_rad) + Math.Sin(Alpha_angle_rad) * 0; ;
-                double y = radius * Math.Sin(angle);
-                double z = -Math.Sin(Alpha_angle_rad) * Math.Cos(angle) + Math.Cos(Alpha_angle_rad) * 0;
+                double angle = i * angle_step;
+
+                //double tmp_b = b1_ * angle + b0_;
+
+                double r;
+                if (angle < 3.1415) r = b - (b * (1 - coeff_verx)) * Math.Sin(angle);
+                else r = b - (b * coeff_verx) * Math.Sin(angle);
+
+                double x = r * Math.Cos(angle);
+                double y = r * Math.Sin(angle);
+                double z = 0;
                 positions.Add(new Point3D(x, y, z));
             }
 
