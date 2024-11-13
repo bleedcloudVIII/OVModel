@@ -16,7 +16,7 @@
         <Viewport3D x:Name="viewport" Grid.Row="1">
             <Viewport3D.Camera>
                 <!--<PerspectiveCamera x:Name="camera" Position="0 -100 0" LookDirection="0 1 0" UpDirection="0 0 1"/>-->
-                <PerspectiveCamera x:Name="camera" Position="0 0 50" LookDirection="0 0 -1" UpDirection="0 1 0"/>
+                <PerspectiveCamera x:Name="camera" Position="0 0 5" LookDirection="0 0 -1" UpDirection="0 1 0"/>
                 <!--<PerspectiveCamera x:Name="camera" Position="100 0 0" LookDirection="-1 0 0" UpDirection="0 0 1"/>-->
 
             </Viewport3D.Camera>

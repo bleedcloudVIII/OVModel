@@ -32,7 +32,6 @@ namespace OVModel
         private void DrawWire()
         {
             const int segments = 32; // Количество сегментов для круга
-            Console.WriteLine("ASD");
             const double R = 1; // Радиус круга
             const double b = 0.25; // Радиус волокна
             const double angle_step = Math.PI * 2 / segments;
@@ -50,7 +49,7 @@ namespace OVModel
             Point3DCollection positions = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
 
-            double Alpha_angle = 210;
+            double Alpha_angle = 30;
             double h = 0.1;
             double dlina_wire = 100;
             double dlina_prodolzhenie = 10;
@@ -61,32 +60,30 @@ namespace OVModel
 
             double angle_for_rotation = -(90) * 0.01745;
             double angle_for_wire = 0;
+            double tmp_angle = angle_for_rotation;
             double tmp_rot_x = 0;
             double tmp_rot_y = 0;
+
+            double h_for_perehoda = Math.PI / (Alpha_angle * 0.01745);
             for (int i = 0; i <= (dlina / h); i++)
             {
-                if ((i >= 0 && i <= dlina_prodolzhenie/h) || (i >= (dlina_wire+dlina_prodolzhenie)/h))
+                if ((i >= 0 && i <= dlina_prodolzhenie / h) || (i >= (dlina_wire + dlina_prodolzhenie) / h))
                 {
-                    if (i >= (dlina_prodolzhenie+dlina_wire)/h)
+                    if (i >= (dlina_prodolzhenie + dlina_wire) / h)
                     {
                         tmp_rot_x += Math.Sin(angle_for_rotation - 1.5708) * h;
                         tmp_rot_y -= Math.Cos(angle_for_rotation - 1.5708) * h;
                     }
                     else
                     {
-                        tmp_rot_x = R + b;
-                        tmp_rot_y = -dlina_prodolzhenie + i * h;
+                        tmp_rot_x =  b - i * h * Math.Sin(Alpha_angle * 0.01745);
+                        tmp_rot_y = -dlina_prodolzhenie - i * h;
                     }
 
                     positions.Add(new Point3D(tmp_rot_x, tmp_rot_y, 0));
                     for (int j = 0; j < segments; j++)
                     {
                         double circle_angle = j * angle_step;
-
-                        //double r;
-                        //if (circle_angle < 3.1415) r = b - (b * (1 - coeff_verx)) * Math.Sin(circle_angle);
-                        //else r = b - (b * coeff_verx) * Math.Sin(circle_angle);
-
 
                         double circle_x = 0;
                         double circle_y = b * Math.Sin(circle_angle);
@@ -96,7 +93,6 @@ namespace OVModel
                         double after_rotation_y = Math.Sin(angle_for_rotation) * circle_x + Math.Cos(angle_for_rotation) * circle_y;
                         double after_rotation_z = circle_z;
 
-
                         positions.Add(new Point3D(after_rotation_x + tmp_rot_x, tmp_rot_y + after_rotation_y, after_rotation_z));
                     }
                 }
@@ -105,21 +101,24 @@ namespace OVModel
                     double rotation_x = (R + b) * Math.Cos(angle_for_wire);
                     double rotation_y = (R + b) * Math.Sin(angle_for_wire);
 
+                    Console.WriteLine($"{angle_for_wire}, {Math.Sin(h_for_perehoda * angle_for_wire)}");
+
                     positions.Add(new Point3D(rotation_x, rotation_y, 0));
                     for (int j = 0; j < segments; j++)
                     {
                         double circle_angle = j * angle_step;
 
-                        Console.WriteLine(circle_angle);
-
                         double r;
-                        if (circle_angle < 3.1415) r = b - (b * (1 - coeff_verx)) * Math.Sin(circle_angle);
-                        else r = b - (b * coeff_verx) * Math.Sin(circle_angle);
+                        if (circle_angle < 3.1415) r = (b * (1 - coeff_verx)) * Math.Sin(circle_angle);
+                        else r = (b * coeff_verx) * Math.Sin(circle_angle);
 
+                        double r_for_perehod = b - Math.Sin(-h_for_perehoda * angle_for_wire) * r;
+
+                        double a = b - r;
 
                         double circle_x = 0;
-                        double circle_y = b * Math.Sin(circle_angle);
-                        double circle_z = b * Math.Cos(circle_angle);
+                        double circle_y = r_for_perehod * Math.Sin(circle_angle);
+                        double circle_z = r_for_perehod * Math.Cos(circle_angle);
 
                         double after_rotation_x = Math.Cos(angle_for_rotation) * circle_x - Math.Sin(angle_for_rotation) * circle_y;
                         double after_rotation_y = Math.Sin(angle_for_rotation) * circle_x + Math.Cos(angle_for_rotation) * circle_y;
