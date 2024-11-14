@@ -25,8 +25,9 @@ namespace OVModel
         public ModelOfOV()
         {
             InitializeComponent();
-            //DrawCircle();
             DrawWire();
+            DrawCircle();
+
         }
 
         private void DrawWire()
@@ -230,7 +231,7 @@ namespace OVModel
             transform.Rotation = axis;
             visual.Transform = transform;
             visual.Content = model;
-            viewport.Children.Add(visual);
+            viewport_3d.Children.Add(visual);
         }
 
 
@@ -308,7 +309,7 @@ namespace OVModel
             // Добавляем модель в ModelVisual3D
             ModelVisual3D visual = new ModelVisual3D();
             visual.Content = model;
-            viewport.Children.Add(visual);
+            viewport_2d.Children.Add(visual);
         }
     }
 }
