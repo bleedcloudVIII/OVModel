@@ -24,12 +24,66 @@ namespace OVModel
     {
         public ModelOfOV()
         {
+            
             InitializeComponent();
+            this.MouseDown += MouseDownHandler;
+            this.MouseMove += MouseMoveHandler;
+            this.MouseUp += MouseUpHandler;
+            this.MouseLeave += MouseLeaveHandler;
             DrawWire();
             DrawCircle();
 
         }
+        private bool isDragging;
+        private Point lastMousePosition;
+        private void MouseDownHandler(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                isDragging = true;
+                lastMousePosition = e.GetPosition(this);
+                this.CaptureMouse();
+            }
 
+        }
+        private void MouseMoveHandler(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                Point currentMousePosition = e.GetPosition(this);
+                Vector delta = currentMousePosition - lastMousePosition;
+
+                var rotationY = new AxisAngleRotation3D(new Vector3D(0, 1, 0), delta.X * 0.5);
+                var rotationX = new AxisAngleRotation3D(new Vector3D(1, 0, 0), delta.Y * 0.5);
+
+                var transformGroup = new Transform3DGroup();
+
+                transformGroup.Children.Add(new RotateTransform3D(rotationY));
+                transformGroup.Children.Add(new RotateTransform3D(rotationX));
+
+                var model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[0]).Content;
+                var transform = model.Transform as Transform3DGroup;
+
+                if (transform != null) transform.Children.Add(transformGroup);
+                else model.Transform = transformGroup;
+                
+                lastMousePosition = currentMousePosition;
+            }
+        }
+
+
+        private void MouseUpHandler(object sender, MouseButtonEventArgs e)
+        {
+            isDragging = false;
+            this.ReleaseMouseCapture();
+        }
+
+
+        private void MouseLeaveHandler(object sender, MouseEventArgs e)
+        {
+            isDragging = false;
+            this.ReleaseMouseCapture();
+        }
         private void DrawWire()
         {
             const int segments = 32; // Количество сегментов для круга
