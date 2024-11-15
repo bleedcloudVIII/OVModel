@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OVModel"
         mc:Ignorable="d"
-        Title="ModelOfOV" Height="800" Width="1200">
+        Title="ModelOfOV" Height="800" Width="1200"
+        MouseWheel="Window_MouseWheel">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

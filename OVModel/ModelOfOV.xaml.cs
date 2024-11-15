@@ -30,10 +30,74 @@ namespace OVModel
             this.MouseMove += MouseMoveHandler;
             this.MouseUp += MouseUpHandler;
             this.MouseLeave += MouseLeaveHandler;
+            //CompositionTarget.Rendering += UpdateCamera;
             DrawWire();
             DrawCircle();
+        }
+
+        //private void UpdateCamera(object sender, EventArgs e)
+        //{
+
+        //        // Получаем позицию вашего объекта.
+        //        Point3D modelPosition = GetModelPosition(); // Измените на реальную позицию вашей модели
+        //        // Устанавливаем позицию камеры.
+        //        camera_3d.Position = new Point3D(modelPosition.X, modelPosition.Y, modelPosition.Z + 10); // Камера позади объекта
+        //        camera_3d.LookDirection = new Vector3D(modelPosition.X - camera_3d.Position.X,
+        //                                               modelPosition.Y - camera_3d.Position.Y,
+        //                                               modelPosition.Z - camera_3d.Position.Z + zoomChange);
+        //}
+
+        //private Point3D GetModelPosition()
+        //{
+        //    // Предполагаем, что трансформация модели — это TranslateTransform3D
+        //    Model3D model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[0]).Content;
+        //    if (model.Transform is Transform3DGroup transformGroup)
+        //    {
+        //        // Применяем трансформацию к начальной позиции
+        //        Point3D position = new Point3D(0, 0, 0);
+        //        foreach (var transform in transformGroup.Children)
+        //        {
+        //            if (transform is TranslateTransform3D translate)
+        //            {
+        //                position.X += translate.OffsetX;
+        //                position.Y += translate.OffsetY;
+        //                position.Z += translate.OffsetZ;
+        //            }
+        //        }
+        //        return position;
+        //    }
+
+        //    // Если моделям не задана трансформация, возвращаем 0,0,0
+        //    return new Point3D(0, 0, 0);
+        //}
+        private double zoomChange = 0;
+        private const double ZoomFactor = 0.5;
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+
+        {
+            Console.WriteLine("11111112wqd2w");
+            // Изменяем позицию камеры в зависимости от направления прокрутки колеса мыши
+
+            zoomChange = e.Delta > 0 ? -ZoomFactor : ZoomFactor;
+
+
+            camera_3d.Position = new Point3D(
+
+                camera_3d.Position.X,
+
+                camera_3d.Position.Y,
+
+                camera_3d.Position.Z + zoomChange
+
+            );
+
+
+            // Принуждаем камеру смотреть на центр объекта (если нужно)
+
+            // myCamera.LookDirection = new Vector3D(0, 0, -1); // или другое направление
 
         }
+
         private bool isDragging;
         private Point lastMousePosition;
         private void MouseDownHandler(object sender, MouseButtonEventArgs e)
@@ -87,8 +151,8 @@ namespace OVModel
         private void DrawWire()
         {
             const int segments = 32; // Количество сегментов для круга
-            const double R = 1; // Радиус круга
-            const double b = 0.25; // Радиус волокна
+            const double R = 5; // Радиус круга
+            const double b = 0.5; // Радиус волокна
             const double angle_step = Math.PI * 2 / segments;
 
             // Коэффициенты для линейной функции нахождения соотношения изменения верхней части волокна и нижней (при деформации)
@@ -98,13 +162,13 @@ namespace OVModel
             const double b0 = 0.519;
 
             const double coeff_verx = b1 * b + b0;
-            const double coeff_niz = coeff_verx + 1;
+            //const double coeff_niz = coeff_verx + 1;
 
             MeshGeometry3D mesh = new MeshGeometry3D();
             Point3DCollection positions = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
 
-            double Alpha_angle = 80;
+            double Alpha_angle = 60;
             double h = 0.1;
             double dlina_wire = 100;
             double dlina_prodolzhenie = 10;
@@ -119,6 +183,15 @@ namespace OVModel
             double tmp_rot_x = 0;
             double tmp_rot_y = 0;
 
+            double x_0 = R + b;
+            double y_0 = 0;
+            double x_1 = (R + 2 * b) * Math.Cos(Alpha_angle * 0.01745 / 2);
+            double y_1 = (R + 2 * b) * Math.Sin(Alpha_angle * 0.01745 / 2);
+
+            double h_for_x_1_prodolzhenie = x_1 - x_0;
+            double h_for_y_1_prodolzhenie = y_1 - y_0;
+
+
             double h_for_perehoda = Math.PI / (Alpha_angle * 0.01745);
             for (int i = 0; i <= (dlina / h); i++)
             {
@@ -128,11 +201,18 @@ namespace OVModel
                     {
                         tmp_rot_x += Math.Sin(angle_for_rotation - 1.5708) * h;
                         tmp_rot_y -= Math.Cos(angle_for_rotation - 1.5708) * h;
+                        //tmp_rot_x = i * h_for_x_1_prodolzhenie;
+                        //tmp_rot_y = i * h_for_y_1_prodolzhenie;
                     }
                     else
                     {
-                        tmp_rot_x = R + b - i * h * Math.Cos(Alpha_angle * 0.01745);
-                        tmp_rot_y = -i * h;
+                        Console.WriteLine($"{h_for_x_1_prodolzhenie}, {h_for_y_1_prodolzhenie}");
+                        //tmp_rot_x = R + b - i * h * Math.Cos(Alpha_angle * 0.01745);
+                        //tmp_rot_x = R + b;
+                        //tmp_rot_y = -i * h;
+                        tmp_rot_x = R + b - i * h_for_x_1_prodolzhenie;
+                        tmp_rot_y = - i * h_for_y_1_prodolzhenie;
+
                     }
 
                     positions.Add(new Point3D(tmp_rot_x, tmp_rot_y, 0));
@@ -336,7 +416,7 @@ namespace OVModel
                 //double tmp_b = b1_ * angle + b0_;
                 if (angle < 3.1415) r = (b * (1 - coeff_verx)) * Math.Sin(angle);
                 else r = (b * coeff_verx) * Math.Sin(angle);
-                Console.WriteLine($"{angle}, {Math.Sin(angle)}");
+                //Console.WriteLine($"{angle}, {Math.Sin(angle)}");
                 //double r_for_perehod = b - Math.Sin(h_for_perehoda * angle_for_wire) * r;
                 double x = (b - r) * Math.Cos(angle);
                 double y = (b - r) * Math.Sin(angle);
