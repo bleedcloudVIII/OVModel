@@ -27,16 +27,27 @@
 
             </Viewport3D.Camera>
         </Viewport3D>
-        <Border Grid.Row="2" Grid.Column="2" Background="White" BorderBrush="Black" BorderThickness="1">
-            <Viewport3D x:Name="viewport_2d" >
-                <Viewport3D.Camera>
-                    <!--<PerspectiveCamera x:Name="camera" Position="0 -100 0" LookDirection="0 1 0" UpDirection="0 0 1"/>-->
-                    <PerspectiveCamera x:Name="camera_2d" Position="0 0 3" LookDirection="0 0 -1" UpDirection="0 1 0"/>
-                    <!--<PerspectiveCamera x:Name="camera" Position="100 0 0" LookDirection="-1 0 0" UpDirection="0 0 1"/>-->
-
-                </Viewport3D.Camera>
-            </Viewport3D>
+        <Border Background="White" BorderBrush="Black" BorderThickness="1" Grid.Row="2" Grid.Column="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="0.1*"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                    <Label Content="Введите угол (от 0 до Alpha):"/>
+                    <TextBox x:Name="Input_Betta" TextChanged="Input_Betta_TextChanged" Width="60" VerticalAlignment="Center" Text="0"/>
+                </StackPanel>
+                <Viewport3D x:Name="viewport_2d" Grid.Row="2" Grid.Column="1">
+                    <Viewport3D.Camera>
+                        <PerspectiveCamera x:Name="camera_2d" Position="0 0 3" LookDirection="0 0 -1" UpDirection="0 1 0"/>
+                    </Viewport3D.Camera>
+                </Viewport3D>
+            </Grid>
         </Border>
-        
     </Grid>
 </Window>

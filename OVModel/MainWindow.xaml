@@ -39,31 +39,31 @@
                 <StackPanel Orientation="Vertical" Width="354" Margin="10,0,0,0"  Height="230" VerticalAlignment="Top">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Введите показатель преломления сердечника: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <TextBox x:Name="Input_n" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60"/>
+                        <TextBox x:Name="Input_n" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="1,4738" VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Введите диаметр волокна: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                        <TextBox x:Name="Input_2b" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" 
+                        <TextBox x:Name="Input_2b" HorizontalAlignment="Left" TextWrapping="Wrap" Text="0,5" 
                                  VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Введите радиус оптического волокна: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                        <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60"/>
+                        <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="1" VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Введите шаг вычислений: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                        <TextBox x:Name="Input_h" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60"/>
+                        <TextBox x:Name="Input_h" HorizontalAlignment="Left" TextWrapping="Wrap" Text="0,0004" VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Введите Угол: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                        <TextBox x:Name="Input_Alpha" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="60"/>
+                        <TextBox x:Name="Input_Alpha" HorizontalAlignment="Left" TextWrapping="Wrap" Text="80" VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="Введите пределы координаты x: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="Input_x_start" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="50"/>
+                            <TextBox x:Name="Input_x_start" HorizontalAlignment="Left" TextWrapping="Wrap" Text="-0,004" VerticalAlignment="Center" Width="50"/>
                             <Separator Width="10" Background="Transparent"/>
-                            <TextBox x:Name="Input_x_end" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="50"/>
+                            <TextBox x:Name="Input_x_end" HorizontalAlignment="Left" TextWrapping="Wrap" Text="0,004" VerticalAlignment="Center" Width="50"/>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -71,8 +71,8 @@
                             HorizontalAlignment="left" Click="Button_Click_Calculating"/>
                         <Button Content="Добавить" Margin="10, 10, 0, 0" Width="60px"
                             HorizontalAlignment="left" Click="Button_Click_Add_Points"/>
-                        <Button Content="3D Модель" Margin="10, 10, 0, 0"
-                            Width="70px" HorizontalAlignment="left" Click="Button_Click_Create_Model"/>
+                        <Button x:Name="ModelButton" Content="3D Модель" Margin="10, 10, 0, 0"
+                            Width="70px" HorizontalAlignment="left" Click="Button_Click_Create_Model" Visibility="Hidden"/>
                         <Button x:Name="SbrosButton" Content="Сбросить" Margin="10, 10, 0, 0"
                             Width="60px" HorizontalAlignment="left" Click="Button_Click_Sbros" Visibility="Hidden"/>
                         

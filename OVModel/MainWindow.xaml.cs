@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 
-using OVModel_CommonClasses;
+using OVModel.Lib.CommonClasses;
 using OVModel_Methods;
 using OVModel_Errors;
 using OVModel_Spravka;
@@ -38,7 +38,7 @@ namespace OVModel
     {
         private const string DefaultTitleAxisX = "x, мм";
         private const string DefaultTitleAxisY = "Значение показателя преломления n";
-
+        private UserInput _userInput;
         public MainWindow()
         {
             InitializeComponent();
@@ -96,6 +96,9 @@ namespace OVModel
                 err_window.Show();
                 return;
             }
+
+            _userInput = userInput;
+            ModelButton.Visibility = Visibility.Visible;
 
             string title = InputScheduleTitle.Text;
             string titleAxisX = InputScheduleAxisX.Text;
@@ -311,7 +314,7 @@ namespace OVModel
 
         private void Button_Click_Create_Model(object sender, RoutedEventArgs e)
         {
-            ModelOfOV modelOfOV_window = new ModelOfOV();
+            ModelOfOV modelOfOV_window = new ModelOfOV(_userInput);
             modelOfOV_window.Show();
         }
 

@@ -14,6 +14,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
+using OVModel.Lib.UserInput;
+using OVModel.Lib.CommonClasses;
 
 namespace OVModel
 {
@@ -22,9 +24,19 @@ namespace OVModel
     /// </summary>
     public partial class ModelOfOV : Window
     {
-        public ModelOfOV()
+        private UserInput userInput;
+        private int segments = 32;
+        // Коэффициенты для линейной функции нахождения соотношения изменения верхней части волокна и нижней (при деформации)
+        // верх = b1*x + b0
+        // низ = верх + 1 (b1*x + [b0+1])
+        private const double b1 = -0.0189;
+        private const double b0 = 0.519;
+
+        private int angle_for_2D = 0;
+
+        public ModelOfOV(UserInput uI)
         {
-            
+            userInput = uI;
             InitializeComponent();
             this.MouseDown += MouseDownHandler;
             this.MouseMove += MouseMoveHandler;
@@ -73,9 +85,7 @@ namespace OVModel
         private double zoomChange = 0;
         private const double ZoomFactor = 0.5;
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
-
         {
-            Console.WriteLine("11111112wqd2w");
             // Изменяем позицию камеры в зависимости от направления прокрутки колеса мыши
 
             zoomChange = e.Delta > 0 ? -ZoomFactor : ZoomFactor;
@@ -134,15 +144,11 @@ namespace OVModel
                 lastMousePosition = currentMousePosition;
             }
         }
-
-
         private void MouseUpHandler(object sender, MouseButtonEventArgs e)
         {
             isDragging = false;
             this.ReleaseMouseCapture();
         }
-
-
         private void MouseLeaveHandler(object sender, MouseEventArgs e)
         {
             isDragging = false;
@@ -150,35 +156,29 @@ namespace OVModel
         }
         private void DrawWire()
         {
-            const int segments = 32; // Количество сегментов для круга
-            const double R = 5; // Радиус круга
-            const double b = 0.5; // Радиус волокна
-            const double angle_step = Math.PI * 2 / segments;
+            double R = userInput.R; // Радиус круга
+            double b = userInput.b; // Радиус волокна
+            double angle_step = Math.PI * 2 / segments;
 
-            // Коэффициенты для линейной функции нахождения соотношения изменения верхней части волокна и нижней (при деформации)
-            // верх = b1*x + b0
-            // низ = верх + 1 (b1*x + [b0+1])
-            const double b1 = -0.0189;
-            const double b0 = 0.519;
-
-            const double coeff_verx = b1 * b + b0;
-            //const double coeff_niz = coeff_verx + 1;
+            double coeff_verx = b1 * b + b0;
 
             MeshGeometry3D mesh = new MeshGeometry3D();
             Point3DCollection positions = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
 
-            double Alpha_angle = 60;
+            double Alpha_angle = userInput.Alpha;
             double h = 0.1;
             double dlina_wire = 100;
             double dlina_prodolzhenie = 10;
             double dlina = dlina_wire + 2 * dlina_prodolzhenie;
             int dlina_count = (int)(dlina_wire/ h);
-            double h_for_angle = Alpha_angle / dlina_count;
+            
             double step = (Alpha_angle / dlina_count) * 0.01745;
 
             double angle_for_rotation = -90 * 0.01745;
             double angle_for_wire = 0;
+
+
             double tmp_angle = angle_for_rotation;
             double tmp_rot_x = 0;
             double tmp_rot_y = 0;
@@ -371,55 +371,34 @@ namespace OVModel
 
         private void DrawCircle()
         {
-            const int segments = 32; // Количество сегментов для круга
-            const double R = 1; // Радиус круга
-            const double b = 0.5; // Радиус волокна
-            const double angle_step = Math.PI * 2 / segments;
+            double R = userInput.R; // Радиус круга
+            double b = userInput.b; // Радиус волокна
+            double angle_step = Math.PI * 2 / segments;
 
-            // Коэффициенты для линейной функции нахождения соотношения изменения верхней части волокна и нижней (при деформации)
-            // верх = b1*x + b0
-            // низ = верх + 1 (b1*x + [b0+1])
-            const double b1 = -0.0189;
-            const double b0 = 0.519;
-
-            const double coeff_verx = b1 * b + b0;
-            const double coeff_niz = coeff_verx + 1;
-
-            const int quarter_of_circle = segments / 4;
-
-            const double h_quarter_1 = (coeff_verx * b - b) / quarter_of_circle;
-            const double h_quarter_2 = (b - coeff_verx * b) / quarter_of_circle;
-            const double h_quarter_3 = (coeff_niz * b - b) / quarter_of_circle;
-            const double h_quarter_4 = (b - coeff_niz * b) / quarter_of_circle;
-
-            //double tmp_b = b;
+            double coeff_verx = b1 * b + b0;
 
             MeshGeometry3D mesh = new MeshGeometry3D();
             Point3DCollection positions = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
 
-            double Alpha_angle = 45;
+            double Alpha_angle = userInput.Alpha;
             double Alpha_angle_rad = 0.0175 * Alpha_angle;
 
-            //double b1_ = -(coeff_verx * b) / 900 - b / 450 + (coeff_niz * b) / 300;
-            //double b0_ = 0.8 * b + 0.4 * coeff_verx * b - 0.2 * coeff_niz * b;
-
-            Console.WriteLine(coeff_verx);
-            Console.WriteLine(coeff_niz);
-            //double h_for_angle = 2 * Math.PI / Alpha_angle_rad;
             positions.Add(new Point3D(0, 0, 0));
+            double h_for_perehoda = Math.PI / (Alpha_angle * 0.01745);
             // Создаем вершины круга
             for (int i = 0; i <= segments; i++)
             {
                 double angle = i * angle_step;
                 double r;
-                //double tmp_b = b1_ * angle + b0_;
+
                 if (angle < 3.1415) r = (b * (1 - coeff_verx)) * Math.Sin(angle);
                 else r = (b * coeff_verx) * Math.Sin(angle);
-                //Console.WriteLine($"{angle}, {Math.Sin(angle)}");
-                //double r_for_perehod = b - Math.Sin(h_for_perehoda * angle_for_wire) * r;
-                double x = (b - r) * Math.Cos(angle);
-                double y = (b - r) * Math.Sin(angle);
+
+                double r_for_perehod = b - Math.Sin(angle_for_2D * h_for_perehoda) * r;
+
+                double x = r_for_perehod * Math.Cos(angle);
+                double y = r_for_perehod * Math.Sin(angle);
                 double z = 0;
                 positions.Add(new Point3D(x, y, z));
             }
@@ -444,6 +423,26 @@ namespace OVModel
             ModelVisual3D visual = new ModelVisual3D();
             visual.Content = model;
             viewport_2d.Children.Add(visual);
+        }
+
+        // TODO:
+        // Сделать кнопку?
+
+        private void Input_Betta_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (CommonMethods.isCanConvertToDouble(Input_Betta.Text))
+            {
+                angle_for_2D = int.Parse(Input_Betta.Text);
+            }
+
+            if (angle_for_2D <= userInput.Alpha)
+            {
+                if (viewport_2d != null)
+                {
+                    viewport_2d.Children.Clear();
+                    DrawCircle();
+                }
+            }
         }
     }
 }

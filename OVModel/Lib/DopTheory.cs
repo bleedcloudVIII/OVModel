@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using OxyPlot;
 using OxyPlot.Axes;
 using OVModel.Lib.Dot;
-using OVModel_CommonClasses;
+using OVModel.Lib.CommonClasses;
 using OVModel.Lib.CalculatingResult;
 using OVModel.Lib.UserInput;
 

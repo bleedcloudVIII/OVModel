@@ -5,6 +5,7 @@ using System.Linq;
 using System.Printing;
 using System.Text;
 using System.Threading.Tasks;
+using OVModel.Lib.CommonClasses;
 
 namespace OVModel.Lib.UserInput
 {
@@ -12,28 +13,17 @@ namespace OVModel.Lib.UserInput
     {
         public UserInput() {}
 
-        private bool isCanConvertToDouble(string str)
-        {
-            try
-            {
-                double.Parse(str);
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
+
 
         public int setValues(MainWindow window)
         {
-            if (isCanConvertToDouble(window.Input_2b.Text) &&
-                isCanConvertToDouble(window.Input_h.Text) &&
-                isCanConvertToDouble(window.Input_n.Text) &&
-                isCanConvertToDouble(window.Input_R.Text) &&
-                isCanConvertToDouble(window.Input_x_start.Text) &&
-                isCanConvertToDouble(window.Input_x_end.Text) &&
-                isCanConvertToDouble(window.Input_Alpha.Text))
+            if (CommonMethods.isCanConvertToDouble(window.Input_2b.Text) &&
+                CommonMethods.isCanConvertToDouble(window.Input_h.Text) &&
+                CommonMethods.isCanConvertToDouble(window.Input_n.Text) &&
+                CommonMethods.isCanConvertToDouble(window.Input_R.Text) &&
+                CommonMethods.isCanConvertToDouble(window.Input_x_start.Text) &&
+                CommonMethods.isCanConvertToDouble(window.Input_x_end.Text) &&
+                CommonMethods.isCanConvertToDouble(window.Input_Alpha.Text))
             {
                 b = double.Parse(window.Input_2b.Text) / 2;
                 h = double.Parse(window.Input_h.Text);

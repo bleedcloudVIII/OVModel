@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using OxyPlot;
 using OxyPlot.Axes;
-using OVModel_CommonClasses;
+using OVModel.Lib.CommonClasses;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Interpolation;

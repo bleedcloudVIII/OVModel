@@ -3,26 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using OxyPlot;
 using OxyPlot.Wpf;
 using OxyPlot.Axes;
-
 using iText.Kernel.Pdf;
 using iText.Layout;
-
 using OVModel.Lib.EqualElements;
 
-namespace OVModel_CommonClasses
+namespace OVModel.Lib.CommonClasses
 {
-
-
-
     public static class CommonMethods
     {
-        public static List<EqualElements> getSetList(List<EqualElements> list)
+        public static bool isCanConvertToDouble(string str)
         {
-            List<EqualElements> result = new List<EqualElements>();
+            try
+            {
+                double.Parse(str);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public static List<EqualElements.EqualElements> getSetList(List<EqualElements.EqualElements> list)
+        {
+            List<EqualElements.EqualElements> result = new List<EqualElements.EqualElements>();
 
             for (int i = 0; i < list.Count; i++)
             {

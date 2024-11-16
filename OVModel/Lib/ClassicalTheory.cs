@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using OVModel_CommonClasses;
+using OVModel.Lib.CommonClasses;
+using OVModel.Lib.EqualElements;
 
 
 using OxyPlot;
