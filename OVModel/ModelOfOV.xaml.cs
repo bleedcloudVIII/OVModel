@@ -110,7 +110,7 @@ namespace OVModel
 
         private bool isDragging;
         private Point lastMousePosition;
-        private void MouseDownHandler(object sender, MouseButtonEventArgs e)
+        private void MouseDownHandler(object sender, MouseButtonEventArgs e)    
         {
             if (e.ButtonState == MouseButtonState.Pressed)
             {
@@ -360,11 +360,21 @@ namespace OVModel
             // Добавляем модель в ModelVisual3D
             ModelVisual3D visual = new ModelVisual3D();
             RotateTransform3D transform = new RotateTransform3D();
+
             AxisAngleRotation3D axis = new AxisAngleRotation3D();
+
             this.RegisterName("rotate", axis);
+
             transform.Rotation = axis;
-            visual.Transform = transform;
+            
             visual.Content = model;
+            Console.WriteLine(-visual.Content.Bounds.X);
+            Console.WriteLine(-visual.Content.Bounds.Y);
+            Console.WriteLine(-visual.Content.Bounds.Z);
+
+            //TranslateTransform3D translateTransform = new TranslateTransform3D(-visual.Content.Bounds.X, -visual.Content.Bounds.Y, -visual.Content.Bounds.Z);
+            visual.Transform = transform;
+
             viewport_3d.Children.Add(visual);
         }
 
