@@ -45,63 +45,56 @@ namespace OVModel
             //CompositionTarget.Rendering += UpdateCamera;
             DrawWire();
             DrawCircle();
+            UpdateCamera();
         }
 
-        //private void UpdateCamera(object sender, EventArgs e)
-        //{
+        private void UpdateCamera()
+        {
 
-        //        // Получаем позицию вашего объекта.
-        //        Point3D modelPosition = GetModelPosition(); // Измените на реальную позицию вашей модели
-        //        // Устанавливаем позицию камеры.
-        //        camera_3d.Position = new Point3D(modelPosition.X, modelPosition.Y, modelPosition.Z + 10); // Камера позади объекта
-        //        camera_3d.LookDirection = new Vector3D(modelPosition.X - camera_3d.Position.X,
-        //                                               modelPosition.Y - camera_3d.Position.Y,
-        //                                               modelPosition.Z - camera_3d.Position.Z + zoomChange);
-        //}
+            // Получаем позицию вашего объекта.
+            Point3D modelPosition = GetModelPosition(); // Измените на реальную позицию вашей модели
+                                                        // Устанавливаем позицию камеры.
+            camera_3d.Position = new Point3D(modelPosition.X, modelPosition.Y, modelPosition.Z + 10); // Камера позади объекта
+            camera_3d.LookDirection = new Vector3D(modelPosition.X - camera_3d.Position.X,
+                                                   modelPosition.Y - camera_3d.Position.Y,
+                                                   modelPosition.Z - camera_3d.Position.Z + zoomChange);
+        }
 
-        //private Point3D GetModelPosition()
-        //{
-        //    // Предполагаем, что трансформация модели — это TranslateTransform3D
-        //    Model3D model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[0]).Content;
-        //    if (model.Transform is Transform3DGroup transformGroup)
-        //    {
-        //        // Применяем трансформацию к начальной позиции
-        //        Point3D position = new Point3D(0, 0, 0);
-        //        foreach (var transform in transformGroup.Children)
-        //        {
-        //            if (transform is TranslateTransform3D translate)
-        //            {
-        //                position.X += translate.OffsetX;
-        //                position.Y += translate.OffsetY;
-        //                position.Z += translate.OffsetZ;
-        //            }
-        //        }
-        //        return position;
-        //    }
+        private Point3D GetModelPosition()
+        {
+            // Предполагаем, что трансформация модели — это TranslateTransform3D
+            Model3D model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[0]).Content;
+            if (model.Transform is Transform3DGroup transformGroup)
+            {
+                // Применяем трансформацию к начальной позиции
+                Point3D position = new Point3D(0, 0, 0);
+                foreach (var transform in transformGroup.Children)
+                {
+                    if (transform is TranslateTransform3D translate)
+                    {
+                        position.X += translate.OffsetX;
+                        position.Y += translate.OffsetY;
+                        position.Z += translate.OffsetZ;
+                    }
+                }
+                return position;
+            }
 
-        //    // Если моделям не задана трансформация, возвращаем 0,0,0
-        //    return new Point3D(0, 0, 0);
-        //}
+            // Если моделям не задана трансформация, возвращаем 0,0,0
+            return new Point3D(0, 0, 0);
+        }
+
         private double zoomChange = 0;
         private const double ZoomFactor = 0.5;
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             // Изменяем позицию камеры в зависимости от направления прокрутки колеса мыши
-
             zoomChange = e.Delta > 0 ? -ZoomFactor : ZoomFactor;
-
-
             camera_3d.Position = new Point3D(
-
                 camera_3d.Position.X,
-
                 camera_3d.Position.Y,
-
                 camera_3d.Position.Z + zoomChange
-
             );
-
-
             // Принуждаем камеру смотреть на центр объекта (если нужно)
 
             // myCamera.LookDirection = new Vector3D(0, 0, -1); // или другое направление
@@ -180,7 +173,7 @@ namespace OVModel
 
 
             double tmp_angle = angle_for_rotation;
-            double tmp_rot_x = 0;
+            double tmp_rot_x = R + b;
             double tmp_rot_y = 0;
 
             double x_0 = R + b;
@@ -197,24 +190,10 @@ namespace OVModel
             {
                 if ((i >= 0 && i <= dlina_prodolzhenie / h) || (i >= (dlina_wire + dlina_prodolzhenie) / h))
                 {
-                    if (i >= (dlina_prodolzhenie + dlina_wire) / h)
-                    {
-                        tmp_rot_x += Math.Sin(angle_for_rotation - 1.5708) * h;
-                        tmp_rot_y -= Math.Cos(angle_for_rotation - 1.5708) * h;
-                        //tmp_rot_x = i * h_for_x_1_prodolzhenie;
-                        //tmp_rot_y = i * h_for_y_1_prodolzhenie;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{h_for_x_1_prodolzhenie}, {h_for_y_1_prodolzhenie}");
-                        //tmp_rot_x = R + b - i * h * Math.Cos(Alpha_angle * 0.01745);
-                        //tmp_rot_x = R + b;
-                        //tmp_rot_y = -i * h;
-                        tmp_rot_x = R + b - i * h_for_x_1_prodolzhenie;
-                        tmp_rot_y = - i * h_for_y_1_prodolzhenie;
+                    int lyam = i < (dlina_prodolzhenie + dlina_wire) / h ? lyam = -1 : lyam = 1;
 
-                    }
-
+                    tmp_rot_x += Math.Sin(lyam * angle_for_rotation - 1.5708) * h;
+                    tmp_rot_y -= Math.Cos(lyam * angle_for_rotation - 1.5708) * h;
                     positions.Add(new Point3D(tmp_rot_x, tmp_rot_y, 0));
                     for (int j = 0; j <= segments; j++)
                     {
@@ -266,42 +245,6 @@ namespace OVModel
                     tmp_rot_y = rotation_y;
                 }
             }
-
-            //double h_for_perehoda = Math.PI / (Alpha_angle * 0.01745);
-            //double angle_for_rotation = -90 * 0.01745;
-            //double angle_for_wire = 0;
-            
-            //for (int i = 0; i <= dlina_count; i++)
-            //{
-            //    double rotation_x = (R + b) * Math.Cos(angle_for_wire);
-            //    double rotation_y = (R + b) * Math.Sin(angle_for_wire);
-
-            //    positions.Add(new Point3D(rotation_x, rotation_y, 0));
-            //    for (int j = 0; j <= segments; j++)
-            //    {
-            //        double circle_angle = j * angle_step;
-
-            //        double r;
-            //        if (circle_angle < 3.1415) r = b * (1 - coeff_verx) * Math.Sin(circle_angle);
-            //        else r = b * coeff_verx * Math.Sin(circle_angle);
-
-            //        double r_for_perehod = b - Math.Sin(h_for_perehoda * angle_for_wire) * r;
-
-            //        double circle_x = 0;
-            //        double circle_y = r_for_perehod * Math.Sin(circle_angle);
-            //        double circle_z = r_for_perehod * Math.Cos(circle_angle);
-
-            //        double after_rotation_x = Math.Cos(angle_for_rotation) * circle_x - Math.Sin(angle_for_rotation) * circle_y;
-            //        double after_rotation_y = Math.Sin(angle_for_rotation) * circle_x + Math.Cos(angle_for_rotation) * circle_y;
-            //        double after_rotation_z = circle_z;
-
-
-            //        positions.Add(new Point3D(after_rotation_x + rotation_x, rotation_y + after_rotation_y, after_rotation_z));
-            //    }
-
-            //    angle_for_rotation += step;
-            //    angle_for_wire += step;
-            //}
 
             int segmentsOnEveryCircle = segments + 1;
 
@@ -392,11 +335,9 @@ namespace OVModel
             Int32Collection triangleIndices = new Int32Collection();
 
             double Alpha_angle = userInput.Alpha;
-            double Alpha_angle_rad = 0.0175 * Alpha_angle;
 
-            positions.Add(new Point3D(0, 0, 0));
+            //positions.Add(new Point3D(0, 0, 0));
             double h_for_perehoda = Math.PI / (Alpha_angle * 0.01745);
-            // Создаем вершины круга
             for (int i = 0; i <= segments; i++)
             {
                 double angle = i * angle_step;
@@ -405,7 +346,7 @@ namespace OVModel
                 if (angle < 3.1415) r = (b * (1 - coeff_verx)) * Math.Sin(angle);
                 else r = (b * coeff_verx) * Math.Sin(angle);
 
-                double r_for_perehod = b - Math.Sin(angle_for_2D * h_for_perehoda) * r;
+                double r_for_perehod = b - Math.Sin(angle_for_2D * 0.01745 * h_for_perehoda) * r;
 
                 double x = r_for_perehod * Math.Cos(angle);
                 double y = r_for_perehod * Math.Sin(angle);
@@ -413,11 +354,9 @@ namespace OVModel
                 positions.Add(new Point3D(x, y, z));
             }
 
-
-            // Создаем треугольники
             for (int i = 0; i < segments; i++)
             {
-                triangleIndices.Add(0); // Центр (начальная точка)
+                triangleIndices.Add(0);
                 triangleIndices.Add(i + 1);
                 triangleIndices.Add(i + 2);
             }
@@ -433,10 +372,11 @@ namespace OVModel
             ModelVisual3D visual = new ModelVisual3D();
             visual.Content = model;
             viewport_2d.Children.Add(visual);
-        }
 
-        // TODO:
-        // Сделать кнопку?
+            double z_coord_for_camera = 4.959 * b + 0.0943;
+            
+            camera_2d.Position = new Point3D(0, 0, z_coord_for_camera);
+        }
 
         private void Input_Betta_TextChanged(object sender, TextChangedEventArgs e)
         {
