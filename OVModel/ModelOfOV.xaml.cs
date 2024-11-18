@@ -16,6 +16,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using OVModel.Lib.UserInput;
 using OVModel.Lib.CommonClasses;
+using System.ComponentModel.Composition;
 
 namespace OVModel
 {
@@ -32,7 +33,7 @@ namespace OVModel
         private const double b1 = -0.0189;
         private const double b0 = 0.519;
 
-        private int angle_for_2D = 0;
+        //private int angle_for_2D = 0;
 
         public ModelOfOV(UserInput uI)
         {
@@ -42,47 +43,52 @@ namespace OVModel
             this.MouseMove += MouseMoveHandler;
             this.MouseUp += MouseUpHandler;
             this.MouseLeave += MouseLeaveHandler;
-            //CompositionTarget.Rendering += UpdateCamera;
+
+            DrawCilindr();
             DrawWire();
-            DrawCircle();
-            UpdateCamera();
+            DrawSrez();
+            DrawUserSrez((int)uI.Alpha / 2);
+
+
+            Input_Betta.Text = $"{(int)(uI.Alpha / 2)}";
+            DrawCircle((int)(uI.Alpha / 2));
+            //UpdateCamera();
         }
 
-        private void UpdateCamera()
-        {
+        //private void UpdateCamera()
+        //{
 
-            // Получаем позицию вашего объекта.
-            Point3D modelPosition = GetModelPosition(); // Измените на реальную позицию вашей модели
-                                                        // Устанавливаем позицию камеры.
-            camera_3d.Position = new Point3D(modelPosition.X, modelPosition.Y, modelPosition.Z + 10); // Камера позади объекта
-            camera_3d.LookDirection = new Vector3D(modelPosition.X - camera_3d.Position.X,
-                                                   modelPosition.Y - camera_3d.Position.Y,
-                                                   modelPosition.Z - camera_3d.Position.Z + zoomChange);
-        }
+        //    // Получаем позицию вашего объекта.
+        //    Point3D modelPosition = GetModelPosition(); // Измените на реальную позицию вашей модели
+        //                                                // Устанавливаем позицию камеры.
+        //    camera_3d.Position = new Point3D(modelPosition.X, modelPosition.Y, modelPosition.Z + 10); // Камера позади объекта
+        //    camera_3d.LookDirection = new Vector3D(modelPosition.X - camera_3d.Position.X,
+        //                                           modelPosition.Y - camera_3d.Position.Y,
+        //                                           modelPosition.Z - camera_3d.Position.Z + zoomChange);
+        //}
+        //private Point3D GetModelPosition()
+        //{
+        //    // Предполагаем, что трансформация модели — это TranslateTransform3D
+        //    Model3D model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[0]).Content;
+        //    if (model.Transform is Transform3DGroup transformGroup)
+        //    {
+        //        // Применяем трансформацию к начальной позиции
+        //        Point3D position = new Point3D(0, 0, 0);
+        //        foreach (var transform in transformGroup.Children)
+        //        {
+        //            if (transform is TranslateTransform3D translate)
+        //            {
+        //                position.X += translate.OffsetX;
+        //                position.Y += translate.OffsetY;
+        //                position.Z += translate.OffsetZ;
+        //            }
+        //        }
+        //        return position;
+        //    }
 
-        private Point3D GetModelPosition()
-        {
-            // Предполагаем, что трансформация модели — это TranslateTransform3D
-            Model3D model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[0]).Content;
-            if (model.Transform is Transform3DGroup transformGroup)
-            {
-                // Применяем трансформацию к начальной позиции
-                Point3D position = new Point3D(0, 0, 0);
-                foreach (var transform in transformGroup.Children)
-                {
-                    if (transform is TranslateTransform3D translate)
-                    {
-                        position.X += translate.OffsetX;
-                        position.Y += translate.OffsetY;
-                        position.Z += translate.OffsetZ;
-                    }
-                }
-                return position;
-            }
-
-            // Если моделям не задана трансформация, возвращаем 0,0,0
-            return new Point3D(0, 0, 0);
-        }
+        //    // Если моделям не задана трансформация, возвращаем 0,0,0
+        //    return new Point3D(0, 0, 0);
+        //}
 
         private double zoomChange = 0;
         private const double ZoomFactor = 0.5;
@@ -128,13 +134,17 @@ namespace OVModel
                 transformGroup.Children.Add(new RotateTransform3D(rotationY));
                 transformGroup.Children.Add(new RotateTransform3D(rotationX));
 
-                var model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[0]).Content;
-                var transform = model.Transform as Transform3DGroup;
+                for (int i = 1; i < viewport_3d.Children.Count; i++)
+                {
+                    var model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[i]).Content;
+                    var transform = model.Transform as Transform3DGroup;
 
-                if (transform != null) transform.Children.Add(transformGroup);
-                else model.Transform = transformGroup;
-                
+                    if (transform != null) transform.Children.Add(transformGroup);
+                    else model.Transform = transformGroup;
+
+                }
                 lastMousePosition = currentMousePosition;
+
             }
         }
         private void MouseUpHandler(object sender, MouseButtonEventArgs e)
@@ -195,7 +205,7 @@ namespace OVModel
                     tmp_rot_x += Math.Sin(lyam * angle_for_rotation - 1.5708) * h;
                     tmp_rot_y -= Math.Cos(lyam * angle_for_rotation - 1.5708) * h;
                     positions.Add(new Point3D(tmp_rot_x, tmp_rot_y, 0));
-                    for (int j = 0; j <= segments; j++)
+                    for (int j = 0; j < segments; j++)
                     {
                         double circle_angle = j * angle_step;
 
@@ -216,7 +226,7 @@ namespace OVModel
                     double rotation_y = (R + b) * Math.Sin(angle_for_wire);
 
                     positions.Add(new Point3D(rotation_x, rotation_y, 0));
-                    for (int j = 0; j <= segments; j++)
+                    for (int j = 0; j < segments; j++)
                     {
                         double circle_angle = j * angle_step;
 
@@ -297,7 +307,169 @@ namespace OVModel
             mesh.TriangleIndices = triangleIndices;
 
             // Создаем материал и модель
-            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Blue));
+            //new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray)
+            //Material material = new DiffuseMaterial(new Brush());
+
+            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray));
+
+            GeometryModel3D model = new GeometryModel3D(mesh, material);
+            
+
+            // Добавляем модель в ModelVisual3D
+            ModelVisual3D visual = new ModelVisual3D();
+            RotateTransform3D transform = new RotateTransform3D();
+
+            AxisAngleRotation3D axis = new AxisAngleRotation3D();
+
+            transform.Rotation = axis;
+            
+            visual.Content = model;
+            visual.Transform = transform;
+
+            viewport_3d.Children.Add(visual);
+        }
+        private void DrawCilindr()
+        {
+            double R = userInput.R; // Радиус круга
+            double b = userInput.b; // Радиус волокна
+            double angle_step = Math.PI * 2 / segments;
+
+            MeshGeometry3D mesh = new MeshGeometry3D();
+            Point3DCollection positions = new Point3DCollection();
+            Int32Collection triangleIndices = new Int32Collection();
+
+            double Alpha_angle = userInput.Alpha;
+            double h = 0.1;
+            double dlina = 2 * b + 1;
+            int dlina_count = (int)(dlina / h);
+
+            double z_start = - dlina / 2;
+
+            for (int i = 0; i <= (dlina / h); i++)
+            {
+                double centr_x = 0;
+                double centr_y = 0;
+                double centr_z = z_start + i * h;
+
+                positions.Add(new Point3D(centr_x, centr_y, centr_z));
+                for (int j = 0; j < segments; j++)
+                {
+                    double circle_angle = j * angle_step;
+
+                    double circle_x = R * Math.Cos(circle_angle);
+                    double circle_y = R * Math.Sin(circle_angle);
+
+                    positions.Add(new Point3D(circle_x + centr_x, circle_y + centr_y, centr_z));
+                }
+                
+            }
+
+            int segmentsOnEveryCircle = segments + 1;
+            for (int z_layer = 0; z_layer < dlina_count - 1; z_layer++)
+            {
+                if (z_layer == 0)
+                {
+                    for (int i = 0; i < segments; i++)
+                    {
+                        if (i == segments - 1)
+                        {
+                            triangleIndices.Add(0);
+                            triangleIndices.Add(i);
+                            triangleIndices.Add(1);
+
+                            triangleIndices.Add(0);
+                            triangleIndices.Add(1);
+                            triangleIndices.Add(i);
+                        }
+                        else
+                        {
+                            triangleIndices.Add(0);
+                            triangleIndices.Add(i + 1);
+                            triangleIndices.Add(i + 2);
+
+                            triangleIndices.Add(0);
+                            triangleIndices.Add(i + 2);
+                            triangleIndices.Add(i + 1);
+                        }
+                    }
+                }
+                else if (z_layer == dlina_count - 2)
+                {
+                    for (int i = 0; i < segments; i++)
+                    {
+                        if (i == segments - 1)
+                        {
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle);
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle + i);
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle + 1);
+
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle);
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle + 1);
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle + i);
+                        }
+                        else
+                        {
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle);
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle + i + 1);
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle + i + 2);
+
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle);
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle + i + 2);
+                            triangleIndices.Add(z_layer * segmentsOnEveryCircle + i + 1);
+                        }
+                    }
+                }
+
+
+                for (int i = 0; i < segments; i++)
+                {
+                    if (i != segments - 1)
+                    {
+
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 2);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + i + 2);
+
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 2);
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + i + 2);
+
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + i + 2);
+
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + i + 2);
+
+                    }
+                    else
+                    {
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + 1);
+
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + 1);
+
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + 1);
+
+                        triangleIndices.Add(segmentsOnEveryCircle * z_layer + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + i + 1);
+                        triangleIndices.Add(segmentsOnEveryCircle * (z_layer + 1) + 1);
+                    }
+                }
+            }
+
+            mesh.Positions = positions;
+            mesh.TriangleIndices = triangleIndices;
+
+            // Создаем материал и модель
+            
+            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray));
             GeometryModel3D model = new GeometryModel3D(mesh, material);
 
             // Добавляем модель в ModelVisual3D
@@ -306,23 +478,15 @@ namespace OVModel
 
             AxisAngleRotation3D axis = new AxisAngleRotation3D();
 
-            this.RegisterName("rotate", axis);
+            //this.RegisterName("rotate", axis);
 
             transform.Rotation = axis;
-            
+
             visual.Content = model;
-            Console.WriteLine(-visual.Content.Bounds.X);
-            Console.WriteLine(-visual.Content.Bounds.Y);
-            Console.WriteLine(-visual.Content.Bounds.Z);
-
-            //TranslateTransform3D translateTransform = new TranslateTransform3D(-visual.Content.Bounds.X, -visual.Content.Bounds.Y, -visual.Content.Bounds.Z);
             visual.Transform = transform;
-
             viewport_3d.Children.Add(visual);
         }
-
-
-        private void DrawCircle()
+        private void DrawCircle(int angle_for_2D)
         {
             double R = userInput.R; // Радиус круга
             double b = userInput.b; // Радиус волокна
@@ -365,7 +529,7 @@ namespace OVModel
             mesh.TriangleIndices = triangleIndices;
 
             // Создаем материал и модель
-            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Blue));
+            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray));
             GeometryModel3D model = new GeometryModel3D(mesh, material);
 
             // Добавляем модель в ModelVisual3D
@@ -377,22 +541,159 @@ namespace OVModel
             
             camera_2d.Position = new Point3D(0, 0, z_coord_for_camera);
         }
+        private void DrawSrez()
+        {
+            // Делает три среза:
+            // 1 - Начало угла, т. е. 0
+            // 2 - Конец угла, т. е. Альфа
+            // 3 - Выбранный угол
 
+            double R = userInput.R; // Радиус круга
+            double b = userInput.b; // Радиус волокна
+            double Alpha = userInput.Alpha * 0.01745;
+            double angle_step = Math.PI * 2 / segments;
+
+            MeshGeometry3D mesh = new MeshGeometry3D();
+            Point3DCollection positions = new Point3DCollection();
+            Int32Collection triangleIndices = new Int32Collection();
+
+            positions.Add(new Point3D(0, 0, R));
+            positions.Add(new Point3D(2*R, 0, R));
+            positions.Add(new Point3D(2*R, 0, -R));
+            positions.Add(new Point3D(0, 0, -R));
+
+            positions.Add(new Point3D(2 * R * Math.Cos(Alpha), 2 * R * Math.Sin(Alpha), R));
+            positions.Add(new Point3D(2 * R * Math.Cos(Alpha), 2 * R * Math.Sin(Alpha), -R));
+            //positions.Add(new Point3D(2 * R, 0, -R));
+            //positions.Add(new Point3D(0, 0, -R));
+
+            triangleIndices.Add(0);
+            triangleIndices.Add(1);
+            triangleIndices.Add(2);
+
+            triangleIndices.Add(0);
+            triangleIndices.Add(2);
+            triangleIndices.Add(1);
+
+            triangleIndices.Add(2);
+            triangleIndices.Add(3);
+            triangleIndices.Add(0);
+
+            triangleIndices.Add(2);
+            triangleIndices.Add(0);
+            triangleIndices.Add(3);
+
+            triangleIndices.Add(0);
+            triangleIndices.Add(3);
+            triangleIndices.Add(4);
+
+            triangleIndices.Add(0);
+            triangleIndices.Add(4);
+            triangleIndices.Add(3);
+
+            triangleIndices.Add(3);
+            triangleIndices.Add(4);
+            triangleIndices.Add(5);
+
+            triangleIndices.Add(3);
+            triangleIndices.Add(5);
+            triangleIndices.Add(4);
+
+
+            mesh.Positions = positions;
+            mesh.TriangleIndices = triangleIndices;
+
+            // Создаем материал и модель
+            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.AliceBlue));
+            GeometryModel3D model = new GeometryModel3D(mesh, material);
+
+            // Добавляем модель в ModelVisual3D
+            ModelVisual3D visual = new ModelVisual3D();
+            visual.Content = model;
+            viewport_3d.Children.Add(visual);
+        }
+
+        private void DrawUserSrez(double angle)
+        {
+            // Делает три среза:
+            // 1 - Начало угла, т. е. 0
+            // 2 - Конец угла, т. е. Альфа
+            // 3 - Выбранный угол
+
+            double R = userInput.R; // Радиус круга
+            double user_angle = angle * 0.01745;
+
+            MeshGeometry3D mesh = new MeshGeometry3D();
+            Point3DCollection positions = new Point3DCollection();
+            Int32Collection triangleIndices = new Int32Collection();
+
+            Console.WriteLine($"{angle}, {user_angle}");
+
+            positions.Add(new Point3D(0, 0, R));
+            positions.Add(new Point3D(0, 0, -R));
+
+            positions.Add(new Point3D(2 * R * Math.Cos(user_angle), 2 * R * Math.Sin(user_angle), R));
+            positions.Add(new Point3D(2 * R * Math.Cos(user_angle), 2 * R * Math.Sin(user_angle), -R));
+
+            Console.WriteLine(positions);
+
+            triangleIndices.Add(0);
+            triangleIndices.Add(1);
+            triangleIndices.Add(2);
+
+            triangleIndices.Add(0);
+            triangleIndices.Add(2);
+            triangleIndices.Add(1);
+
+            triangleIndices.Add(2);
+            triangleIndices.Add(3);
+            triangleIndices.Add(1);
+
+            triangleIndices.Add(2);
+            triangleIndices.Add(1);
+            triangleIndices.Add(3);
+
+            mesh.Positions = positions;
+            mesh.TriangleIndices = triangleIndices;
+
+            // Создаем материал и модель
+            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red));
+            GeometryModel3D model = new GeometryModel3D(mesh, material);
+
+            // Добавляем модель в ModelVisual3D
+            ModelVisual3D visual = new ModelVisual3D();
+            visual.Content = model;
+            viewport_3d.Children.Add(visual);
+        }
         private void Input_Betta_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (CommonMethods.isCanConvertToDouble(Input_Betta.Text))
             {
-                angle_for_2D = int.Parse(Input_Betta.Text);
-            }
-
-            if (angle_for_2D <= userInput.Alpha)
-            {
-                if (viewport_2d != null)
+                int angle_for_2D = int.Parse(Input_Betta.Text);
+                if (angle_for_2D <= userInput.Alpha)
                 {
-                    viewport_2d.Children.Clear();
-                    DrawCircle();
+                    if (viewport_2d.Children.Count != 1)
+                    {
+                        viewport_2d.Children.RemoveAt(1);
+                        DrawCircle(angle_for_2D);
+
+                        if (viewport_3d.Children.Count == 5)
+                        {
+                            viewport_3d.Children.RemoveAt(1);
+                            viewport_3d.Children.RemoveAt(1);
+                            viewport_3d.Children.RemoveAt(1);
+                            viewport_3d.Children.RemoveAt(1);
+
+                            DrawCilindr();
+                            DrawWire();
+                            DrawSrez();
+                            DrawUserSrez(angle_for_2D);
+                        }
+                    }
                 }
             }
+
+            
         }
     }
 }

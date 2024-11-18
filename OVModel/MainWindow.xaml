@@ -42,12 +42,12 @@
                         <TextBox x:Name="Input_n" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="1,4738" VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="Введите диаметр волокна: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <Label Content="Введите диаметр волокна (мкм): " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <TextBox x:Name="Input_2b" HorizontalAlignment="Left" TextWrapping="Wrap" Text="0,5" 
                                  VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="Введите радиус оптического волокна: " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <Label Content="Введите радиус оптического волокна (мм): " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="1" VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
