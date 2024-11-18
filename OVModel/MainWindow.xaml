@@ -47,7 +47,7 @@
                                  VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="Введите радиус оптического волокна (мм): " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <Label Content="Введите радиус изгиба (мм): " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <TextBox x:Name="Input_R" HorizontalAlignment="Left" TextWrapping="Wrap" Text="1" VerticalAlignment="Center" Width="60"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">

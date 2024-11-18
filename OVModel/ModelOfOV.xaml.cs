@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using OVModel.Lib.UserInput;
 using OVModel.Lib.CommonClasses;
 using System.ComponentModel.Composition;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace OVModel
 {
@@ -49,12 +50,12 @@ namespace OVModel
             DrawSrez();
             DrawUserSrez((int)uI.Alpha / 2);
 
+            CreateAxis();
 
             Input_Betta.Text = $"{(int)(uI.Alpha / 2)}";
             DrawCircle((int)(uI.Alpha / 2));
             //UpdateCamera();
         }
-
         //private void UpdateCamera()
         //{
 
@@ -69,7 +70,7 @@ namespace OVModel
         //private Point3D GetModelPosition()
         //{
         //    // Предполагаем, что трансформация модели — это TranslateTransform3D
-        //    Model3D model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[0]).Content;
+        //    Model3D model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[1]).Content;
         //    if (model.Transform is Transform3DGroup transformGroup)
         //    {
         //        // Применяем трансформацию к начальной позиции
@@ -87,7 +88,7 @@ namespace OVModel
         //    }
 
         //    // Если моделям не задана трансформация, возвращаем 0,0,0
-        //    return new Point3D(0, 0, 0);
+        //    return new Point3D(userInput.R , 1.667 * userInput.R + 8.333, userInput.R / 2);
         //}
 
         private double zoomChange = 0;
@@ -106,7 +107,6 @@ namespace OVModel
             // myCamera.LookDirection = new Vector3D(0, 0, -1); // или другое направление
 
         }
-
         private bool isDragging;
         private Point lastMousePosition;
         private void MouseDownHandler(object sender, MouseButtonEventArgs e)    
@@ -305,10 +305,6 @@ namespace OVModel
 
             mesh.Positions = positions;
             mesh.TriangleIndices = triangleIndices;
-
-            // Создаем материал и модель
-            //new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray)
-            //Material material = new DiffuseMaterial(new Brush());
 
             Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray));
 
@@ -612,7 +608,6 @@ namespace OVModel
             visual.Content = model;
             viewport_3d.Children.Add(visual);
         }
-
         private void DrawUserSrez(double angle)
         {
             // Делает три среза:
@@ -664,6 +659,26 @@ namespace OVModel
             ModelVisual3D visual = new ModelVisual3D();
             visual.Content = model;
             viewport_3d.Children.Add(visual);
+        }
+
+
+
+        private void CreateAxis()
+        {
+            var points = new Point3DCollection { new Point3D(- 3 * userInput.R, -0.01, 0), new Point3D(3 * userInput.R, -0.01, 0), new Point3D(3 * userInput.R, 0.01, 0), new Point3D(-3 * userInput.R, 0.01, 0) };
+            var indices = new Int32Collection { 0, 1, 2, 0, 2, 1, 0, 2, 3, 0, 3, 2};
+
+            var line = new MeshGeometry3D
+            {
+                Positions = points,
+                TriangleIndices = indices
+            };
+
+            var material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red));
+            var lineModel = new GeometryModel3D(line, material);
+            var modelVisual = new ModelVisual3D { Content = lineModel };
+
+            viewport_3d.Children.Add(modelVisual);
         }
         private void Input_Betta_TextChanged(object sender, TextChangedEventArgs e)
         {
