@@ -18,6 +18,8 @@ using OVModel.Lib.UserInput;
 using OVModel.Lib.CommonClasses;
 using System.ComponentModel.Composition;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using System.Windows.Media.Animation;
+using System.Windows.Markup;
 
 namespace OVModel
 {
@@ -40,10 +42,6 @@ namespace OVModel
         {
             userInput = uI;
             InitializeComponent();
-            this.MouseDown += MouseDownHandler;
-            this.MouseMove += MouseMoveHandler;
-            this.MouseUp += MouseUpHandler;
-            this.MouseLeave += MouseLeaveHandler;
 
             DrawCilindr();
             DrawWire();
@@ -91,6 +89,7 @@ namespace OVModel
         //    return new Point3D(userInput.R , 1.667 * userInput.R + 8.333, userInput.R / 2);
         //}
 
+
         private double zoomChange = 0;
         private const double ZoomFactor = 0.5;
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -109,7 +108,7 @@ namespace OVModel
         }
         private bool isDragging;
         private Point lastMousePosition;
-        private void MouseDownHandler(object sender, MouseButtonEventArgs e)    
+        private void MouseDownHandler(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
             {
@@ -134,15 +133,24 @@ namespace OVModel
                 transformGroup.Children.Add(new RotateTransform3D(rotationY));
                 transformGroup.Children.Add(new RotateTransform3D(rotationX));
 
-                for (int i = 1; i < viewport_3d.Children.Count; i++)
-                {
-                    var model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[i]).Content;
-                    var transform = model.Transform as Transform3DGroup;
+                // TODO:
+                // Отключить инверсию мыши?
+                var camera = viewport_3d.Camera;
+                var transform = camera.Transform as Transform3DGroup;
 
-                    if (transform != null) transform.Children.Add(transformGroup);
-                    else model.Transform = transformGroup;
+                if (transform != null) transform.Children.Add(transformGroup);
+                else camera.Transform = transformGroup;
 
-                }
+
+                //for (int i = 1; i < viewport_3d.Children.Count; i++)
+                //{
+                //    var model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[i]).Content;
+                //    var transform = model.Transform as Transform3DGroup;
+
+                //    if (transform != null) transform.Children.Add(transformGroup);
+                //    else model.Transform = transformGroup;
+
+                //}
                 lastMousePosition = currentMousePosition;
 
             }
@@ -665,8 +673,51 @@ namespace OVModel
 
         private void CreateAxis()
         {
-            var points = new Point3DCollection { new Point3D(- 3 * userInput.R, -0.01, 0), new Point3D(3 * userInput.R, -0.01, 0), new Point3D(3 * userInput.R, 0.01, 0), new Point3D(-3 * userInput.R, 0.01, 0) };
-            var indices = new Int32Collection { 0, 1, 2, 0, 2, 1, 0, 2, 3, 0, 3, 2};
+            //Point3DCollection point3Ds_X = new Point3DCollection();
+            //point3Ds_X.Add(new Point3D(0, 0, -20));
+            //point3Ds_X.Add(new Point3D(0, 0, 20));
+            //ScreenSpaceLines3D X_axis = new ScreenSpaceLines3D() { Points = point3Ds_X, Thickness = 2, Color = Colors.Red };
+
+            //viewport_3d.Children.Add(X_axis);
+            var points = new Point3DCollection { 
+                // X
+                new Point3D(-4 * userInput.R, -0.01, 0), // 0
+                new Point3D(4 * userInput.R, -0.01, 0),  // 1
+                new Point3D(4 * userInput.R, 0.01, 0),   // 2
+                 new Point3D(-4 * userInput.R, 0.01, 0), // 3
+
+                // Y
+                new Point3D(-0.01, -4 * userInput.R, 0), // 4
+                new Point3D(0.01, -4 * userInput.R, 0),  // 5
+                new Point3D(-0.01, 4 * userInput.R, 0),  // 6
+                new Point3D(0.01, 4 * userInput.R, 0),  // 7
+
+                // Z
+                new Point3D(0, -0.01, -4 * userInput.R), // 8
+                new Point3D(0, 0.01, -4 * userInput.R),  // 9
+                new Point3D(0, -0.01, 4 * userInput.R),   // 10
+                new Point3D(0, 0.01, 4 * userInput.R)   // 11
+            };
+
+            var indices = new Int32Collection {
+                // X
+                0, 1, 2,
+                0, 2, 1,
+                0, 2, 3,
+                0, 3, 2,
+
+                // Y
+                4, 5, 6,
+                4, 6, 5,
+                4, 6, 7,
+                4, 7, 6,
+
+                // Z
+                8, 9, 10,
+                8, 10, 9,
+                8, 10, 11,
+                8, 11, 10,
+            };
 
             var line = new MeshGeometry3D
             {
@@ -674,12 +725,24 @@ namespace OVModel
                 TriangleIndices = indices
             };
 
-            var material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red));
+            var material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black));
             var lineModel = new GeometryModel3D(line, material);
             var modelVisual = new ModelVisual3D { Content = lineModel };
 
+
+
             viewport_3d.Children.Add(modelVisual);
         }
+
+        [ContentProperty("Children")]
+        public class Aa: ModelVisual3D
+        {
+            public Aa()
+            {
+
+            }
+        };
+
         private void Input_Betta_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (CommonMethods.isCanConvertToDouble(Input_Betta.Text))
@@ -692,16 +755,20 @@ namespace OVModel
                         viewport_2d.Children.RemoveAt(1);
                         DrawCircle(angle_for_2D);
 
-                        if (viewport_3d.Children.Count == 5)
+                        if (viewport_3d.Children.Count == 6)
                         {
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
+                            viewport_3d.Children.RemoveAt(1);
+                            //viewport_3d.Children.RemoveAt(1);
+
 
                             DrawCilindr();
                             DrawWire();
                             DrawSrez();
+                            CreateAxis();
                             DrawUserSrez(angle_for_2D);
                         }
                     }

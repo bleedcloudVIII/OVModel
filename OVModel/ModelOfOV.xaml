@@ -6,7 +6,11 @@
         xmlns:local="clr-namespace:OVModel"
         mc:Ignorable="d"
         Title="ModelOfOV" Height="800" Width="1200"
-        MouseWheel="Window_MouseWheel">
+        MouseWheel="Window_MouseWheel"
+        MouseDown="MouseDownHandler"
+        MouseMove="MouseMoveHandler"
+        MouseUp="MouseUpHandler"
+        MouseLeave="MouseLeaveHandler">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
