@@ -147,40 +147,14 @@ namespace OVModel
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            zoomChange = e.Delta > 0 ? -ZoomFactor : ZoomFactor;
+            Vector3D direction = camera_3d.LookDirection;
+            direction.Normalize();
 
-            cameraPosition = new Vector3D(camera_3d.Position.X, camera_3d.Position.Y, camera_3d.Position.Z + zoomChange);
-            Vector3D lookDirection = camera_3d.LookDirection;
-            // Нормализуем вектор взгляда
-            lookDirection.Normalize();
+            double zoomAmount = e.Delta > 0 ? 0.5 : -0.5;
 
-            // Изменяем позицию камеры
-            if (e.Delta > 0) // Прокрутка вверх
-            {
-                camera_3d.Position = Point3D.Add(camera_3d.Position, lookDirection * -ZoomFactor);
-            }
-            else // Прокрутка вниз
-            {
-                camera_3d.Position = Point3D.Add(camera_3d.Position, lookDirection * ZoomFactor);
-            }
+            camera_3d.Position += direction * zoomAmount;
 
-
-
-            // Сделать отдоление в зависимости от того, куда смотрит камера
-
-            Console.WriteLine("ASDADS");
-            Console.WriteLine(camera_3d.LookDirection);
-            Console.WriteLine(camera_3d.Position);
-           
-            //Vector3D newCameraPosition = cameraPosition + camera_3d.LookDirection * zoomChange;
-
-            //cameraPosition = newCameraPosition; // Обновляем позицию камеры
-            //camera_3d.Position = new Point3D(cameraPosition.X, cameraPosition.Y, cameraPosition.Z); // Устанавливаем новую позицию камеры
-            //camera_3d.Position = new Point3D(
-            //    camera_3d.Position.X + zoomChange,
-            //    camera_3d.Position.Y + zoomChange,
-            //    camera_3d.Position.Z + zoomChange
-            //);
+            cameraPosition = new Vector3D(camera_3d.Position.X, camera_3d.Position.Y, camera_3d.Position.Z);
         }
         private void DrawWire()
         {
