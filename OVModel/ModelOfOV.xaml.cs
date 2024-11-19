@@ -20,6 +20,9 @@ using System.ComponentModel.Composition;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using System.Windows.Media.Animation;
 using System.Windows.Markup;
+using System.Security.Cryptography;
+using MathNet.Numerics.Distributions;
+using System.Security.Policy;
 
 namespace OVModel
 {
@@ -36,13 +39,27 @@ namespace OVModel
         private const double b1 = -0.0189;
         private const double b0 = 0.519;
 
-        //private int angle_for_2D = 0;
+        // Вращение камеры
+        private Point lastMousePosition;
+        private bool isRotating;
+        private double angleX = 0.0;
+        private double angleY = 0.0;
+        private Vector3D cameraPosition = new Vector3D(0, 0, 5);
+        private double KeymoveSpeed = 0.3;
+        private double mouseMoveSpeed = 0.3;
 
+        // Приближение/отдаление камеры
+        private double zoomChange = 0;
+        private const double ZoomFactor = 0.5;
         public ModelOfOV(UserInput uI)
         {
             userInput = uI;
             InitializeComponent();
+            //this.MouseDown += MainWindow_MouseDown;
 
+            //this.MouseMove += MainWindow_MouseMove;
+
+            //this.MouseUp += MainWindow_MouseUp;
             DrawCilindr();
             DrawWire();
             DrawSrez();
@@ -54,116 +71,116 @@ namespace OVModel
             DrawCircle((int)(uI.Alpha / 2));
             //UpdateCamera();
         }
-        //private void UpdateCamera()
-        //{
 
-        //    // Получаем позицию вашего объекта.
-        //    Point3D modelPosition = GetModelPosition(); // Измените на реальную позицию вашей модели
-        //                                                // Устанавливаем позицию камеры.
-        //    camera_3d.Position = new Point3D(modelPosition.X, modelPosition.Y, modelPosition.Z + 10); // Камера позади объекта
-        //    camera_3d.LookDirection = new Vector3D(modelPosition.X - camera_3d.Position.X,
-        //                                           modelPosition.Y - camera_3d.Position.Y,
-        //                                           modelPosition.Z - camera_3d.Position.Z + zoomChange);
-        //}
-        //private Point3D GetModelPosition()
-        //{
-        //    // Предполагаем, что трансформация модели — это TranslateTransform3D
-        //    Model3D model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[1]).Content;
-        //    if (model.Transform is Transform3DGroup transformGroup)
-        //    {
-        //        // Применяем трансформацию к начальной позиции
-        //        Point3D position = new Point3D(0, 0, 0);
-        //        foreach (var transform in transformGroup.Children)
-        //        {
-        //            if (transform is TranslateTransform3D translate)
-        //            {
-        //                position.X += translate.OffsetX;
-        //                position.Y += translate.OffsetY;
-        //                position.Z += translate.OffsetZ;
-        //            }
-        //        }
-        //        return position;
-        //    }
-
-        //    // Если моделям не задана трансформация, возвращаем 0,0,0
-        //    return new Point3D(userInput.R , 1.667 * userInput.R + 8.333, userInput.R / 2);
-        //}
-
-
-        private double zoomChange = 0;
-        private const double ZoomFactor = 0.5;
-        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Изменяем позицию камеры в зависимости от направления прокрутки колеса мыши
-            zoomChange = e.Delta > 0 ? -ZoomFactor : ZoomFactor;
-            camera_3d.Position = new Point3D(
-                camera_3d.Position.X,
-                camera_3d.Position.Y,
-                camera_3d.Position.Z + zoomChange
-            );
-            // Принуждаем камеру смотреть на центр объекта (если нужно)
-
-            // myCamera.LookDirection = new Vector3D(0, 0, -1); // или другое направление
-
-        }
-        private bool isDragging;
-        private Point lastMousePosition;
-        private void MouseDownHandler(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ButtonState == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                isDragging = true;
+                isRotating = true;
                 lastMousePosition = e.GetPosition(this);
-                this.CaptureMouse();
+                Mouse.Capture(this);
+            }
+        }
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.W)
+            {
+                cameraPosition += camera_3d.LookDirection * KeymoveSpeed;
+            }
+            else if (e.Key == Key.S)
+            {
+                cameraPosition -= camera_3d.LookDirection * KeymoveSpeed;
+            }
+            else if (e.Key == Key.A)
+            {
+                Vector3D right = Vector3D.CrossProduct(camera_3d.LookDirection, new Vector3D(0, 1, 0));
+                cameraPosition -= right * KeymoveSpeed;
+            }
+            else if (e.Key == Key.D)
+            {
+                Vector3D left = Vector3D.CrossProduct(camera_3d.LookDirection, new Vector3D(0, 1, 0));
+                cameraPosition += left * KeymoveSpeed;
+                
             }
 
+            camera_3d.Position = new Point3D(cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
         }
-        private void MouseMoveHandler(object sender, MouseEventArgs e)
+        private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDragging)
+            if (isRotating)
             {
                 Point currentMousePosition = e.GetPosition(this);
                 Vector delta = currentMousePosition - lastMousePosition;
 
-                var rotationY = new AxisAngleRotation3D(new Vector3D(0, 1, 0), delta.X * 0.5);
-                var rotationX = new AxisAngleRotation3D(new Vector3D(1, 0, 0), delta.Y * 0.5);
+                double deltaX = delta.X * mouseMoveSpeed; // Угол по Y
+                double deltaY = delta.Y * mouseMoveSpeed; // Угол по X
 
-                var transformGroup = new Transform3DGroup();
+                RotateCamera(deltaX, deltaY);
 
-                transformGroup.Children.Add(new RotateTransform3D(rotationY));
-                transformGroup.Children.Add(new RotateTransform3D(rotationX));
-
-                // TODO:
-                // Отключить инверсию мыши?
-                var camera = viewport_3d.Camera;
-                var transform = camera.Transform as Transform3DGroup;
-
-                if (transform != null) transform.Children.Add(transformGroup);
-                else camera.Transform = transformGroup;
-
-
-                //for (int i = 1; i < viewport_3d.Children.Count; i++)
-                //{
-                //    var model = (GeometryModel3D)((ModelVisual3D)viewport_3d.Children[i]).Content;
-                //    var transform = model.Transform as Transform3DGroup;
-
-                //    if (transform != null) transform.Children.Add(transformGroup);
-                //    else model.Transform = transformGroup;
-
-                //}
                 lastMousePosition = currentMousePosition;
-
             }
         }
-        private void MouseUpHandler(object sender, MouseButtonEventArgs e)
+        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            isDragging = false;
-            this.ReleaseMouseCapture();
+            if (e.LeftButton == MouseButtonState.Released)
+            {
+                isRotating = false;
+                Mouse.Capture(null);
+            }
         }
-        private void MouseLeaveHandler(object sender, MouseEventArgs e)
+        private void RotateCamera(double deltaX, double deltaY)
         {
-            isDragging = false;
-            this.ReleaseMouseCapture();
+            angleX += deltaY; // Угол по оси X
+            angleY += deltaX; // Угол по оси Y
+
+            Vector3D lookDirection = new Vector3D(
+                Math.Sin(angleY * Math.PI / 180) * Math.Cos(angleX * Math.PI / 180),
+                -Math.Sin(angleX * Math.PI / 180),
+                -Math.Cos(angleY * Math.PI / 180) * Math.Cos(angleX * Math.PI / 180)
+            );
+
+
+            camera_3d.LookDirection = lookDirection;
+        }
+
+        private double cameraDistance = 1.0;
+
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            zoomChange = e.Delta > 0 ? -ZoomFactor : ZoomFactor;
+
+            cameraPosition = new Vector3D(camera_3d.Position.X, camera_3d.Position.Y, camera_3d.Position.Z + zoomChange);
+            Vector3D lookDirection = camera_3d.LookDirection;
+            // Нормализуем вектор взгляда
+            lookDirection.Normalize();
+
+            // Изменяем позицию камеры
+            if (e.Delta > 0) // Прокрутка вверх
+            {
+                camera_3d.Position = Point3D.Add(camera_3d.Position, lookDirection * -ZoomFactor);
+            }
+            else // Прокрутка вниз
+            {
+                camera_3d.Position = Point3D.Add(camera_3d.Position, lookDirection * ZoomFactor);
+            }
+
+
+
+            // Сделать отдоление в зависимости от того, куда смотрит камера
+
+            Console.WriteLine("ASDADS");
+            Console.WriteLine(camera_3d.LookDirection);
+            Console.WriteLine(camera_3d.Position);
+           
+            //Vector3D newCameraPosition = cameraPosition + camera_3d.LookDirection * zoomChange;
+
+            //cameraPosition = newCameraPosition; // Обновляем позицию камеры
+            //camera_3d.Position = new Point3D(cameraPosition.X, cameraPosition.Y, cameraPosition.Z); // Устанавливаем новую позицию камеры
+            //camera_3d.Position = new Point3D(
+            //    camera_3d.Position.X + zoomChange,
+            //    camera_3d.Position.Y + zoomChange,
+            //    camera_3d.Position.Z + zoomChange
+            //);
         }
         private void DrawWire()
         {
