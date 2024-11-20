@@ -33,6 +33,7 @@ namespace OVModel
     {
         private UserInput userInput;
         private int segments = 32;
+
         // Коэффициенты для линейной функции нахождения соотношения изменения верхней части волокна и нижней (при деформации)
         // верх = b1*x + b0
         // низ = верх + 1 (b1*x + [b0+1])
@@ -45,7 +46,7 @@ namespace OVModel
         private double angleX = 0.0;
         private double angleY = 0.0;
         private Vector3D cameraPosition = new Vector3D(0, 0, 5);
-        private double KeymoveSpeed = 0.3;
+        private double KeyMoveSpeed = 0.3;
         private double mouseMoveSpeed = 0.3;
 
         // Приближение/отдаление камеры
@@ -55,11 +56,7 @@ namespace OVModel
         {
             userInput = uI;
             InitializeComponent();
-            //this.MouseDown += MainWindow_MouseDown;
 
-            //this.MouseMove += MainWindow_MouseMove;
-
-            //this.MouseUp += MainWindow_MouseUp;
             DrawCilindr();
             DrawWire();
             DrawSrez();
@@ -69,9 +66,7 @@ namespace OVModel
 
             Input_Betta.Text = $"{(int)(uI.Alpha / 2)}";
             DrawCircle((int)(uI.Alpha / 2));
-            //UpdateCamera();
         }
-
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -85,22 +80,29 @@ namespace OVModel
         {
             if (e.Key == Key.W)
             {
-                cameraPosition += camera_3d.LookDirection * KeymoveSpeed;
+                cameraPosition += camera_3d.LookDirection * KeyMoveSpeed;
             }
             else if (e.Key == Key.S)
             {
-                cameraPosition -= camera_3d.LookDirection * KeymoveSpeed;
+                cameraPosition -= camera_3d.LookDirection * KeyMoveSpeed;
             }
             else if (e.Key == Key.A)
             {
                 Vector3D right = Vector3D.CrossProduct(camera_3d.LookDirection, new Vector3D(0, 1, 0));
-                cameraPosition -= right * KeymoveSpeed;
+                cameraPosition -= right * KeyMoveSpeed;
             }
             else if (e.Key == Key.D)
             {
                 Vector3D left = Vector3D.CrossProduct(camera_3d.LookDirection, new Vector3D(0, 1, 0));
-                cameraPosition += left * KeymoveSpeed;
-                
+                cameraPosition += left * KeyMoveSpeed;
+            }
+            else if (e.Key == Key.LeftShift)
+            {
+                cameraPosition.Y += KeyMoveSpeed;
+            }
+            else if (e.Key == Key.LeftCtrl)
+            {
+                cameraPosition.Y -= KeyMoveSpeed;
             }
 
             camera_3d.Position = new Point3D(cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
@@ -142,9 +144,6 @@ namespace OVModel
 
             camera_3d.LookDirection = lookDirection;
         }
-
-        private double cameraDistance = 1.0;
-
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             Vector3D direction = camera_3d.LookDirection;
@@ -559,8 +558,6 @@ namespace OVModel
 
             positions.Add(new Point3D(2 * R * Math.Cos(Alpha), 2 * R * Math.Sin(Alpha), R));
             positions.Add(new Point3D(2 * R * Math.Cos(Alpha), 2 * R * Math.Sin(Alpha), -R));
-            //positions.Add(new Point3D(2 * R, 0, -R));
-            //positions.Add(new Point3D(0, 0, -R));
 
             triangleIndices.Add(0);
             triangleIndices.Add(1);
@@ -598,11 +595,12 @@ namespace OVModel
             mesh.Positions = positions;
             mesh.TriangleIndices = triangleIndices;
 
-            // Создаем материал и модель
-            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.AliceBlue));
+            var brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.AliceBlue);
+            brush.Opacity = 0.5;
+            Material material = new DiffuseMaterial(brush);
+            
             GeometryModel3D model = new GeometryModel3D(mesh, material);
-
-            // Добавляем модель в ModelVisual3D
+                
             ModelVisual3D visual = new ModelVisual3D();
             visual.Content = model;
             viewport_3d.Children.Add(visual);
@@ -650,8 +648,10 @@ namespace OVModel
             mesh.Positions = positions;
             mesh.TriangleIndices = triangleIndices;
 
-            // Создаем материал и модель
-            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red));
+            var brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
+            brush.Opacity = 0.5;
+
+            Material material = new DiffuseMaterial(brush);
             GeometryModel3D model = new GeometryModel3D(mesh, material);
 
             // Добавляем модель в ModelVisual3D
@@ -659,9 +659,6 @@ namespace OVModel
             visual.Content = model;
             viewport_3d.Children.Add(visual);
         }
-
-
-
         private void CreateAxis()
         {
             //Point3DCollection point3Ds_X = new Point3DCollection();
@@ -724,15 +721,6 @@ namespace OVModel
 
             viewport_3d.Children.Add(modelVisual);
         }
-
-        [ContentProperty("Children")]
-        public class Aa: ModelVisual3D
-        {
-            public Aa()
-            {
-
-            }
-        };
 
         private void Input_Betta_TextChanged(object sender, TextChangedEventArgs e)
         {
