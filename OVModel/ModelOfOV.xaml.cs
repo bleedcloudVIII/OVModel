@@ -52,6 +52,9 @@ namespace OVModel
         // Приближение/отдаление камеры
         private double zoomChange = 0;
         private const double ZoomFactor = 0.5;
+
+        // Оси
+        int coef_for_axis = 4;
         public ModelOfOV(UserInput uI)
         {
             userInput = uI;
@@ -661,30 +664,24 @@ namespace OVModel
         }
         private void CreateAxis()
         {
-            //Point3DCollection point3Ds_X = new Point3DCollection();
-            //point3Ds_X.Add(new Point3D(0, 0, -20));
-            //point3Ds_X.Add(new Point3D(0, 0, 20));
-            //ScreenSpaceLines3D X_axis = new ScreenSpaceLines3D() { Points = point3Ds_X, Thickness = 2, Color = Colors.Red };
-
-            //viewport_3d.Children.Add(X_axis);
             var points = new Point3DCollection { 
                 // X
-                new Point3D(-4 * userInput.R, -0.01, 0), // 0
-                new Point3D(4 * userInput.R, -0.01, 0),  // 1
-                new Point3D(4 * userInput.R, 0.01, 0),   // 2
-                 new Point3D(-4 * userInput.R, 0.01, 0), // 3
+                new Point3D(-coef_for_axis * userInput.R, -0.01, 0), // 0
+                new Point3D(coef_for_axis * userInput.R, -0.01, 0),  // 1
+                new Point3D(coef_for_axis * userInput.R, 0.01, 0),   // 2
+                 new Point3D(-coef_for_axis * userInput.R, 0.01, 0), // 3
 
                 // Y
-                new Point3D(-0.01, -4 * userInput.R, 0), // 4
-                new Point3D(0.01, -4 * userInput.R, 0),  // 5
-                new Point3D(-0.01, 4 * userInput.R, 0),  // 6
-                new Point3D(0.01, 4 * userInput.R, 0),  // 7
+                new Point3D(-0.01, -coef_for_axis * userInput.R, 0), // 4
+                new Point3D(0.01, -coef_for_axis * userInput.R, 0),  // 5
+                new Point3D(-0.01, coef_for_axis * userInput.R, 0),  // 6
+                new Point3D(0.01, coef_for_axis * userInput.R, 0),  // 7
 
                 // Z
-                new Point3D(0, -0.01, -4 * userInput.R), // 8
-                new Point3D(0, 0.01, -4 * userInput.R),  // 9
-                new Point3D(0, -0.01, 4 * userInput.R),   // 10
-                new Point3D(0, 0.01, 4 * userInput.R)   // 11
+                new Point3D(0, -0.01, -coef_for_axis * userInput.R), // 8
+                new Point3D(0, 0.01, -coef_for_axis * userInput.R),  // 9
+                new Point3D(0, -0.01, coef_for_axis * userInput.R),   // 10
+                new Point3D(0, 0.01, coef_for_axis * userInput.R)   // 11
             };
 
             var indices = new Int32Collection {
@@ -717,10 +714,75 @@ namespace OVModel
             var lineModel = new GeometryModel3D(line, material);
             var modelVisual = new ModelVisual3D { Content = lineModel };
 
-
-
             viewport_3d.Children.Add(modelVisual);
+
+            DrawText();
         }
+
+        private void DrawText()
+        {
+            var p_x = new Point3DCollection
+            {
+                new Point3D(coef_for_axis * userInput.R - 0.3, 0, 0),
+                new Point3D(coef_for_axis * userInput.R, 0, 0),
+                new Point3D(coef_for_axis * userInput.R, 0.3, 0),
+                new Point3D(coef_for_axis * userInput.R - 0.3, 0.3, 0),
+            };
+
+            var p_y = new Point3DCollection
+            {
+                new Point3D(0, coef_for_axis * userInput.R - 0.3, 0),
+                new Point3D(0.3, coef_for_axis * userInput.R - 0.3, 0),
+                new Point3D(0.3, coef_for_axis * userInput.R, 0),
+                new Point3D(0, coef_for_axis * userInput.R, 0),
+            };
+
+            var p_z = new Point3DCollection
+            {
+                new Point3D(0, 0, coef_for_axis * userInput.R),
+                new Point3D(0, 0, coef_for_axis * userInput.R - 0.3),
+                new Point3D(0, 0.3, coef_for_axis * userInput.R - 0.3),
+                new Point3D(0, 0.3, coef_for_axis * userInput.R),
+            };
+
+            CreateText(p_x, "x");
+            CreateText(p_y, "y");
+            CreateText(p_z, "z");
+        }
+
+        private void CreateText(Point3DCollection p, String t)
+        {
+            var viewport_for_text = new Viewport2DVisual3D();
+
+            var triangles = new Int32Collection
+            {
+                0, 1, 2,
+                0, 2, 1,
+                0, 2, 3,
+                0, 3, 2,
+            };
+
+            var texture = new PointCollection
+            {
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(0, 0),
+            };
+
+            var meshGeometry = new MeshGeometry3D() { Positions = p, TriangleIndices = triangles, TextureCoordinates = texture };
+            var mat = new DiffuseMaterial();
+            mat.SetValue(Viewport2DVisual3D.IsVisualHostMaterialProperty, true);
+
+            var text = new Label() { Content = t };
+
+            viewport_for_text.Visual = text;
+            viewport_for_text.Material = mat;
+            viewport_for_text.Geometry = meshGeometry;
+
+            viewport_3d.Children.Add(viewport_for_text);
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (CommonMethods.isCanConvertToDouble(Input_Betta.Text))
@@ -733,8 +795,11 @@ namespace OVModel
                         viewport_2d.Children.RemoveAt(1);
                         DrawCircle(angle_for_2D);
 
-                        if (viewport_3d.Children.Count == 6)
+                        if (viewport_3d.Children.Count == 9)
                         {
+                            viewport_3d.Children.RemoveAt(1);
+                            viewport_3d.Children.RemoveAt(1);
+                            viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
