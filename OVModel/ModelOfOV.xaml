@@ -45,7 +45,8 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
                     <Label Content="Введите угол (от 0 до Alpha):"/>
-                    <TextBox x:Name="Input_Betta" TextChanged="Input_Betta_TextChanged" Width="60" VerticalAlignment="Center" Text=""/>
+                    <TextBox x:Name="Input_Betta" Width="60" VerticalAlignment="Center" Text=""/>
+                    <Button Click="Button_Click" Content="Рассчитать" Height="20" Margin="10,0,0,0"/>
                 </StackPanel>
                 <Viewport3D x:Name="viewport_2d" Grid.Row="2" Grid.Column="1">
                     <Viewport3D.Camera>

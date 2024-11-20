@@ -721,8 +721,7 @@ namespace OVModel
 
             viewport_3d.Children.Add(modelVisual);
         }
-
-        private void Input_Betta_TextChanged(object sender, TextChangedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (CommonMethods.isCanConvertToDouble(Input_Betta.Text))
             {
@@ -741,8 +740,6 @@ namespace OVModel
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
-                            //viewport_3d.Children.RemoveAt(1);
-
 
                             DrawCilindr();
                             DrawWire();
@@ -753,8 +750,6 @@ namespace OVModel
                     }
                 }
             }
-
-            
         }
     }
 }
