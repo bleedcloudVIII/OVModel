@@ -54,7 +54,9 @@ namespace OVModel
         private const double ZoomFactor = 0.5;
 
         // Оси
-        int coef_for_axis = 4;
+        double coef_for_axis = 4;
+        double coef_for_axis2D = 1.5;
+
         public ModelOfOV(UserInput uI)
         {
             userInput = uI;
@@ -66,6 +68,7 @@ namespace OVModel
             DrawUserSrez((int)uI.Alpha / 2);
 
             CreateAxis();
+            CreateAxis2D();
 
             Input_Betta.Text = $"{(int)(uI.Alpha / 2)}";
             DrawCircle((int)(uI.Alpha / 2));
@@ -307,7 +310,9 @@ namespace OVModel
             mesh.Positions = positions;
             mesh.TriangleIndices = triangleIndices;
 
-            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray));
+            var brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray);
+            
+            Material material = new DiffuseMaterial(brush);
 
             GeometryModel3D model = new GeometryModel3D(mesh, material);
             
@@ -324,6 +329,249 @@ namespace OVModel
             visual.Transform = transform;
 
             viewport_3d.Children.Add(visual);
+        }
+
+        private void CreateAxis2D()
+        {
+            // X пунктир
+            var viewport_for_text = new Viewport2DVisual3D();
+
+            var p = new Point3DCollection
+            {
+                new Point3D(-userInput.b, 0.01, 0),
+                new Point3D(userInput.b, 0.01, 0),
+                new Point3D(userInput.b, -0.01, 0),
+                new Point3D(-userInput.b, -0.01, 0),
+            };
+
+            var triangles = new Int32Collection
+            {
+                0, 1, 2,
+                0, 2, 1,
+                0, 2, 3,
+                0, 3, 2,
+            };
+
+            var texture = new PointCollection
+            {
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(0, 0),
+            };
+            var brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
+
+            var meshGeometry = new MeshGeometry3D() { Positions = p, TriangleIndices = triangles, TextureCoordinates = texture };
+            var mat = new DiffuseMaterial();
+            mat.SetValue(Viewport2DVisual3D.IsVisualHostMaterialProperty, true);
+
+            var line = new Line() { StrokeThickness = 0.01, Stroke = brush, X1 = -userInput.b, Y1 = 0, X2 = 2 * userInput.b, Y2 = 0, StrokeDashArray = new DoubleCollection {6, 1} };
+
+            viewport_for_text.Visual = line;
+            viewport_for_text.Material = mat;
+            viewport_for_text.Geometry = meshGeometry;
+
+            viewport_2d.Children.Add(viewport_for_text);
+
+            // X продолжение минус
+            viewport_for_text = new Viewport2DVisual3D();
+
+            p = new Point3DCollection
+            {
+                new Point3D(-2 * userInput.b, 0.01, 0),
+                new Point3D(-userInput.b, 0.01, 0),
+                new Point3D(-userInput.b, -0.01, 0),
+                new Point3D(-2 * userInput.b, -0.01, 0),
+            };
+
+            triangles = new Int32Collection
+            {
+                0, 1, 2,
+                0, 2, 1,
+                0, 2, 3,
+                0, 3, 2,
+            };
+
+            texture = new PointCollection
+            {
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(0, 0),
+            };
+            brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
+
+            meshGeometry = new MeshGeometry3D() { Positions = p, TriangleIndices = triangles, TextureCoordinates = texture };
+            mat = new DiffuseMaterial();
+            mat.SetValue(Viewport2DVisual3D.IsVisualHostMaterialProperty, true);
+
+            line = new Line() { StrokeThickness = 0.01, Stroke = brush, X1 = -2 * userInput.b, Y1 = 0, X2 = - userInput.b, Y2 = 0 };
+
+            viewport_for_text.Visual = line;
+            viewport_for_text.Material = mat;
+            viewport_for_text.Geometry = meshGeometry;
+
+            viewport_2d.Children.Add(viewport_for_text);
+
+            // X продолжение плюс
+            viewport_for_text = new Viewport2DVisual3D();
+
+            p = new Point3DCollection
+            {
+                new Point3D(userInput.b, 0.01, 0),
+                new Point3D(2 * userInput.b, 0.01, 0),
+                new Point3D(2 * userInput.b, -0.01, 0),
+                new Point3D(userInput.b, -0.01, 0),
+            };
+
+            triangles = new Int32Collection
+            {
+                0, 1, 2,
+                0, 2, 1,
+                0, 2, 3,
+                0, 3, 2,
+            };
+
+            texture = new PointCollection
+            {
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(0, 0),
+            };
+            brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
+
+            meshGeometry = new MeshGeometry3D() { Positions = p, TriangleIndices = triangles, TextureCoordinates = texture };
+            mat = new DiffuseMaterial();
+            mat.SetValue(Viewport2DVisual3D.IsVisualHostMaterialProperty, true);
+
+            line = new Line() { StrokeThickness = 0.01, Stroke = brush, X1 = userInput.b, Y1 = 0, X2 = 2 * userInput.b, Y2 = 0 };
+
+            viewport_for_text.Visual = line;
+            viewport_for_text.Material = mat;
+            viewport_for_text.Geometry = meshGeometry;
+
+            viewport_2d.Children.Add(viewport_for_text);
+
+            // Y пунктир
+            viewport_for_text = new Viewport2DVisual3D();
+
+            p = new Point3DCollection
+            {
+                new Point3D(-0.01, userInput.b, 0),
+                new Point3D(0.01, userInput.b, 0),
+                new Point3D(0.01, -userInput.b, 0),
+                new Point3D(-0.01, -userInput.b, 0),
+            };
+
+            triangles = new Int32Collection
+            {
+                0, 1, 2,
+                0, 2, 1,
+                0, 2, 3,
+                0, 3, 2,
+            };
+
+            texture = new PointCollection
+            {
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(0, 0),
+            };
+            brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
+
+            meshGeometry = new MeshGeometry3D() { Positions = p, TriangleIndices = triangles, TextureCoordinates = texture };
+            mat = new DiffuseMaterial();
+            mat.SetValue(Viewport2DVisual3D.IsVisualHostMaterialProperty, true);
+
+            line = new Line() { StrokeThickness = 0.01, Stroke = brush, X1 = 0, Y1 = -userInput.b, X2 = 0, Y2 = 2 * userInput.b, StrokeDashArray = new DoubleCollection { 6, 1 } };
+
+            viewport_for_text.Visual = line;
+            viewport_for_text.Material = mat;
+            viewport_for_text.Geometry = meshGeometry;
+
+            viewport_2d.Children.Add(viewport_for_text);
+
+            // Y продолжение минус
+            viewport_for_text = new Viewport2DVisual3D();
+
+            p = new Point3DCollection
+            {
+                new Point3D(-0.01, -userInput.b, 0),
+                new Point3D(0.01, -userInput.b, 0),
+                new Point3D(0.01, -2 * userInput.b, 0),
+                new Point3D(-0.01, -2 * userInput.b, 0),
+            };
+
+            triangles = new Int32Collection
+            {
+                0, 1, 2,
+                0, 2, 1,
+                0, 2, 3,
+                0, 3, 2,
+            };
+
+            texture = new PointCollection
+            {
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(0, 0),
+            };
+            brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
+
+            meshGeometry = new MeshGeometry3D() { Positions = p, TriangleIndices = triangles, TextureCoordinates = texture };
+            mat = new DiffuseMaterial();
+            mat.SetValue(Viewport2DVisual3D.IsVisualHostMaterialProperty, true);
+
+            line = new Line() { StrokeThickness = 0.01, Stroke = brush, X1 = 0, Y1 = -userInput.b, X2 = 0, Y2 = -2 * userInput.b };
+
+            viewport_for_text.Visual = line;
+            viewport_for_text.Material = mat;
+            viewport_for_text.Geometry = meshGeometry;
+
+            viewport_2d.Children.Add(viewport_for_text);
+
+            // Y продолжение плюс
+            viewport_for_text = new Viewport2DVisual3D();
+
+            p = new Point3DCollection
+            {
+                new Point3D(-0.01, userInput.b, 0),
+                new Point3D(0.01, userInput.b, 0),
+                new Point3D(0.01, 2 * userInput.b, 0),
+                new Point3D(-0.01, 2 * userInput.b, 0),
+            };
+
+            triangles = new Int32Collection
+            {
+                0, 1, 2,
+                0, 2, 1,
+                0, 2, 3,
+                0, 3, 2,
+            };
+
+            texture = new PointCollection
+            {
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+                new Point(0, 0),
+            };
+            brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
+
+            meshGeometry = new MeshGeometry3D() { Positions = p, TriangleIndices = triangles, TextureCoordinates = texture };
+            mat = new DiffuseMaterial();
+            mat.SetValue(Viewport2DVisual3D.IsVisualHostMaterialProperty, true);
+
+            line = new Line() { StrokeThickness = 0.01, Stroke = brush, X1 = 0, Y1 = userInput.b, X2 = 0, Y2 = 2 * userInput.b };
+
+            viewport_for_text.Visual = line;
+            viewport_for_text.Material = mat;
+            viewport_for_text.Geometry = meshGeometry;
+
+            viewport_2d.Children.Add(viewport_for_text);
         }
         private void DrawCilindr()
         {
@@ -526,7 +774,9 @@ namespace OVModel
             mesh.TriangleIndices = triangleIndices;
 
             // Создаем материал и модель
-            Material material = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray));
+            var brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray);
+            brush.Opacity = 0.5;
+            Material material = new DiffuseMaterial(brush);
             GeometryModel3D model = new GeometryModel3D(mesh, material);
 
             // Добавляем модель в ModelVisual3D
@@ -718,7 +968,6 @@ namespace OVModel
 
             DrawText();
         }
-
         private void DrawText()
         {
             var p_x = new Point3DCollection
@@ -745,12 +994,11 @@ namespace OVModel
                 new Point3D(0, 0.3, coef_for_axis * userInput.R),
             };
 
-            CreateText(p_x, "x");
-            CreateText(p_y, "y");
-            CreateText(p_z, "z");
+            CreateText(p_x, "x", viewport_3d);
+            CreateText(p_y, "y", viewport_3d);
+            CreateText(p_z, "z", viewport_3d);
         }
-
-        private void CreateText(Point3DCollection p, String t)
+        private void CreateText(Point3DCollection p, String t, Viewport3D viewport)
         {
             var viewport_for_text = new Viewport2DVisual3D();
 
@@ -780,7 +1028,7 @@ namespace OVModel
             viewport_for_text.Material = mat;
             viewport_for_text.Geometry = meshGeometry;
 
-            viewport_3d.Children.Add(viewport_for_text);
+            viewport.Children.Add(viewport_for_text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -790,13 +1038,26 @@ namespace OVModel
                 int angle_for_2D = int.Parse(Input_Betta.Text);
                 if (angle_for_2D <= userInput.Alpha)
                 {
-                    if (viewport_2d.Children.Count != 1)
+                    if (viewport_2d.Children.Count == 8)
                     {
                         viewport_2d.Children.RemoveAt(1);
+                        viewport_2d.Children.RemoveAt(1);
+                        viewport_2d.Children.RemoveAt(1);
+                        viewport_2d.Children.RemoveAt(1);
+                        viewport_2d.Children.RemoveAt(1);
+                        viewport_2d.Children.RemoveAt(1);
+                        viewport_2d.Children.RemoveAt(1);
+
+
+                        CreateAxis2D();
                         DrawCircle(angle_for_2D);
 
                         if (viewport_3d.Children.Count == 9)
                         {
+                            // TODO:
+                            // Сделать создание освещения, через метод
+                            // Потом просто очищать всё и вызывать метод
+                            
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
