@@ -27,6 +27,26 @@
                 <PerspectiveCamera x:Name="camera_3d" Position="0 0 5" LookDirection="0 0 -1" UpDirection="0 1 0"/>
             </Viewport3D.Camera>
             <ModelVisual3D>
+                    <ModelVisual3D.Content>
+                        <!--Установка освещения - прямой свет-->
+                        <DirectionalLight Color="White" Direction="-1,-1,-2" />
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <GeometryModel3D>
+                        <!--Определяем геометрию объекта-->
+                        <GeometryModel3D.Geometry>
+                            <MeshGeometry3D Positions="-0.5,0,0 0,0.5,0 0.5,0,0" TriangleIndices="0,2,1" />
+                        </GeometryModel3D.Geometry>
+                        <!--Установка материала - красный цвет-->
+                        <GeometryModel3D.Material>
+                            <DiffuseMaterial Brush="Red" />
+                        </GeometryModel3D.Material>
+                    </GeometryModel3D>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+            <ModelVisual3D>
                 <ModelVisual3D.Content>
                     <AmbientLight Color="White" />
                 </ModelVisual3D.Content>

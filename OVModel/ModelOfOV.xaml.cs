@@ -56,7 +56,7 @@ namespace OVModel
         // Оси
         double coef_for_axis = 4;
         double coef_for_axis2D = 1.5;
-
+        double line_2D = 0.005;
         public ModelOfOV(UserInput uI)
         {
             userInput = uI;
@@ -161,6 +161,7 @@ namespace OVModel
 
             cameraPosition = new Vector3D(camera_3d.Position.X, camera_3d.Position.Y, camera_3d.Position.Z);
         }
+
         private void DrawWire()
         {
             double R = userInput.R; // Радиус круга
@@ -173,9 +174,12 @@ namespace OVModel
             Point3DCollection positions = new Point3DCollection();
             Int32Collection triangleIndices = new Int32Collection();
 
+            Point3DCollection positions_for_line = new Point3DCollection();
+            Int32Collection triangleIndices_for_line = new Int32Collection();
+
             double Alpha_angle = userInput.Alpha;
             double h = 0.1;
-            double dlina_wire = 100;
+            double dlina_wire = 2;
             double dlina_prodolzhenie = 10;
             double dlina = dlina_wire + 2 * dlina_prodolzhenie;
             int dlina_count = (int)(dlina_wire/ h);
@@ -198,6 +202,15 @@ namespace OVModel
             double h_for_x_1_prodolzhenie = x_1 - x_0;
             double h_for_y_1_prodolzhenie = y_1 - y_0;
 
+            double centr_line_x;
+            double centr_line_y;
+
+            double tmp_centr_line_x = 0;
+            double tmp_centr_line_y = 0;
+
+            int curr = 0;
+
+            bool isNeedSoedinyat = false;
 
             double h_for_perehoda = Math.PI / (Alpha_angle * 0.01745);
             for (int i = 0; i <= (dlina / h); i++)
@@ -208,6 +221,10 @@ namespace OVModel
 
                     tmp_rot_x += Math.Sin(lyam * angle_for_rotation - 1.5708) * h;
                     tmp_rot_y -= Math.Cos(lyam * angle_for_rotation - 1.5708) * h;
+
+                    centr_line_x = tmp_rot_x;
+                    centr_line_y = tmp_rot_y;
+
                     positions.Add(new Point3D(tmp_rot_x, tmp_rot_y, 0));
                     for (int j = 0; j < segments; j++)
                     {
@@ -228,6 +245,9 @@ namespace OVModel
                 {
                     double rotation_x = (R + b) * Math.Cos(angle_for_wire);
                     double rotation_y = (R + b) * Math.Sin(angle_for_wire);
+
+                    centr_line_x = rotation_x;
+                    centr_line_y = rotation_y;
 
                     positions.Add(new Point3D(rotation_x, rotation_y, 0));
                     for (int j = 0; j < segments; j++)
@@ -258,6 +278,40 @@ namespace OVModel
                     tmp_rot_x = rotation_x;
                     tmp_rot_y = rotation_y;
                 }
+
+                if (isNeedSoedinyat)
+                {
+                    positions_for_line.Add(new Point3D(centr_line_x, centr_line_y, 0.05));
+                    positions_for_line.Add(new Point3D(tmp_centr_line_x, tmp_centr_line_y, 0.05));
+                    positions_for_line.Add(new Point3D(tmp_centr_line_x, tmp_centr_line_y, -0.05));
+                    positions_for_line.Add(new Point3D(centr_line_x, centr_line_y, -0.05));
+
+                    triangleIndices_for_line.Add(curr * 4);
+                    triangleIndices_for_line.Add(curr * 4 + 1);
+                    triangleIndices_for_line.Add(curr * 4 + 2);
+
+                    triangleIndices_for_line.Add(curr * 4);
+                    triangleIndices_for_line.Add(curr * 4 + 2);
+                    triangleIndices_for_line.Add(curr * 4 + 1);
+
+                    triangleIndices_for_line.Add(curr * 4);
+                    triangleIndices_for_line.Add(curr * 4 + 2);
+                    triangleIndices_for_line.Add(curr * 4 + 3);
+
+                    triangleIndices_for_line.Add(curr * 4);
+                    triangleIndices_for_line.Add(curr * 4 + 3);
+                    triangleIndices_for_line.Add(curr * 4 + 2);
+
+                    curr++;
+
+                    isNeedSoedinyat = false;
+
+                }
+
+                tmp_centr_line_x = centr_line_x;
+                tmp_centr_line_y = centr_line_y;
+
+                if (i % 2 == 1) isNeedSoedinyat = true;
             }
 
             int segmentsOnEveryCircle = segments + 1;
@@ -311,7 +365,7 @@ namespace OVModel
             mesh.TriangleIndices = triangleIndices;
 
             var brush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.LightGray);
-            
+            brush.Opacity = 0.7;
             Material material = new DiffuseMaterial(brush);
 
             GeometryModel3D model = new GeometryModel3D(mesh, material);
@@ -328,6 +382,19 @@ namespace OVModel
             visual.Content = model;
             visual.Transform = transform;
 
+
+            var line = new MeshGeometry3D
+            {
+                Positions = positions_for_line,
+                TriangleIndices = triangleIndices_for_line,
+            };
+
+            var material_line = new DiffuseMaterial(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black));
+            var lineModel = new GeometryModel3D(line, material_line);
+            var modelVisual = new ModelVisual3D { Content = lineModel };
+
+            viewport_3d.Children.Add(modelVisual);
+
             viewport_3d.Children.Add(visual);
         }
 
@@ -338,10 +405,10 @@ namespace OVModel
 
             var p = new Point3DCollection
             {
-                new Point3D(-userInput.b, 0.01, 0),
-                new Point3D(userInput.b, 0.01, 0),
-                new Point3D(userInput.b, -0.01, 0),
-                new Point3D(-userInput.b, -0.01, 0),
+                new Point3D(-userInput.b, line_2D, 0),
+                new Point3D(userInput.b, line_2D, 0),
+                new Point3D(userInput.b, -line_2D, 0),
+                new Point3D(-userInput.b, -line_2D, 0),
             };
 
             var triangles = new Int32Collection
@@ -378,10 +445,10 @@ namespace OVModel
 
             p = new Point3DCollection
             {
-                new Point3D(-2 * userInput.b, 0.01, 0),
-                new Point3D(-userInput.b, 0.01, 0),
-                new Point3D(-userInput.b, -0.01, 0),
-                new Point3D(-2 * userInput.b, -0.01, 0),
+                new Point3D(-2 * userInput.b, line_2D, 0),
+                new Point3D(-userInput.b, line_2D, 0),
+                new Point3D(-userInput.b, -line_2D, 0),
+                new Point3D(-2 * userInput.b, -line_2D, 0),
             };
 
             triangles = new Int32Collection
@@ -418,10 +485,10 @@ namespace OVModel
 
             p = new Point3DCollection
             {
-                new Point3D(userInput.b, 0.01, 0),
-                new Point3D(2 * userInput.b, 0.01, 0),
-                new Point3D(2 * userInput.b, -0.01, 0),
-                new Point3D(userInput.b, -0.01, 0),
+                new Point3D(userInput.b, line_2D, 0),
+                new Point3D(2 * userInput.b, line_2D, 0),
+                new Point3D(2 * userInput.b, -line_2D, 0),
+                new Point3D(userInput.b, -line_2D, 0),
             };
 
             triangles = new Int32Collection
@@ -458,10 +525,10 @@ namespace OVModel
 
             p = new Point3DCollection
             {
-                new Point3D(-0.01, userInput.b, 0),
-                new Point3D(0.01, userInput.b, 0),
-                new Point3D(0.01, -userInput.b, 0),
-                new Point3D(-0.01, -userInput.b, 0),
+                new Point3D(-line_2D, userInput.b, 0),
+                new Point3D(line_2D, userInput.b, 0),
+                new Point3D(line_2D, -userInput.b, 0),
+                new Point3D(-line_2D, -userInput.b, 0),
             };
 
             triangles = new Int32Collection
@@ -498,10 +565,10 @@ namespace OVModel
 
             p = new Point3DCollection
             {
-                new Point3D(-0.01, -userInput.b, 0),
-                new Point3D(0.01, -userInput.b, 0),
-                new Point3D(0.01, -2 * userInput.b, 0),
-                new Point3D(-0.01, -2 * userInput.b, 0),
+                new Point3D(-line_2D, -userInput.b, 0),
+                new Point3D(line_2D, -userInput.b, 0),
+                new Point3D(line_2D, -2 * userInput.b, 0),
+                new Point3D(-line_2D, -2 * userInput.b, 0),
             };
 
             triangles = new Int32Collection
@@ -538,10 +605,10 @@ namespace OVModel
 
             p = new Point3DCollection
             {
-                new Point3D(-0.01, userInput.b, 0),
-                new Point3D(0.01, userInput.b, 0),
-                new Point3D(0.01, 2 * userInput.b, 0),
-                new Point3D(-0.01, 2 * userInput.b, 0),
+                new Point3D(-line_2D, userInput.b, 0),
+                new Point3D(line_2D, userInput.b, 0),
+                new Point3D(line_2D, 2 * userInput.b, 0),
+                new Point3D(-line_2D, 2 * userInput.b, 0),
             };
 
             triangles = new Int32Collection
@@ -1052,12 +1119,13 @@ namespace OVModel
                         CreateAxis2D();
                         DrawCircle(angle_for_2D);
 
-                        if (viewport_3d.Children.Count == 9)
+                        if (viewport_3d.Children.Count == 10)
                         {
                             // TODO:
                             // Сделать создание освещения, через метод
                             // Потом просто очищать всё и вызывать метод
                             
+                            viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
                             viewport_3d.Children.RemoveAt(1);
